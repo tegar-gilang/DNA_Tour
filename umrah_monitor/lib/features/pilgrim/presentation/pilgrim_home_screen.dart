@@ -66,6 +66,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                   isVerified: false,
                   statusChips: const [],
                   currentLocation: journeyState.currentLocation.isNotEmpty ? journeyState.currentLocation : 'Masjidil Haram, Makkah',
+                  unreadCount: 3,
                   customContent: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(

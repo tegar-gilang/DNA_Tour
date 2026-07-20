@@ -46,36 +46,39 @@ class _FamilyLocationScreenState extends State<FamilyLocationScreen> {
               child: Stack(
                 children: [
                   // Pilgrim Marker
-                  Positioned(
-                    left: MediaQuery.of(context).size.width * 0.46,
-                    top: MediaQuery.of(context).size.height * 0.32,
-                    child: _buildMapPin(
-                      'H. Ahmad Zaki',
-                      AppColors.primary,
-                      LucideIcons.user,
-                      isPilgrim: true,
+                  if (_selectedLayer == 'Semua' || _selectedLayer == 'Titik Kumpul' || _selectedLayer == 'Rute Perjalanan')
+                    Positioned(
+                      left: MediaQuery.of(context).size.width * 0.46,
+                      top: MediaQuery.of(context).size.height * 0.32,
+                      child: _buildMapPin(
+                        'H. Ahmad Zaki',
+                        AppColors.primary,
+                        LucideIcons.user,
+                        isPilgrim: true,
+                      ),
                     ),
-                  ),
                   // Hotel Marker
-                  Positioned(
-                    left: MediaQuery.of(context).size.width * 0.65,
-                    top: MediaQuery.of(context).size.height * 0.45,
-                    child: _buildMapPin(
-                      'Swissôtel Al Maqam',
-                      AppColors.secondaryDark,
-                      LucideIcons.building,
+                  if (_selectedLayer == 'Semua' || _selectedLayer == 'Hotel' || _selectedLayer == 'Titik Kumpul')
+                    Positioned(
+                      left: MediaQuery.of(context).size.width * 0.65,
+                      top: MediaQuery.of(context).size.height * 0.45,
+                      child: _buildMapPin(
+                        'Swissôtel Al Maqam',
+                        AppColors.secondaryDark,
+                        LucideIcons.building,
+                      ),
                     ),
-                  ),
                   // Mosque Marker
-                  Positioned(
-                    left: MediaQuery.of(context).size.width * 0.40,
-                    top: MediaQuery.of(context).size.height * 0.28,
-                    child: _buildMapPin(
-                      'Masjidil Haram Gate 1',
-                      AppColors.infoBlue,
-                      LucideIcons.moon,
+                  if (_selectedLayer == 'Semua' || _selectedLayer == 'Masjid')
+                    Positioned(
+                      left: MediaQuery.of(context).size.width * 0.40,
+                      top: MediaQuery.of(context).size.height * 0.28,
+                      child: _buildMapPin(
+                        'Masjidil Haram Gate 1',
+                        AppColors.infoBlue,
+                        LucideIcons.moon,
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),

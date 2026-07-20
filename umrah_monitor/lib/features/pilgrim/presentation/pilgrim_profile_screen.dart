@@ -73,8 +73,6 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                 ),
                 child: Column(
                   children: [
-                    const Icon(LucideIcons.badgeCheck, size: 80, color: AppColors.successGreen),
-                    const SizedBox(height: 16),
                     Text(
                       user?.name ?? 'Jamaah Umrah',
                       style: GoogleFonts.outfit(
@@ -274,6 +272,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                 RoleStatusChip(label: 'Kloter 4 VIP', iconColor: AppColors.infoBlue, icon: LucideIcons.shieldCheck),
               ],
               currentLocation: 'Masjidil Haram, Makkah',
+              unreadCount: 3,
             ),
             const SizedBox(height: 26),
 
@@ -558,16 +557,26 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
   Widget _buildDetailRow({required IconData icon, required String label, required String value}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Icon(icon, size: 16, color: AppColors.primary),
-            const SizedBox(width: 10),
-            Text(label, style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight)),
-          ],
+        Expanded(
+          flex: 5,
+          child: Row(
+            children: [
+              Icon(icon, size: 16, color: AppColors.primary),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  label,
+                  style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
+                ),
+              ),
+            ],
+          ),
         ),
         const SizedBox(width: 12),
         Flexible(
+          flex: 6,
           child: Text(
             value,
             style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700),

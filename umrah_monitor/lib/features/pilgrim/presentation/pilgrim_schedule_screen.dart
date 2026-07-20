@@ -25,7 +25,8 @@ class CheckpointModel {
 }
 
 class PilgrimScheduleScreen extends StatefulWidget {
-  const PilgrimScheduleScreen({super.key});
+  final bool isFamilyView;
+  const PilgrimScheduleScreen({super.key, this.isFamilyView = false});
 
   @override
   State<PilgrimScheduleScreen> createState() => _PilgrimScheduleScreenState();
@@ -155,7 +156,9 @@ class _PilgrimScheduleScreenState extends State<PilgrimScheduleScreen> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Kloter 4 Al-Barakah VIP • Rangkaian Ibadah',
+                          widget.isFamilyView
+                              ? 'Kloter 4 Al-Barakah VIP • Jadwal Jamaah Dipantau Keluarga'
+                              : 'Kloter 4 Al-Barakah VIP • Rangkaian Ibadah',
                           style: GoogleFonts.outfit(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,

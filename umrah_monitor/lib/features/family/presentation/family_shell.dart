@@ -20,7 +20,7 @@ class FamilyShell extends StatelessWidget {
         items: const [
           AppleNavbarItem(icon: LucideIcons.home, label: 'Beranda'),
           AppleNavbarItem(icon: LucideIcons.mapPin, label: 'Lokasi'),
-          AppleNavbarItem(icon: LucideIcons.activity, label: 'Kabar'),
+          AppleNavbarItem(icon: LucideIcons.calendar, label: 'Jadwal'),
           AppleNavbarItem(icon: LucideIcons.messageSquare, label: 'Pesan'),
           AppleNavbarItem(icon: LucideIcons.userCheck, label: 'Profil'),
         ],

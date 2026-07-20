@@ -39,7 +39,6 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                   avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
                   statusChips: const [
                     RoleStatusChip(label: '42 Jamaah Aktif', iconColor: AppColors.successGreen, icon: LucideIcons.users),
-                    RoleStatusChip(label: 'Siaran Radio Siap', iconColor: AppColors.secondaryLight, icon: LucideIcons.radio),
                     RoleStatusChip(label: 'Jadwal Hari Ini: 4', iconColor: AppColors.infoBlue, icon: LucideIcons.calendarCheck),
                   ],
                   currentLocation: 'Masjidil Haram, Makkah',

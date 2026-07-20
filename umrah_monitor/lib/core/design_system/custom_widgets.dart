@@ -307,6 +307,7 @@ class RoleProfileSummaryCard extends StatelessWidget {
   final List<Color>? gradientColors;
   final VoidCallback? onNotificationTap;
   final Widget? customContent;
+  final int? unreadCount;
 
   const RoleProfileSummaryCard({
     super.key,
@@ -321,6 +322,7 @@ class RoleProfileSummaryCard extends StatelessWidget {
     this.gradientColors,
     this.onNotificationTap,
     this.customContent,
+    this.unreadCount,
   });
 
   @override
@@ -414,35 +416,57 @@ class RoleProfileSummaryCard extends StatelessWidget {
               InkWell(
                 onTap: onNotificationTap ?? () => context.push('/notifications'),
                 borderRadius: BorderRadius.circular(22),
-                child: Container(
-                  width: 46,
-                  height: 46,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.45),
-                      width: 1.5,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.45),
+                          width: 1.5,
+                        ),
+                      ),
+                      child: const Icon(LucideIcons.bell, color: Colors.white, size: 22),
                     ),
-                  ),
-                  child: const Icon(LucideIcons.bell, color: Colors.white, size: 22),
+                    if (unreadCount != null && unreadCount! > 0)
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: AppColors.emergencyRed,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.white, width: 1.5),
+                          ),
+                          constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                          child: Center(
+                            child: Text(
+                              unreadCount! > 9 ? '9+' : '$unreadCount',
+                              style: GoogleFonts.outfit(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ],
           ),
           if (statusChips.isNotEmpty) ...[
             const SizedBox(height: 18),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              child: Row(
-                children: statusChips.asMap().entries.map((entry) {
-                  return Padding(
-                    padding: EdgeInsets.only(right: entry.key < statusChips.length - 1 ? 8 : 0),
-                    child: entry.value,
-                  );
-                }).toList(),
-              ),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: statusChips,
             ),
           ],
           if (customContent != null) ...[

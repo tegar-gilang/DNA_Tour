@@ -86,7 +86,6 @@ class TourLeaderProfileScreen extends ConsumerWidget {
                 statusChips: const [
                   RoleStatusChip(label: 'Mutawif Resmi Kemenag', iconColor: AppColors.successGreen, icon: LucideIcons.badgeCheck),
                   RoleStatusChip(label: '42 Jamaah Aktif', iconColor: AppColors.secondaryLight, icon: LucideIcons.users),
-                  RoleStatusChip(label: 'Siaran Radio Siap', iconColor: AppColors.infoBlue, icon: LucideIcons.radio),
                 ],
                 currentLocation: 'Masjidil Haram, Makkah',
                 lastUpdatedText: 'Status: Memimpin',
