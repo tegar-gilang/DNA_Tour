@@ -394,7 +394,7 @@ class RoleProfileSummaryCard extends StatelessWidget {
                         ),
                         if (isVerified) ...[
                           const SizedBox(width: 6),
-                          const Icon(Icons.verified, color: AppColors.secondaryLight, size: 20),
+                          const Icon(Icons.verified, color: AppColors.successGreen, size: 20),
                         ],
                       ],
                     ),
@@ -420,38 +420,36 @@ class RoleProfileSummaryCard extends StatelessWidget {
                   clipBehavior: Clip.none,
                   children: [
                     Container(
-                      width: 46,
-                      height: 46,
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: Colors.white.withValues(alpha: 0.15),
                         shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.45),
-                          width: 1.5,
-                        ),
                       ),
-                      child: const Icon(LucideIcons.bell, color: Colors.white, size: 22),
+                      child: const Icon(LucideIcons.bell, color: Colors.white, size: 20),
                     ),
                     if (unreadCount != null && unreadCount! > 0)
                       Positioned(
-                        right: 0,
-                        top: 0,
+                        right: 2,
+                        top: 2,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                          decoration: BoxDecoration(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
                             color: AppColors.emergencyRed,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.white, width: 1.5),
+                            shape: BoxShape.circle,
                           ),
-                          constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                          constraints: const BoxConstraints(
+                            minWidth: 16,
+                            minHeight: 16,
+                          ),
                           child: Center(
                             child: Text(
                               unreadCount! > 9 ? '9+' : '$unreadCount',
                               style: GoogleFonts.outfit(
-                                fontSize: 10,
+                                fontSize: 9,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.white,
                               ),
+                              textAlign: TextAlign.center,
                             ),
                           ),
                         ),
@@ -463,10 +461,17 @@ class RoleProfileSummaryCard extends StatelessWidget {
           ),
           if (statusChips.isNotEmpty) ...[
             const SizedBox(height: 18),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: statusChips,
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: Row(
+                children: statusChips.asMap().entries.map((entry) {
+                  return Padding(
+                    padding: EdgeInsets.only(right: entry.key < statusChips.length - 1 ? 8 : 0),
+                    child: entry.value,
+                  );
+                }).toList(),
+              ),
             ),
           ],
           if (customContent != null) ...[

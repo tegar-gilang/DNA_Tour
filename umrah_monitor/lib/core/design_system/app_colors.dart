@@ -46,7 +46,7 @@ class AppColors {
   static const Color emergencyRed = Color(0xFFD92D20); // High contrast red
   static const Color emergencyContainer = Color(0xFFFDEDEE);
   static const Color warningAmber = Color(0xFFD97706);
-  static const Color successGreen = Color(0xFF740A03); // Updated to #740A03 Red per user requirement
+  static const Color successGreen = Color(0xFF16A34A); // High contrast emerald green for verification status
   static const Color infoBlue = Color(0xFF1D4ED8);
 
   // Shadow specifications (High-definition contrast shadows for floating Apple look)
