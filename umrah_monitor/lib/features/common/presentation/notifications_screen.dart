@@ -542,7 +542,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         height: 1.25,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 10),
                     Text(
                       item.subtitle,
                       style: GoogleFonts.outfit(

@@ -3,8 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
-import '../../../../core/design_system/custom_widgets.dart';
 import '../../tracking/presentation/pilgrim_attendance_provider.dart';
+
+class PilgrimConditionTag {
+  final String label;
+  final Color color;
+
+  const PilgrimConditionTag(this.label, this.color);
+}
 
 class PilgrimManagementScreen extends ConsumerStatefulWidget {
   const PilgrimManagementScreen({super.key});
@@ -18,6 +24,35 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
   final _searchController = TextEditingController();
   String _searchQuery = '';
 
+  List<PilgrimConditionTag> _getPilgrimConditions(dynamic p) {
+    if (p.status == 'checked_in') {
+      return [const PilgrimConditionTag('HADIR (SUDAH ABSEN)', AppColors.successGreen)];
+    }
+
+    final conditions = <PilgrimConditionTag>[];
+
+    // Kondisi 1: Belum Absen
+    if (p.status == 'pending' || p.status == 'not_checked_in' || p.lastSeen.toLowerCase().contains('belum')) {
+      conditions.add(const PilgrimConditionTag('BELUM ABSEN', AppColors.infoBlue));
+    }
+
+    // Kondisi 2: Di Luar Jangkauan / Radius
+    if (p.status == 'missing' || p.location.toLowerCase().contains('luar jangkauan') || p.location.toLowerCase().contains('radius')) {
+      conditions.add(const PilgrimConditionTag('DI LUAR JANGKAUAN', AppColors.emergencyRed));
+    }
+
+    // Kondisi 3: Pantauan Medis / Darurat (Logic lain)
+    if (p.health.toLowerCase().contains('pusing') || p.health.toLowerCase().contains('kelelahan') || p.health.toLowerCase().contains('sakit') || p.health.toLowerCase().contains('darurat')) {
+      conditions.add(const PilgrimConditionTag('PERLU PANTAUAN MEDIS', AppColors.warningAmber));
+    }
+
+    if (conditions.isEmpty) {
+      conditions.add(const PilgrimConditionTag('BELUM ABSEN', AppColors.infoBlue));
+    }
+
+    return conditions;
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -29,10 +64,11 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
           !p.passport.toLowerCase().contains(_searchQuery.toLowerCase())) {
         return false;
       }
-      if (_filter == 'Hadir / Aman') return p.status == 'checked_in';
-      if (_filter == 'Belum Absen') return p.status == 'pending' || p.status == 'not_checked_in';
-      if (_filter == 'Keluar Rute') return p.status == 'missing';
-      if (_filter == 'Baterai Lemah') return p.status == 'low_battery' || p.battery < 20;
+      final conditions = _getPilgrimConditions(p);
+      if (_filter == 'Hadir / Aman') return conditions.any((c) => c.label == 'HADIR (SUDAH ABSEN)');
+      if (_filter == 'Belum Absen') return conditions.any((c) => c.label == 'BELUM ABSEN');
+      if (_filter == 'Di Luar Jangkauan') return conditions.any((c) => c.label == 'DI LUAR JANGKAUAN');
+      if (_filter == 'Pantauan Medis') return conditions.any((c) => c.label == 'PERLU PANTAUAN MEDIS');
       return true;
     }).toList();
 
@@ -44,80 +80,88 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
           children: [
             // Header Bar
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.cardDark : Colors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isDark ? AppColors.borderDark : AppColors.borderLight,
+                      ),
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        LucideIcons.arrowLeft,
+                        size: 20,
+                        color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Daftar & Pemantauan Jamaah',
+                          'Pantau Status & Absensi Jamaah',
                           style: GoogleFonts.outfit(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.5,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
                             color: isDark ? Colors.white : AppColors.textPrimaryLight,
                           ),
                         ),
-                        const SizedBox(height: 2),
                         Text(
-                          'Kloter 4 Al-Barakah • ${allPilgrims.where((p) => p.status == 'checked_in').length} Sudah Absen Hadir',
+                          'Daftar jamaah kloter aktif beserta posisinya',
                           style: GoogleFonts.outfit(
                             fontSize: 13,
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w600,
+                            color: AppColors.textSecondaryLight,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: const Icon(LucideIcons.users, color: AppColors.primary, size: 20),
-                  ),
                 ],
               ),
             ),
 
-            // Search Bar
+            // Search Box
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                   color: isDark ? AppColors.cardDark : Colors.white,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: isDark ? AppColors.borderDark : AppColors.borderLight),
-                  boxShadow: [
-                    BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 3)),
-                  ],
+                  border: Border.all(
+                    color: isDark ? AppColors.borderDark : AppColors.borderLight,
+                  ),
                 ),
                 child: TextField(
                   controller: _searchController,
                   onChanged: (val) => setState(() => _searchQuery = val),
-                  style: GoogleFonts.outfit(fontSize: 14),
+                  style: GoogleFonts.outfit(
+                    color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                  ),
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(LucideIcons.search, size: 20, color: AppColors.primary),
-                    hintText: 'Cari jamaah berdasarkan nama, ID, atau paspor...',
-                    hintStyle: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
+                    hintText: 'Cari nama, ID Gelang, atau nomor paspor...',
+                    hintStyle: GoogleFonts.outfit(color: AppColors.textSecondaryLight, fontSize: 14),
+                    icon: Icon(LucideIcons.search, size: 20, color: AppColors.textSecondaryLight),
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                 ),
               ),
             ),
+            const SizedBox(height: 6),
 
-            // Filter Chips
+            // Category Filter Tabs
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
               child: Row(
-                children: ['Semua', 'Hadir / Aman', 'Belum Absen', 'Keluar Rute', 'Baterai Lemah'].map((tab) {
+                children: ['Semua', 'Hadir / Aman', 'Belum Absen', 'Di Luar Jangkauan', 'Pantauan Medis'].map((tab) {
                   final isSelected = _filter == tab;
                   return Padding(
                     padding: const EdgeInsets.only(right: 8),
@@ -157,11 +201,15 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(LucideIcons.userX, size: 48, color: AppColors.textTertiaryLight),
+                          Icon(LucideIcons.users, size: 50, color: AppColors.textSecondaryLight),
                           const SizedBox(height: 12),
                           Text(
-                            'Tidak ditemukan jamaah dengan kriteria tersebut',
-                            style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textSecondaryLight),
+                            'Tidak ada jamaah ditemukan',
+                            style: GoogleFonts.outfit(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textSecondaryLight,
+                            ),
                           ),
                         ],
                       ),
@@ -172,21 +220,8 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                       itemCount: filteredList.length,
                       itemBuilder: (context, index) {
                         final p = filteredList[index];
-                        Color statusColor;
-                        String statusLabel;
-                        if (p.status == 'checked_in') {
-                          statusColor = AppColors.successGreen;
-                          statusLabel = 'HADIR (SUDAH ABSEN)';
-                        } else if (p.status == 'missing') {
-                          statusColor = AppColors.emergencyRed;
-                          statusLabel = 'KELUAR RADIUS';
-                        } else if (p.status == 'pending' || p.status == 'not_checked_in') {
-                          statusColor = AppColors.infoBlue;
-                          statusLabel = 'BELUM ABSEN';
-                        } else {
-                          statusColor = AppColors.warningAmber;
-                          statusLabel = 'BATERAI LEMAH';
-                        }
+                        final conditions = _getPilgrimConditions(p);
+                        final isMissingOrAlert = conditions.any((c) => c.label == 'DI LUAR JANGKAUAN');
 
                         return Container(
                           margin: const EdgeInsets.only(bottom: 14),
@@ -195,14 +230,14 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                             color: isDark ? AppColors.cardDark : Colors.white,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: p.status == 'missing'
+                              color: isMissingOrAlert
                                   ? AppColors.emergencyRed
                                   : (isDark ? AppColors.borderDark : AppColors.borderLight),
-                              width: p.status == 'missing' ? 1.5 : 1,
+                              width: isMissingOrAlert ? 1.5 : 1,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: p.status == 'missing' ? 0.06 : 0.02),
+                                color: Colors.black.withValues(alpha: isMissingOrAlert ? 0.06 : 0.02),
                                 blurRadius: 12,
                                 offset: const Offset(0, 4),
                               ),
@@ -230,10 +265,35 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                                     ),
                                   ),
                                   const SizedBox(width: 8),
-                                  StatusBadge(label: statusLabel, color: statusColor),
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      physics: const BouncingScrollPhysics(),
+                                      child: Row(
+                                        children: conditions.map((cond) {
+                                          return Container(
+                                            margin: const EdgeInsets.only(right: 6),
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: cond.color.withValues(alpha: 0.12),
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            child: Text(
+                                              cond.label,
+                                              style: GoogleFonts.outfit(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w800,
+                                                color: cond.color,
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 22),
 
                               // Name
                               Text(

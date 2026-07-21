@@ -526,14 +526,16 @@ class RoleProfileSummaryCard extends StatelessWidget {
 /// Helper capsule status chip for RoleProfileSummaryCard
 class RoleStatusChip extends StatelessWidget {
   final String label;
-  final Color iconColor;
-  final IconData icon;
+  final Color? iconColor;
+  final IconData? icon;
+  final Color? backgroundColor;
 
   const RoleStatusChip({
     super.key,
     required this.label,
-    required this.iconColor,
-    required this.icon,
+    this.iconColor,
+    this.icon,
+    this.backgroundColor,
   });
 
   @override
@@ -541,14 +543,16 @@ class RoleStatusChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.18),
+        color: backgroundColor ?? Colors.white.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: iconColor),
-          const SizedBox(width: 6),
+          if (icon != null) ...[
+            Icon(icon, size: 14, color: iconColor ?? Colors.white),
+            const SizedBox(width: 6),
+          ],
           Text(
             label,
             style: GoogleFonts.outfit(

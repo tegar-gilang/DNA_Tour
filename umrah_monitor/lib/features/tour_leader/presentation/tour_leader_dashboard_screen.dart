@@ -8,7 +8,6 @@ import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
 import '../../auth/presentation/auth_provider.dart';
 import '../../tracking/presentation/journey_provider.dart';
-import '../../tracking/presentation/pilgrim_attendance_provider.dart';
 
 class TourLeaderDashboardScreen extends ConsumerWidget {
   const TourLeaderDashboardScreen({super.key});
@@ -18,7 +17,6 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
     final authState = ref.watch(authProvider);
     final user = authState.user;
     final journeyState = ref.watch(journeyProvider);
-    final pilgrimsList = ref.watch(pilgrimAttendanceProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -38,14 +36,14 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                 // Brief Profile Hero Summary Card
                 RoleProfileSummaryCard(
                   name: user?.name ?? 'Ust. Muhammad Ridwan, Lc.',
-                  roleSubtitle: 'Pembimbing Kloter • Kloter 4 Al-Barakah',
+                  roleSubtitle: 'Kloter 4 Al-Barakah',
                   avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
                   statusChips: const [
+                    RoleStatusChip(label: 'Memimpin', iconColor: AppColors.secondaryLight, icon: LucideIcons.flag),
                     RoleStatusChip(label: '42 Jamaah Aktif', iconColor: AppColors.successGreen, icon: LucideIcons.users),
                     RoleStatusChip(label: 'Jadwal Hari Ini: 4', iconColor: AppColors.infoBlue, icon: LucideIcons.calendarCheck),
                   ],
                   currentLocation: 'Masjidil Haram, Makkah',
-                  lastUpdatedText: 'Status: Memimpin',
                 ).animate().fadeIn().scale(duration: 400.ms),
                 const SizedBox(height: 24),
 
@@ -72,7 +70,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              'Menuju Masjidil Haram:',
+                              '${journeyState.currentActivity}:',
                               style: GoogleFonts.outfit(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
@@ -264,41 +262,6 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                 ).animate().fadeIn().scale(duration: 400.ms),
                 const SizedBox(height: 24),
 
-                // Telemetry & Status Grid
-                SectionHeader(title: 'Status & Telemetri Rombongan'),
-                Column(
-                  children: [
-                    _buildVerticalStatCard(
-                      context,
-                      title: 'Hadir & Check-In',
-                      count: '${pilgrimsList.where((p) => p.status == 'checked_in').length}',
-                      total: 'Dari ${pilgrimsList.length} Jamaah Terdaftar',
-                      icon: LucideIcons.userCheck,
-                      color: AppColors.successGreen,
-                      onTap: () => context.push('/tour_leader/pilgrims'),
-                    ),
-                    _buildVerticalStatCard(
-                      context,
-                      title: 'Keluar Rute / Radius',
-                      count: '2',
-                      total: 'Perlu Perhatian',
-                      icon: LucideIcons.alertTriangle,
-                      color: AppColors.warningAmber,
-                      onTap: () => context.push('/tour_leader/pilgrims'),
-                    ),
-                    _buildVerticalStatCard(
-                      context,
-                      title: 'Darurat SOS Aktif',
-                      count: '1',
-                      total: 'Status Kritis',
-                      icon: LucideIcons.shieldAlert,
-                      color: AppColors.emergencyRed,
-                      onTap: () => context.push('/tour_leader/incidents'),
-                    ),
-                  ],
-                ).animate().fadeIn().scale(duration: 400.ms),
-                const SizedBox(height: 24),
-
                 // Quick Operational Actions
                 SectionHeader(title: 'Aksi Operasional Cepat'),
                 Row(
@@ -436,9 +399,11 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
 
   void _showUpdateJourneyDialog(BuildContext context, WidgetRef ref) {
     final journeyState = ref.read(journeyProvider);
+    final user = ref.read(authProvider).user;
     final titleCtrl = TextEditingController(text: journeyState.currentActivity);
     final locationCtrl = TextEditingController(text: journeyState.currentLocation);
     final dateCtrl = TextEditingController(text: '20 Juli 2026 - 08:00 WAS');
+    final updatedByCtrl = TextEditingController(text: user?.name != null ? '${user!.name} (TL)' : journeyState.updatedBy);
     String statusValue = 'Sedang Berlangsung (Active)';
     final descCtrl = TextEditingController();
     bool sendBroadcast = true;
@@ -503,6 +468,10 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
 
                     _buildModalLabel('Lokasi Kegiatan', isDark),
                     _buildModalInput(locationCtrl, 'Contoh: Masjid Nabawi - Gate 21', isDark),
+                    const SizedBox(height: 14),
+
+                    _buildModalLabel('Diperbarui Oleh (Petugas / TL)', isDark),
+                    _buildModalInput(updatedByCtrl, 'Contoh: Ust. Muhammad Ridwan (TL)', isDark),
                     const SizedBox(height: 14),
 
                     _buildModalLabel('Tanggal & Jam Kegiatan', isDark),
@@ -590,7 +559,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                                 activity: titleCtrl.text.trim(),
                                 location: locationCtrl.text.trim(),
                                 nextActivity: descCtrl.text.trim().isNotEmpty ? descCtrl.text.trim() : 'Agenda Berikutnya',
-                                updatedBy: 'Ust. Muhammad Ridwan (TL Kloter 4)',
+                                updatedBy: updatedByCtrl.text.trim().isNotEmpty ? updatedByCtrl.text.trim() : 'Ust. Muhammad Ridwan (TL)',
                               );
                           Navigator.pop(ctx);
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -651,80 +620,6 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
           hintStyle: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildVerticalStatCard(
-    BuildContext context, {
-    required String title,
-    required String count,
-    required String total,
-    required IconData icon,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: AppleCard(
-        onTap: onTap,
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.14),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: color.withValues(alpha: 0.35), width: 1.2),
-                  ),
-                  child: Icon(icon, size: 22, color: color),
-                ),
-                const SizedBox(width: 14),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: GoogleFonts.outfit(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      total,
-                      style: GoogleFonts.outfit(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textSecondaryLight,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  count,
-                  style: GoogleFonts.outfit(
-                    fontSize: 26,
-                    fontWeight: FontWeight.w800,
-                    color: color,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Icon(LucideIcons.chevronRight, size: 18, color: AppColors.textSecondaryLight),
-              ],
-            ),
-          ],
         ),
       ),
     );

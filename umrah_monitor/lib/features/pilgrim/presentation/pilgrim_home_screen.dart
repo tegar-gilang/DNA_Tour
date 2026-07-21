@@ -218,7 +218,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                         children: [
                           Expanded(
                             child: Text(
-                              'Menuju Masjidil Haram:',
+                              '${journeyState.currentActivity}:',
                               style: GoogleFonts.outfit(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,

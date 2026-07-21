@@ -80,15 +80,15 @@ class TourLeaderProfileScreen extends ConsumerWidget {
               // Brief Hero Profile Summary Card (Same as Home Page without Prayer Reminder)
               RoleProfileSummaryCard(
                 name: user?.name ?? 'Ust. Muhammad Ridwan, Lc.',
-                roleSubtitle: 'ID: ${user?.id ?? 'TL-55012'} • Pembimbing Kloter 4',
+                roleSubtitle: 'ID: ${user?.id ?? 'TL-55012'} • Kloter 4 Al-Barakah',
                 avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
                 isVerified: false,
                 statusChips: const [
                   RoleStatusChip(label: 'Mutawif Resmi Kemenag', iconColor: AppColors.successGreen, icon: LucideIcons.badgeCheck),
+                  RoleStatusChip(label: 'Memimpin', iconColor: AppColors.secondaryLight, icon: LucideIcons.flag),
                   RoleStatusChip(label: '42 Jamaah Aktif', iconColor: AppColors.secondaryLight, icon: LucideIcons.users),
                 ],
                 currentLocation: 'Masjidil Haram, Makkah',
-                lastUpdatedText: 'Status: Memimpin',
               ),
               const SizedBox(height: 24),
 

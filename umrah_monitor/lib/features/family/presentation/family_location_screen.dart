@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
+import '../../tracking/presentation/journey_provider.dart';
 
-class FamilyLocationScreen extends StatefulWidget {
+class FamilyLocationScreen extends ConsumerStatefulWidget {
   const FamilyLocationScreen({super.key});
 
   @override
-  State<FamilyLocationScreen> createState() => _FamilyLocationScreenState();
+  ConsumerState<FamilyLocationScreen> createState() => _FamilyLocationScreenState();
 }
 
-class _FamilyLocationScreenState extends State<FamilyLocationScreen> {
+class _FamilyLocationScreenState extends ConsumerState<FamilyLocationScreen> {
   String _selectedLayer = 'Semua';
 
   @override
   Widget build(BuildContext context) {
+    final journeyState = ref.watch(journeyProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -158,13 +162,13 @@ class _FamilyLocationScreenState extends State<FamilyLocationScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Area Masjidil Haram (Lantai 1 Mataf)',
+                                    journeyState.currentLocation,
                                     style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w700),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   Text(
-                                    'Koordinat: 21.4225° N, 39.8262° E',
+                                    'Aktivitas: ${journeyState.currentActivity}',
                                     style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight),
                                   ),
                                 ],
@@ -181,7 +185,8 @@ class _FamilyLocationScreenState extends State<FamilyLocationScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _buildMetricItem(LucideIcons.clock, 'Sinkronisasi', 'Baru Saja'),
+                      _buildMetricItem(LucideIcons.user, 'Diperbarui Oleh', journeyState.updatedBy),
+                      _buildMetricItem(LucideIcons.clock, 'Sinkronisasi', journeyState.lastUpdated),
                       _buildMetricItem(LucideIcons.footprints, 'Jarak ke Hotel', '420 m'),
                     ],
                   ),

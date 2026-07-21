@@ -4,7 +4,7 @@ class PilgrimItemModel {
   final String id;
   final String name;
   final String passport;
-  final String status; // 'checked_in', 'pending', 'missing', 'low_battery'
+  final String status; // 'checked_in', 'pending', 'missing'
   final int battery;
   final String location;
   final String lastSeen;
@@ -68,8 +68,8 @@ class PilgrimAttendanceNotifier extends StateNotifier<List<PilgrimItemModel>> {
             passport: 'C8810293X',
             status: 'missing',
             battery: 42,
-            location: 'Area Bukit Safa-Marwah Lantai 2',
-            lastSeen: '18 menit lalu',
+            location: 'Di Luar Jangkauan (Area Bukit Safa Lantai 2)',
+            lastSeen: 'Belum Absen Hari Ini',
             health: 'Melaporkan Kelelahan & Pusing',
             phone: '+62 813-1122-3344',
           ),
@@ -77,10 +77,10 @@ class PilgrimAttendanceNotifier extends StateNotifier<List<PilgrimItemModel>> {
             id: 'PL-88402',
             name: 'H. Budi Santoso',
             passport: 'A1029384Z',
-            status: 'low_battery',
-            battery: 14,
-            location: 'Lobi Swissôtel Al Maqam Makkah',
-            lastSeen: '5 menit lalu',
+            status: 'pending',
+            battery: 64,
+            location: 'Di Luar Jangkauan (Radius 2.5 KM dari Ka\'bah)',
+            lastSeen: 'Belum Absen Hari Ini',
             health: 'Sehat & Bugar',
             phone: '+62 811-9988-7766',
           ),
