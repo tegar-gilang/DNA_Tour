@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../auth/presentation/auth_provider.dart';
+import '../../auth/domain/user_model.dart';
 
 class NotificationItem {
   final String id;
@@ -29,23 +32,43 @@ class NotificationItem {
   });
 }
 
-class NotificationsScreen extends StatefulWidget {
+class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
 
   @override
-  State<NotificationsScreen> createState() => _NotificationsScreenState();
+  ConsumerState<NotificationsScreen> createState() => _NotificationsScreenState();
 }
 
-class _NotificationsScreenState extends State<NotificationsScreen> {
+class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   String _selectedFilter = 'Semua';
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
 
-  final List<String> _filters = [
+  bool get _isFamily {
+    final authState = ref.watch(authProvider);
+    return authState.user?.role == UserRole.family || authState.selectedRole == UserRole.family;
+  }
+
+  List<String> get _activeFilters {
+    if (_isFamily) {
+      return [
+        'Semua',
+        'Belum Dibaca',
+        'Perjalanan',
+        'Aktivitas',
+        'Insiden',
+        'Darurat',
+      ];
+    }
+    return _allFilters;
+  }
+
+  final List<String> _allFilters = [
     'Semua',
     'Belum Dibaca',
     'Darurat',
     'Perjalanan',
+    'Aktivitas',
     'Sholat',
     'Siaran',
     'Pertemuan',
@@ -55,7 +78,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     'Insiden',
   ];
 
-  final List<NotificationItem> _notifications = [
+  final List<NotificationItem> _allNotifications = [
     NotificationItem(
       id: 'n1',
       title: 'Peringatan Cuaca Darurat: Gelombang Panas Ekstrem',
@@ -67,6 +90,30 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       icon: LucideIcons.alertTriangle,
       color: AppColors.emergencyRed,
       isRead: false,
+    ),
+    NotificationItem(
+      id: 'n_fam_1',
+      title: 'Perpindahan Aktivitas: Menuju Sa\'i di Bukit Shafa',
+      subtitle: 'Jamaah H. Ahmad Zaki Al-Farizi telah selesai melontar Thawaf dan kini berpindah ke kegiatan selanjutnya: Sa\'i 7 putaran.',
+      time: '09:10 AST',
+      dateGroup: 'Hari Ini',
+      category: 'Aktivitas',
+      priorityLabel: 'PENTING',
+      icon: LucideIcons.arrowRightCircle,
+      color: AppColors.primary,
+      isRead: false,
+    ),
+    NotificationItem(
+      id: 'n_fam_2',
+      title: 'Aktivitas Selesai: Ibadah Thawaf Selesai',
+      subtitle: 'Alhamdulillah, jamaah H. Ahmad Zaki Al-Farizi telah selesai melakukan aktivitas Thawaf mengelilingi Ka\'bah dengan selamat.',
+      time: '08:55 AST',
+      dateGroup: 'Hari Ini',
+      category: 'Aktivitas',
+      priorityLabel: 'PENTING',
+      icon: LucideIcons.checkCircle2,
+      color: AppColors.successGreen,
+      isRead: true,
     ),
     NotificationItem(
       id: 'n2',
@@ -166,10 +213,25 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     ),
   ];
 
-  int get _unreadCount => _notifications.where((n) => !n.isRead).length;
+  List<NotificationItem> get _activeNotifications {
+    if (_isFamily) {
+      return _allNotifications.where((n) {
+        return n.category == 'Perjalanan' ||
+            n.category == 'Aktivitas' ||
+            n.category == 'Insiden' ||
+            n.category == 'Darurat';
+      }).toList();
+    }
+    return _allNotifications;
+  }
+
+  int get _unreadCount => _activeNotifications.where((n) => !n.isRead).length;
 
   List<NotificationItem> get _filteredNotifications {
-    return _notifications.where((n) {
+    if (!_activeFilters.contains(_selectedFilter)) {
+      _selectedFilter = 'Semua';
+    }
+    return _activeNotifications.where((n) {
       bool matchesFilter = true;
       if (_selectedFilter == 'Belum Dibaca') {
         matchesFilter = !n.isRead;
@@ -332,9 +394,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-                itemCount: _filters.length,
+                itemCount: _activeFilters.length,
                 itemBuilder: (context, index) {
-                  final filter = _filters[index];
+                  final filter = _activeFilters[index];
                   final isSelected = _selectedFilter == filter;
                   return Padding(
                     padding: const EdgeInsets.only(right: 8),

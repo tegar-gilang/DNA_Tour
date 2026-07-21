@@ -302,7 +302,6 @@ class RoleProfileSummaryCard extends StatelessWidget {
   final IconData defaultAvatarIcon;
   final List<Widget> statusChips;
   final String currentLocation;
-  final String? lastUpdatedText;
   final bool isVerified;
   final List<Color>? gradientColors;
   final VoidCallback? onNotificationTap;
@@ -317,7 +316,6 @@ class RoleProfileSummaryCard extends StatelessWidget {
     this.defaultAvatarIcon = LucideIcons.user,
     required this.statusChips,
     required this.currentLocation,
-    this.lastUpdatedText,
     this.isVerified = true,
     this.gradientColors,
     this.onNotificationTap,
@@ -501,20 +499,6 @@ class RoleProfileSummaryCard extends StatelessWidget {
                   ],
                 ),
               ),
-              if (lastUpdatedText != null && lastUpdatedText!.isNotEmpty && !lastUpdatedText!.contains('Online')) ...[
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    lastUpdatedText!,
-                    style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.white70),
-                  ),
-                ),
-              ],
             ],
           ),
         ],

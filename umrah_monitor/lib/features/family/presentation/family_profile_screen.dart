@@ -109,7 +109,7 @@ class _FamilyProfileScreenState extends ConsumerState<FamilyProfileScreen> {
                             ],
                           ),
                           const SizedBox(height: 14),
-                          _buildPermItem('Melihat seluruh informasi pribadi, medis & dokumen jamaah', true, isDark),
+                          _buildPermItem('Melihat seluruh informasi pribadi & medis jamaah', true, isDark),
                           _buildPermItem('Memantau lokasi GPS jamaah & rute ibadah secara real-time', true, isDark),
                           _buildPermItem('Menerima notifikasi check-in & peringatan darurat SOS otomatis', true, isDark),
                           _buildPermItem('Menghubungi & berkirim pesan dengan Mutawif pendamping', true, isDark),
