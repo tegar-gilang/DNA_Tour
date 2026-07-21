@@ -5,25 +5,25 @@ class JourneyNotifier extends StateNotifier<JourneyActivityState> {
   JourneyNotifier()
       : super(
           const JourneyActivityState(
-            currentActivity: 'Heading to Masjidil Haram',
-            currentLocation: 'Makkah Perimeter • Gate 1 King Abdulaziz',
+            currentActivity: 'Menuju Masjidil Haram',
+            currentLocation: 'Area Makkah • Gerbang 1 King Abdulaziz',
             updatedBy: 'Ust. Muhammad Ridwan (TL)',
             lastUpdated: '08:20 AST',
-            nextActivity: 'Start Tawaf & Sa\'i Ritual',
+            nextActivity: 'Mulai Tawaf & Sa\'i',
             status: 'On Going',
-            eta: '15 Minutes',
-            estimatedDuration: '2.5 Hours',
+            eta: '15 Menit',
+            estimatedDuration: '2.5 Jam',
             progressPercentage: 0.45,
             totalPilgrims: 45,
             presentCount: 45,
             timeline: [
               JourneyLogItem(
                 id: 'j1',
-                activity: 'Heading to Masjidil Haram',
-                location: 'Makkah Perimeter • Gate 1 King Abdulaziz',
+                activity: 'Menuju Masjidil Haram',
+                location: 'Area Makkah • Gerbang 1 King Abdulaziz',
                 time: '08:20 AST',
                 updatedBy: 'Ust. Muhammad Ridwan (TL)',
-                attendanceStatus: 'Present (45/45 Synced)',
+                attendanceStatus: 'Hadir (45/45 Tersinkron)',
               ),
               JourneyLogItem(
                 id: 'j2',

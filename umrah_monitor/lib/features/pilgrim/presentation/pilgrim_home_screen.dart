@@ -10,6 +10,7 @@ import '../../../../core/design_system/custom_widgets.dart';
 import '../../../../core/utils/date_utils.dart';
 import '../../auth/presentation/auth_provider.dart';
 import '../../tracking/presentation/journey_provider.dart';
+import '../../tracking/presentation/pilgrim_attendance_provider.dart';
 
 class PilgrimHomeScreen extends ConsumerStatefulWidget {
   const PilgrimHomeScreen({super.key});
@@ -212,73 +213,66 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                     children: [
                       // HEADER
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Padding(
-                            padding: EdgeInsets.only(top: 2),
-                            child: Icon(LucideIcons.compass, size: 28, color: AppColors.primary),
-                          ),
-                          const SizedBox(width: 16),
                           Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        journeyState.currentActivity,
-                                        style: GoogleFonts.outfit(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                          color: isDark ? Colors.white : AppColors.textPrimaryLight,
-                                          height: 1.2,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    StatusBadge(
-                                      label: journeyState.status == 'Completed'
-                                          ? 'SELESAI'
-                                          : (journeyState.status == 'Waiting' ? 'MENUNGGU' : 'BERJALAN'),
-                                      color: journeyState.status == 'Completed'
-                                          ? AppColors.successGreen
-                                          : (journeyState.status == 'Waiting' ? AppColors.secondaryDark : AppColors.primary),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.only(top: 2),
-                                      child: Icon(LucideIcons.mapPin, size: 16, color: AppColors.textSecondaryLight),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Expanded(
-                                      child: Text(
-                                        journeyState.currentLocation,
-                                        style: GoogleFonts.outfit(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500,
-                                          color: AppColors.textSecondaryLight,
-                                          height: 1.3,
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.visible,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                            child: Text(
+                              'Menuju Masjidil Haram:',
+                              style: GoogleFonts.outfit(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                height: 1.2,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '(2/36)',
+                            style: GoogleFonts.outfit(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 12),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: LinearProgressIndicator(
+                          value: 2 / 36,
+                          minHeight: 8,
+                          backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(top: 2),
+                            child: Icon(LucideIcons.mapPin, size: 16, color: AppColors.textSecondaryLight),
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              journeyState.currentLocation,
+                              style: GoogleFonts.outfit(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textSecondaryLight,
+                                height: 1.3,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.visible,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 40),
 
                       // INFORMATION LIST (Vertical rows with subtle dividers)
                       _buildInfoRow(
@@ -430,14 +424,24 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                     ),
                     _buildQuickActionItem(
                       context: context,
-                      label: 'Bagikan GPS',
-                      icon: LucideIcons.navigation,
-                      color: AppColors.infoBlue,
+                      label: 'Absen ke TL',
+                      icon: LucideIcons.userCheck,
+                      color: AppColors.successGreen,
                       onTap: () {
+                        final journeyState = ref.read(journeyProvider);
+                        final user = ref.read(authProvider).user;
+                        ref.read(pilgrimAttendanceProvider.notifier).recordCheckIn(
+                              pilgrimId: user?.id ?? 'PL-88210',
+                              pilgrimName: user?.name ?? 'H. Ahmad Zaki Al-Farizi',
+                              location: journeyState.currentLocation,
+                              battery: user?.batteryLevel ?? 86,
+                            );
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Lokasi GPS langsung dibagikan kepada Keluarga & Pembimbing.'),
-                            backgroundColor: AppColors.infoBlue,
+                            content: Text(
+                              '✅ Absen kehadiran berhasil dikirim! Status Anda tercatat "HADIR" di daftar absen Tour Leader.',
+                            ),
+                            backgroundColor: AppColors.successGreen,
                           ),
                         );
                       },

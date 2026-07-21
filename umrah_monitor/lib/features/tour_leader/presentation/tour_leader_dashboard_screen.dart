@@ -8,6 +8,7 @@ import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
 import '../../auth/presentation/auth_provider.dart';
 import '../../tracking/presentation/journey_provider.dart';
+import '../../tracking/presentation/pilgrim_attendance_provider.dart';
 
 class TourLeaderDashboardScreen extends ConsumerWidget {
   const TourLeaderDashboardScreen({super.key});
@@ -16,6 +17,8 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
     final user = authState.user;
+    final journeyState = ref.watch(journeyProvider);
+    final pilgrimsList = ref.watch(pilgrimAttendanceProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -46,51 +49,251 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                 ).animate().fadeIn().scale(duration: 400.ms),
                 const SizedBox(height: 24),
 
+                // Aktivitas Perjalanan Saat Ini (Sama seperti pada role Jamaah)
+                SectionHeader(title: 'Aktivitas Perjalanan Saat Ini'),
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColors.cardDark : AppColors.cardLight,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: isDark ? AppColors.borderDark : AppColors.borderLight,
+                      width: 1,
+                    ),
+                    boxShadow: isDark ? AppColors.softShadowDark : AppColors.softShadowLight,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // HEADER
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Menuju Masjidil Haram:',
+                              style: GoogleFonts.outfit(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                height: 1.2,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '(2/36)',
+                            style: GoogleFonts.outfit(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: LinearProgressIndicator(
+                          value: 2 / 36,
+                          minHeight: 8,
+                          backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(top: 2),
+                            child: Icon(LucideIcons.mapPin, size: 16, color: AppColors.textSecondaryLight),
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              journeyState.currentLocation,
+                              style: GoogleFonts.outfit(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textSecondaryLight,
+                                height: 1.3,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.visible,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 40),
+
+                      // INFORMATION LIST
+                      _buildInfoRow(
+                        icon: LucideIcons.user,
+                        label: 'Diperbarui Oleh',
+                        value: journeyState.updatedBy,
+                        isDark: isDark,
+                      ),
+                      _buildInfoRow(
+                        icon: LucideIcons.clock,
+                        label: 'Terakhir Diperbarui',
+                        value: journeyState.lastUpdated,
+                        isDark: isDark,
+                      ),
+                      _buildInfoRow(
+                        icon: LucideIcons.arrowRightCircle,
+                        label: 'Aktivitas Berikutnya',
+                        value: journeyState.nextActivity,
+                        isDark: isDark,
+                      ),
+                      _buildInfoRow(
+                        icon: LucideIcons.timer,
+                        label: 'Estimasi Waktu (ETA)',
+                        value: journeyState.eta,
+                        isDark: isDark,
+                      ),
+                      _buildInfoRow(
+                        icon: LucideIcons.mapPin,
+                        label: 'Tahapan Saat Ini',
+                        value: journeyState.progressPercentage < 0.6 ? 'Fase Makkah' : 'Fase Madinah',
+                        isDark: isDark,
+                      ),
+                      _buildInfoRow(
+                        icon: LucideIcons.calendar,
+                        label: 'Estimasi Selesai',
+                        value: journeyState.estimatedDuration,
+                        isDark: isDark,
+                      ),
+                      _buildInfoRow(
+                        icon: LucideIcons.refreshCw,
+                        label: 'Sinkronisasi',
+                        value: 'Langsung (Live)',
+                        isDark: isDark,
+                      ),
+                      _buildInfoRow(
+                        icon: LucideIcons.navigation,
+                        label: 'Status GPS',
+                        value: 'Terhubung',
+                        isDark: isDark,
+                      ),
+                      _buildInfoRow(
+                        icon: LucideIcons.wifi,
+                        label: 'Koneksi Internet',
+                        value: 'Online',
+                        isDark: isDark,
+                        showDivider: false,
+                      ),
+                      const SizedBox(height: 24),
+
+                      // ACTION SECTION
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () => context.go('/tour_leader/schedule'),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+                                side: BorderSide(
+                                  color: isDark ? AppColors.borderDark : AppColors.primary.withValues(alpha: 0.45),
+                                  width: 1.5,
+                                ),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                              ),
+                              child: Text(
+                                'Lihat Jadwal',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.outfit(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () => context.go('/tour_leader/map'),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+                                side: BorderSide(
+                                  color: isDark ? AppColors.borderDark : AppColors.primary.withValues(alpha: 0.45),
+                                  width: 1.5,
+                                ),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                              ),
+                              child: Text(
+                                'Lihat Peta',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.outfit(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () => _showUpdateJourneyDialog(context, ref),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+                                side: BorderSide(
+                                  color: isDark ? AppColors.borderDark : AppColors.primary.withValues(alpha: 0.45),
+                                  width: 1.5,
+                                ),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                              ),
+                              child: Text(
+                                'Perbarui',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.outfit(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ).animate().fadeIn().scale(duration: 400.ms),
+                const SizedBox(height: 24),
+
                 // Telemetry & Status Grid
                 SectionHeader(title: 'Status & Telemetri Rombongan'),
-                GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisSpacing: 14,
-                  mainAxisSpacing: 14,
-                  childAspectRatio: 1.5,
+                Column(
                   children: [
-                    _buildStatCard(
+                    _buildVerticalStatCard(
                       context,
                       title: 'Hadir & Check-In',
-                      count: '42',
-                      total: '/ 45',
+                      count: '${pilgrimsList.where((p) => p.status == 'checked_in').length}',
+                      total: 'Dari ${pilgrimsList.length} Jamaah Terdaftar',
                       icon: LucideIcons.userCheck,
                       color: AppColors.successGreen,
                       onTap: () => context.push('/tour_leader/pilgrims'),
                     ),
-                    _buildStatCard(
+                    _buildVerticalStatCard(
                       context,
                       title: 'Keluar Rute / Radius',
                       count: '2',
-                      total: 'Orang',
+                      total: 'Perlu Perhatian',
                       icon: LucideIcons.alertTriangle,
                       color: AppColors.warningAmber,
                       onTap: () => context.push('/tour_leader/pilgrims'),
                     ),
-                    _buildStatCard(
+                    _buildVerticalStatCard(
                       context,
                       title: 'Darurat SOS Aktif',
                       count: '1',
-                      total: 'Kritis',
+                      total: 'Status Kritis',
                       icon: LucideIcons.shieldAlert,
                       color: AppColors.emergencyRed,
                       onTap: () => context.push('/tour_leader/incidents'),
-                    ),
-                    _buildStatCard(
-                      context,
-                      title: 'Baterai Lemah',
-                      count: '3',
-                      total: '< 20%',
-                      icon: LucideIcons.batteryWarning,
-                      color: AppColors.infoBlue,
-                      onTap: () => context.push('/tour_leader/pilgrims'),
                     ),
                   ],
                 ).animate().fadeIn().scale(duration: 400.ms),
@@ -144,202 +347,13 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                     Expanded(
                       child: _buildActionBtn(
                         context,
-                        label: 'Pusat Operasional',
-                        icon: LucideIcons.phoneCall,
+                        label: 'Room Chat',
+                        icon: LucideIcons.messageSquare,
                         color: AppColors.secondaryDark,
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Menghubungkan ke Kantor Pusat Operasional Al-Barakah (+966 12 555 8899)...'),
-                            ),
-                          );
-                        },
+                        onTap: () => context.push('/messages'),
                       ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 24),
-
-                // Logistics & Schedule Status Card
-                SectionHeader(title: 'Logistik & Agenda Rombongan'),
-                AppleCard(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: const Icon(LucideIcons.bus, color: AppColors.primary, size: 18),
-                              ),
-                              const SizedBox(width: 12),
-                              Text(
-                                'Status Bus Rombongan #08',
-                                style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w700),
-                              ),
-                            ],
-                          ),
-                          StatusBadge(label: 'SIAP DI LOBI HOTEL', color: AppColors.successGreen),
-                        ],
-                      ),
-                      const Divider(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: AppColors.secondaryDark.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: const Icon(LucideIcons.building, color: AppColors.secondaryDark, size: 18),
-                              ),
-                              const SizedBox(width: 12),
-                              Text(
-                                'Kunci Kamar Swissôtel Al Maqam',
-                                style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w700),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            '23/23 Terdistribusi',
-                            style: GoogleFonts.outfit(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Divider(height: 24),
-                      InkWell(
-                        onTap: () => context.push('/tour_leader/schedule'),
-                        borderRadius: BorderRadius.circular(14),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  const Icon(LucideIcons.calendarRange, color: AppColors.primary, size: 20),
-                                  const SizedBox(width: 12),
-                                  Text(
-                                    'Kelola Jadwal & Agenda Kloter',
-                                    style: GoogleFonts.outfit(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Icon(LucideIcons.arrowRight, color: AppColors.primary, size: 18),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Active Incidents Preview
-                SectionHeader(
-                  title: 'Insiden Prioritas Aktif',
-                  actionText: 'Lihat Semua (4)',
-                  onAction: () => context.push('/tour_leader/incidents'),
-                ),
-                AppleCard(
-                  padding: const EdgeInsets.all(18),
-                  border: Border.all(color: AppColors.emergencyRed, width: 1.5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          StatusBadge(label: 'KRITIS • SOS MEDIS', color: AppColors.emergencyRed),
-                          Text(
-                            '5 menit lalu',
-                            style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Jamaah #PL-9021 melaporkan Kelelahan & Pusing di Safa Marwah',
-                        style: GoogleFonts.outfit(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: isDark ? Colors.white : AppColors.textPrimaryLight,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        'Hj. Fatimah Zahra • Usia 68 Tahun • Penurunan Tekanan Darah',
-                        style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Menghubungi Ketua Regu & Jamaah...'),
-                                    backgroundColor: AppColors.primary,
-                                  ),
-                                );
-                              },
-                              icon: const Icon(LucideIcons.phoneCall, size: 18, color: AppColors.primary),
-                              label: Text(
-                                'Telepon Jamaah',
-                                style: GoogleFonts.outfit(color: AppColors.primary, fontWeight: FontWeight.w700, fontSize: 14),
-                              ),
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-                                side: BorderSide(color: AppColors.primary.withValues(alpha: 0.5), width: 1.5),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: () => context.push('/tour_leader/incidents'),
-                              icon: const Icon(LucideIcons.shieldAlert, size: 18, color: Colors.white),
-                              label: Text(
-                                'Respons Darurat',
-                                style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-                                backgroundColor: AppColors.emergencyRed,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
                 ),
                 const SizedBox(height: 32),
               ],
@@ -379,7 +393,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                 'Pemberitahuan darurat ini akan berbunyi di 45 ponsel jamaah dan keluarga pemantau secara seketika.',
                 style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight, height: 1.4),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 28),
               TextField(
                 controller: controller,
                 maxLines: 3,
@@ -421,143 +435,186 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
   }
 
   void _showUpdateJourneyDialog(BuildContext context, WidgetRef ref) {
-    String selectedActivity = 'Menuju Masjidil Haram';
-    String selectedLocation = 'Lingkar Makkah • Gerbang 1 King Abdulaziz';
-    String selectedNext = 'Mulai Ibadah Tawaf & Sa\'i';
+    final journeyState = ref.read(journeyProvider);
+    final titleCtrl = TextEditingController(text: journeyState.currentActivity);
+    final locationCtrl = TextEditingController(text: journeyState.currentLocation);
+    final dateCtrl = TextEditingController(text: '20 Juli 2026 - 08:00 WAS');
+    String statusValue = 'Sedang Berlangsung (Active)';
+    final descCtrl = TextEditingController();
+    bool sendBroadcast = true;
 
-    final activities = [
-      'Check Out Hotel Swissôtel',
-      'Menuju Miqat Bir Ali',
-      'Menuju Masjidil Haram',
-      'Mulai Tawaf Mengelilingi Ka\'bah',
-      'Mulai Sa\'i di Bukit Safa-Marwah',
-      'Tahallul (Cukur / Potong Rambut)',
-      'Ziarah Sejarah Jabal Rahmah',
-      'Kembali ke Hotel Swissôtel Al Maqam',
-    ];
-
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              title: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.12),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(LucideIcons.rotateCw, color: AppColors.primary, size: 20),
-                  ),
-                  const SizedBox(width: 12),
-                  Text('Perbarui Tahapan Perjalanan', style: GoogleFonts.outfit(fontWeight: FontWeight.w700, fontSize: 18)),
-                ],
+          builder: (ctx, setModalState) {
+            final isDark = Theme.of(ctx).brightness == Brightness.dark;
+            return Container(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+                left: 24,
+                right: 24,
+                top: 24,
               ),
-              content: SingleChildScrollView(
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.cardDark : Colors.white,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+              ),
+              child: SingleChildScrollView(
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      'Memilih tahapan baru akan otomatis memperbarui status kehadiran 45 jamaah menjadi HADIR serta memberi notifikasi real-time ke keluarga di tanah air.',
-                      style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight, height: 1.4),
+                    Center(
+                      child: Container(
+                        width: 44,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: isDark ? Colors.white24 : Colors.grey[300],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Perbarui Tahapan Perjalanan',
+                          style: GoogleFonts.outfit(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(LucideIcons.x, size: 20),
+                          onPressed: () => Navigator.pop(ctx),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 16),
-                    Text('Tahapan Aktivitas Saat Ini:', style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 6),
-                    DropdownButtonFormField<String>(
-                      initialValue: selectedActivity,
-                      isExpanded: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+
+                    _buildModalLabel('Judul Agenda / Kegiatan', isDark),
+                    _buildModalInput(titleCtrl, 'Contoh: Shalat Jumat di Masjid Nabawi', isDark),
+                    const SizedBox(height: 14),
+
+                    _buildModalLabel('Lokasi Kegiatan', isDark),
+                    _buildModalInput(locationCtrl, 'Contoh: Masjid Nabawi - Gate 21', isDark),
+                    const SizedBox(height: 14),
+
+                    _buildModalLabel('Tanggal & Jam Kegiatan', isDark),
+                    _buildModalInput(dateCtrl, 'Contoh: 20 Juli 2026 - 08:00 WAS', isDark),
+                    const SizedBox(height: 14),
+
+                    _buildModalLabel('Status Agenda', isDark),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColors.backgroundDark : const Color(0xFFF3F4F6),
+                        borderRadius: BorderRadius.circular(14),
                       ),
-                      items: activities
-                          .map((act) => DropdownMenuItem(
-                                value: act,
-                                child: Text(act, style: GoogleFonts.outfit(fontSize: 14)),
-                              ))
-                          .toList(),
-                      onChanged: (val) {
-                        if (val != null) {
-                          setState(() {
-                            selectedActivity = val;
-                            if (val == 'Check Out Hotel Swissôtel') {
-                              selectedLocation = 'Lobi Hotel Swissôtel Al Maqam Makkah';
-                              selectedNext = 'Menuju Miqat / Kumpul di Bus VIP';
-                            } else if (val == 'Mulai Tawaf Mengelilingi Ka\'bah') {
-                              selectedLocation = 'Masjidil Haram • Lantai 1 Mataf';
-                              selectedNext = 'Mulai Sa\'i di Safa-Marwah';
-                            } else if (val == 'Mulai Sa\'i di Bukit Safa-Marwah') {
-                              selectedLocation = 'Masjidil Haram • Jalur Sa\'i';
-                              selectedNext = 'Tahallul (Cukur Rambut)';
-                            } else {
-                              selectedLocation = 'Masjidil Haram • Titik Kumpul Kloter';
-                              selectedNext = 'Agenda Perjalanan Selanjutnya';
-                            }
-                          });
-                        }
-                      },
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: statusValue,
+                          isExpanded: true,
+                          dropdownColor: isDark ? AppColors.cardDark : Colors.white,
+                          style: GoogleFonts.outfit(
+                            fontSize: 15,
+                            color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                          ),
+                          items: const [
+                            DropdownMenuItem(value: 'Akan Datang (Upcoming)', child: Text('Akan Datang (Upcoming)')),
+                            DropdownMenuItem(value: 'Sedang Berlangsung (Active)', child: Text('Sedang Berlangsung (Active)')),
+                            DropdownMenuItem(value: 'Selesai (Completed)', child: Text('Selesai (Completed)')),
+                          ],
+                          onChanged: (val) {
+                            if (val != null) setModalState(() => statusValue = val);
+                          },
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 14),
-                    Text('Lokasi Real-Time Rombongan:', style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      initialValue: selectedLocation,
-                      style: GoogleFonts.outfit(fontSize: 14),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+
+                    _buildModalLabel('Deskripsi / Catatan Bimbingan', isDark),
+                    _buildModalInput(descCtrl, 'Tuliskan panduan atau catatan penting untuk jamaah...', isDark, maxLines: 3),
+                    const SizedBox(height: 16),
+
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(14),
                       ),
-                      onChanged: (val) => selectedLocation = val,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Siarkan Notifikasi ke Jamaah?',
+                                  style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  'Kirim pemberitahuan otomatis ke ponsel 45 jamaah',
+                                  style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Switch(
+                            value: sendBroadcast,
+                            activeThumbColor: AppColors.primary,
+                            onChanged: (val) => setModalState(() => sendBroadcast = val),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 14),
-                    Text('Estimasi Agenda Berikutnya:', style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      initialValue: selectedNext,
-                      style: GoogleFonts.outfit(fontSize: 14),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    const SizedBox(height: 22),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (titleCtrl.text.trim().isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Judul agenda tidak boleh kosong.')),
+                            );
+                            return;
+                          }
+                          ref.read(journeyProvider.notifier).updateJourneyStatus(
+                                activity: titleCtrl.text.trim(),
+                                location: locationCtrl.text.trim(),
+                                nextActivity: descCtrl.text.trim().isNotEmpty ? descCtrl.text.trim() : 'Agenda Berikutnya',
+                                updatedBy: 'Ust. Muhammad Ridwan (TL Kloter 4)',
+                              );
+                          Navigator.pop(ctx);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                '✅ Tahapan diperbarui menjadi "${titleCtrl.text.trim()}"${sendBroadcast ? ' & disiarkan ke jamaah' : ''}. Kehadiran 45 jamaah tersinkronisasi!',
+                              ),
+                              backgroundColor: AppColors.successGreen,
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        ),
+                        child: Text(
+                          'Simpan & Publikasikan Agenda',
+                          style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w700),
+                        ),
                       ),
-                      onChanged: (val) => selectedNext = val,
                     ),
                   ],
                 ),
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text('Batal', style: GoogleFonts.outfit(color: AppColors.textSecondaryLight, fontWeight: FontWeight.w600)),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    ref.read(journeyProvider.notifier).updateJourneyStatus(
-                          activity: selectedActivity,
-                          location: selectedLocation,
-                          nextActivity: selectedNext,
-                          updatedBy: 'Ust. Muhammad Ridwan (TL Kloter 4)',
-                        );
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('✅ Status perjalanan diperbarui menjadi "$selectedActivity". Kehadiran 45 jamaah tersinkronisasi!'),
-                        backgroundColor: AppColors.successGreen,
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: Text('Simpan & Sinkronkan', style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.w700)),
-                ),
-              ],
             );
           },
         );
@@ -565,7 +622,41 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatCard(
+  Widget _buildModalLabel(String label, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Text(
+        label,
+        style: GoogleFonts.outfit(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: isDark ? Colors.white70 : AppColors.textPrimaryLight,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModalInput(TextEditingController controller, String hint, bool isDark, {int maxLines = 1}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.backgroundDark : const Color(0xFFF3F4F6),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: TextField(
+        controller: controller,
+        maxLines: maxLines,
+        style: GoogleFonts.outfit(fontSize: 14, color: isDark ? Colors.white : AppColors.textPrimaryLight),
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVerticalStatCard(
     BuildContext context, {
     required String title,
     required String count,
@@ -574,55 +665,67 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
     required Color color,
     required VoidCallback onTap,
   }) {
-    return AppleCard(
-      onTap: onTap,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: color.withValues(alpha: 0.35), width: 1.2),
-                ),
-                child: Icon(icon, size: 20, color: color),
-              ),
-              Text(total, style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textSecondaryLight)),
-            ],
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                count,
-                style: GoogleFonts.outfit(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: color,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  title,
-                  style: GoogleFonts.outfit(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: AppleCard(
+        onTap: onTap,
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.14),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: color.withValues(alpha: 0.35), width: 1.2),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  child: Icon(icon, size: 22, color: color),
                 ),
-              ),
-            ],
-          ),
-        ],
+                const SizedBox(width: 14),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.outfit(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      total,
+                      style: GoogleFonts.outfit(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondaryLight,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  count,
+                  style: GoogleFonts.outfit(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w800,
+                    color: color,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(LucideIcons.chevronRight, size: 18, color: AppColors.textSecondaryLight),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -653,6 +756,61 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildInfoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    required bool isDark,
+    bool showDivider = true,
+  }) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, size: 18, color: AppColors.textSecondaryLight),
+              const SizedBox(width: 14),
+              Expanded(
+                flex: 4,
+                child: Text(
+                  label,
+                  style: GoogleFonts.outfit(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondaryLight,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                flex: 6,
+                child: Text(
+                  value,
+                  textAlign: TextAlign.right,
+                  style: GoogleFonts.outfit(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.visible,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (showDivider)
+          Divider(
+            height: 1,
+            thickness: 0.5,
+            color: isDark ? AppColors.borderDark : AppColors.borderLight,
+          ),
+      ],
     );
   }
 }

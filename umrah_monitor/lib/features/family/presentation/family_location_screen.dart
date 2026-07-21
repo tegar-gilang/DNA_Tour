@@ -181,7 +181,6 @@ class _FamilyLocationScreenState extends State<FamilyLocationScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _buildMetricItem(LucideIcons.batteryCharging, 'Baterai', '86%'),
                       _buildMetricItem(LucideIcons.clock, 'Sinkronisasi', 'Baru Saja'),
                       _buildMetricItem(LucideIcons.footprints, 'Jarak ke Hotel', '420 m'),
                     ],

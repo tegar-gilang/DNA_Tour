@@ -210,7 +210,6 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
                   isVerified: false,
                   statusChips: const [
                     RoleStatusChip(label: 'Aman & Sehat', iconColor: AppColors.successGreen, icon: Icons.check_circle),
-                    RoleStatusChip(label: 'Baterai 86%', iconColor: AppColors.secondaryLight, icon: LucideIcons.batteryCharging),
                     RoleStatusChip(label: 'GPS Aktif', iconColor: AppColors.infoBlue, icon: LucideIcons.navigation),
                   ],
                   currentLocation: 'Masjidil Haram, Makkah',

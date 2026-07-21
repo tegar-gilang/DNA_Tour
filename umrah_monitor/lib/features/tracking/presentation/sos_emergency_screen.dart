@@ -25,28 +25,28 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
 
   final List<Map<String, dynamic>> _distressOptions = [
     {
-      'type': 'Medical Emergency',
+      'type': 'Darurat Medis / Kesehatan',
       'icon': LucideIcons.heartPulse,
       'color': AppColors.emergencyRed,
-      'desc': 'Severe pain, fainting, dizziness, or cardiac distress.',
+      'desc': 'Nyeri hebat, pingsan, sesak napas, pusing tajam, atau gangguan jantung.',
     },
     {
-      'type': 'Lost / Separated',
+      'type': 'Tersesat / Terpisah dari Rombongan',
       'icon': LucideIcons.helpCircle,
       'color': AppColors.warningAmber,
-      'desc': 'Separated from group/bus and unable to locate meeting point.',
+      'desc': 'Terpisah dari rombongan/bus dan tidak dapat menemukan titik kumpul.',
     },
     {
-      'type': 'Accident / Fall',
+      'type': 'Kecelakaan / Terjatuh',
       'icon': LucideIcons.alertOctagon,
       'color': const Color(0xFFD9480F),
-      'desc': 'Physical injury, sprain, or fall requiring wheelchair/stretcher.',
+      'desc': 'Cedera fisik, terkilir, atau jatuh yang memerlukan kursi roda / tandu.',
     },
     {
-      'type': 'Need General Help',
+      'type': 'Butuh Bantuan Umum',
       'icon': LucideIcons.lifeBuoy,
       'color': AppColors.infoBlue,
-      'desc': 'Language barrier, lost documents, or immediate guidance needed.',
+      'desc': 'Kendala bahasa, dokumen hilang, atau membutuhkan panduan mendesak.',
     },
   ];
 
@@ -76,7 +76,7 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
       _selectedDistressType = null;
     });
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('SOS Emergency Alert Cancelled by User.')),
+      const SnackBar(content: Text('Peringatan darurat SOS telah dibatalkan oleh Anda.')),
     );
   }
 
@@ -100,7 +100,7 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Emergency SOS Center'),
+        title: const Text('Pusat Darurat SOS'),
         backgroundColor: _isCountdownActive || _isEmergencySent
             ? AppColors.emergencyRed
             : null,
@@ -146,7 +146,7 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
           if (_isCountdownActive)
             _buildCountdownBanner()
           else ...[
-            Text('SELECT DISTRESS CATEGORY TO TRANSMIT:', style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.textSecondaryLight)),
+            Text('PILIH KATEGORI KONDISI DARURAT UNTUK DIKIRIM:', style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.textSecondaryLight)),
             const SizedBox(height: 16),
             ..._distressOptions.map((option) {
               return Padding(
@@ -205,7 +205,7 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
       child: Column(
         children: [
           Text(
-            'MENGIRIM SOS DALAM',
+            'MENGIRIM SINYAL SOS DALAM',
             style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w800, color: Colors.white70, letterSpacing: 2),
           ),
           const SizedBox(height: 12),
@@ -215,7 +215,7 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
           ).animate(key: ValueKey(_countdownSeconds)).scale(begin: const Offset(1.4, 1.4), end: const Offset(1, 1), duration: 300.ms),
           const SizedBox(height: 12),
           Text(
-            'Distress Type: $_selectedDistressType',
+            'Jenis Darurat: $_selectedDistressType',
             style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white),
           ),
           const SizedBox(height: 24),
@@ -224,7 +224,7 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
             child: ElevatedButton.icon(
               onPressed: _cancelCountdown,
               icon: const Icon(Icons.cancel_rounded, color: AppColors.emergencyRed),
-              label: const Text('CANCEL TRANSMISSION'),
+              label: const Text('BATALKAN PENGIRIMAN SOS'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: AppColors.emergencyRed,
@@ -274,7 +274,7 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
                 const Divider(height: 20),
                 _buildPacketRow('Baterai & Waktu', '${user?.batteryLevel ?? 86}% • Baru Saja'),
                 const Divider(height: 20),
-                _buildPacketRow('Current Checkpoint', 'Phase 5: Makkah Area'),
+                _buildPacketRow('Posisi & Tahapan Saat Ini', 'Tahap 5: Area Makkah'),
               ],
             ),
           ),
@@ -284,11 +284,11 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
             child: ElevatedButton.icon(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Direct emergency voice call initiated...')),
+                  const SnackBar(content: Text('Membuka panggilan telepon darurat ke Tour Leader...')),
                 );
               },
               icon: const Icon(LucideIcons.phoneCall),
-              label: const Text('Call Tour Leader Immediately'),
+              label: const Text('Hubungi Tour Leader Sekarang'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 padding: const EdgeInsets.symmetric(vertical: 18),
@@ -298,7 +298,7 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
           const SizedBox(height: 12),
           TextButton(
             onPressed: () => context.pop(),
-            child: const Text('Return to Dashboard'),
+            child: const Text('Kembali ke Beranda Utama'),
           ),
         ],
       ),

@@ -392,10 +392,6 @@ class RoleProfileSummaryCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        if (isVerified) ...[
-                          const SizedBox(width: 6),
-                          const Icon(Icons.verified, color: AppColors.successGreen, size: 20),
-                        ],
                       ],
                     ),
                     const SizedBox(height: 3),

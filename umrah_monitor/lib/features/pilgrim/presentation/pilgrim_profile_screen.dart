@@ -17,7 +17,6 @@ class PilgrimProfileScreen extends ConsumerStatefulWidget {
 class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
   bool _darkMode = false;
   bool _notificationsEnabled = true;
-  bool _biometricsEnabled = true;
   bool _locationPermissionEnabled = true;
   String _selectedLanguage = 'English (Bahasa Indonesia)';
 
@@ -116,81 +115,6 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
     );
   }
 
-  void _simulateDownloadPdf(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
-          title: Row(
-            children: [
-              const Icon(LucideIcons.fileDown, color: AppColors.primary),
-              const SizedBox(width: 12),
-              Text('Dokumen Berhasil Diunduh', style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
-            ],
-          ),
-          content: Text(
-            'Dokumen lengkap Informasi Pribadi, Medis, dan Perjalanan Jamaah telah disusun dalam berkas PDF aman (\'Dossier_Jamaah_PL88210.pdf\') dan tersimpan di penyimpanan perangkat Anda.',
-            style: GoogleFonts.outfit(fontSize: 14, height: 1.4),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('OK', style: GoogleFonts.outfit(fontWeight: FontWeight.w700, color: AppColors.primary)),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showDocumentPreview(BuildContext context, String title, String subtitle, IconData icon) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
-        title: Row(
-          children: [
-            Icon(icon, color: AppColors.primaryDark),
-            const SizedBox(width: 10),
-            Expanded(child: Text(title, style: GoogleFonts.outfit(fontWeight: FontWeight.w700, fontSize: 17))),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(subtitle, style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight)),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
-              ),
-              child: Column(
-                children: [
-                  const Icon(LucideIcons.shieldCheck, size: 48, color: AppColors.successGreen),
-                  const SizedBox(height: 12),
-                  Text('Dokumen Resmi Terverifikasi', style: GoogleFonts.outfit(fontWeight: FontWeight.w700, fontSize: 14)),
-                  const SizedBox(height: 4),
-                  Text('Status: Berlaku hingga 25 Agu 2026\nBarcode: #8892-0012-KSA', textAlign: TextAlign.center, style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight)),
-                ],
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Tutup Pratinjau'),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
@@ -213,7 +137,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Profil & Dokumen',
+                          'Profil Jamaah',
                           style: GoogleFonts.outfit(
                             fontSize: 26,
                             fontWeight: FontWeight.w800,
@@ -316,11 +240,9 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                   _buildDivider(),
                   _buildDetailRow(icon: LucideIcons.user, label: 'Mutawif Lokal', value: 'Ust. Ibrahim Al-Madani'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.building, label: 'Hotel Penginapan', value: user?.hotelName ?? 'Swissôtel Al Maqam Makkah'),
-                  _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.bus, label: 'Bus Alokasi', value: user?.busNumber ?? 'Bus #08 Al-Safwa VIP Express'),
-                  _buildDivider(),
                   _buildDetailRow(icon: LucideIcons.packageCheck, label: 'Paket Umrah', value: '12 Hari VIP Umrah Plus Ziyarah'),
+                  _buildDivider(),
+                  _buildDetailRow(icon: LucideIcons.building, label: 'Hotel Penginapan', value: user?.hotelName ?? 'Swissôtel Al Maqam Makkah'),
                   _buildDivider(),
                   _buildDetailRow(icon: LucideIcons.planeTakeoff, label: 'Tanggal Keberangkatan', value: '10 Juli 2026 (CGK - JED)'),
                   _buildDivider(),
@@ -342,74 +264,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                   _buildDivider(),
                   _buildDetailRow(icon: LucideIcons.clipboardList, label: 'Catatan Kesehatan', value: 'Hipertensi terkontrol dengan rutin minum obat harian'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.pill, label: 'Jadwal Obat Harian', value: 'Amlodipine 5mg • Setiap hari pukul 08:00 AST'),
-                  _buildDivider(),
                   _buildDetailRow(icon: LucideIcons.shieldCheck, label: 'Polis Asuransi', value: 'Takaful Global #TK-9921-UM'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 26),
-
-            // 4. Documents Section
-            SectionHeader(title: 'Dokumen Resmi'),
-            AppleCard(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  _buildDocumentCard(
-                    title: 'Paspor Elektronik',
-                    subtitle: 'No: X-99821014 • Terverifikasi',
-                    icon: LucideIcons.bookOpen,
-                    color: AppColors.primaryDark,
-                    onTap: () => _showDocumentPreview(context, 'Paspor Elektronik', 'Paspor Elektronik Resmi Republik Indonesia', LucideIcons.bookOpen),
-                  ),
-                  const SizedBox(height: 10),
-                  _buildDocumentCard(
-                    title: 'Visa Umrah Elektronik',
-                    subtitle: 'No: VSA-2026-99210-SA • Single Entry',
-                    icon: LucideIcons.fileCheck,
-                    color: AppColors.secondaryDark,
-                    onTap: () => _showDocumentPreview(context, 'Visa Umrah Elektronik', 'Diterbitkan oleh Kementerian Haji dan Umrah Arab Saudi', LucideIcons.fileCheck),
-                  ),
-                  const SizedBox(height: 10),
-                  _buildDocumentCard(
-                    title: 'E-Tiket Penerbangan',
-                    subtitle: 'Garuda GA-981 / GA-982 • Terkonfirmasi',
-                    icon: LucideIcons.plane,
-                    color: AppColors.infoBlue,
-                    onTap: () => _showDocumentPreview(context, 'E-Tiket Penerbangan', 'Tiket Pulang Pergi Jakarta - Jeddah - Madinah', LucideIcons.plane),
-                  ),
-                  const SizedBox(height: 10),
-                  _buildDocumentCard(
-                    title: 'Voucher Akomodasi Hotel',
-                    subtitle: 'Swissôtel Al Maqam / Oberoi Madinah',
-                    icon: LucideIcons.building,
-                    color: AppColors.primaryLight,
-                    onTap: () => _showDocumentPreview(context, 'Voucher Hotel', 'Reservasi Terjamin Kamar Sekamar Empat VIP', LucideIcons.building),
-                  ),
-                  const SizedBox(height: 10),
-                  _buildDocumentCard(
-                    title: 'Kartu ID Digital',
-                    subtitle: 'Kartu Verifikasi Resmi Nusuk & UmrahSys',
-                    icon: LucideIcons.badgeCheck,
-                    color: AppColors.successGreen,
-                    onTap: () => _showDigitalIdModal(context, user),
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () => _simulateDownloadPdf(context),
-                      icon: const Icon(LucideIcons.download, size: 16),
-                      label: const Text('Unduh Dokumen PDF Lengkap'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -483,15 +338,6 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                     value: _notificationsEnabled,
                     activeThumbColor: AppColors.primary,
                     onChanged: (val) => setState(() => _notificationsEnabled = val),
-                  ),
-                  const Divider(height: 1, thickness: 0.5),
-                  SwitchListTile(
-                    secondary: const Icon(LucideIcons.fingerprint, color: AppColors.primaryDark, size: 20),
-                    title: Text('Masuk dengan Biometrik', style: GoogleFonts.outfit(fontWeight: FontWeight.w600, fontSize: 14)),
-                    subtitle: Text('Akses cepat menggunakan Face ID / Sidik Jari', style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight)),
-                    value: _biometricsEnabled,
-                    activeThumbColor: AppColors.primary,
-                    onChanged: (val) => setState(() => _biometricsEnabled = val),
                   ),
                   const Divider(height: 1, thickness: 0.5),
                   SwitchListTile(
@@ -584,51 +430,6 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildDocumentCard({
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.16),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: color, size: 20),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w700)),
-                  const SizedBox(height: 2),
-                  Text(subtitle, style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight)),
-                ],
-              ),
-            ),
-            Icon(Icons.arrow_forward_ios_rounded, size: 14, color: color),
-          ],
-        ),
-      ),
     );
   }
 
