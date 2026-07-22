@@ -65,11 +65,11 @@ class PrayerScheduleUtils {
   static List<PrayerTimeData> getTodaySchedule(DateTime now) {
     final rawSchedule = [
       {'name': 'Subuh', 'hour': 4, 'minute': 24, 'timeStr': '04:24', 'icon': LucideIcons.sunrise},
-      {'name': 'Syuruq (Sunrise)', 'hour': 5, 'minute': 42, 'timeStr': '05:42', 'icon': LucideIcons.sun},
-      {'name': 'Dzuhur (Dhuhr)', 'hour': 12, 'minute': 28, 'timeStr': '12:28', 'icon': LucideIcons.sunMedium},
-      {'name': 'Ashar (Asr)', 'hour': 15, 'minute': 48, 'timeStr': '15:48', 'icon': LucideIcons.cloudSun},
+      {'name': 'Syuruq', 'hour': 5, 'minute': 42, 'timeStr': '05:42', 'icon': LucideIcons.sun},
+      {'name': 'Dzuhur', 'hour': 12, 'minute': 28, 'timeStr': '12:28', 'icon': LucideIcons.sunMedium},
+      {'name': 'Ashar', 'hour': 15, 'minute': 48, 'timeStr': '15:48', 'icon': LucideIcons.cloudSun},
       {'name': 'Maghrib', 'hour': 18, 'minute': 8, 'timeStr': '18:08', 'icon': LucideIcons.sunset},
-      {'name': 'Isya (Isha)', 'hour': 19, 'minute': 38, 'timeStr': '19:38', 'icon': LucideIcons.moon},
+      {'name': 'Isya', 'hour': 19, 'minute': 38, 'timeStr': '19:38', 'icon': LucideIcons.moon},
     ];
 
     bool foundNext = false;
