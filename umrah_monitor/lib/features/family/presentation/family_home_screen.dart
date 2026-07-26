@@ -180,25 +180,7 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
                 ).animate().fadeIn(delay: 150.ms),
                 const SizedBox(height: 24),
 
-                // 3. Medical Information Section
-                SectionHeader(title: 'Ringkasan Medis & Kesehatan Jamaah'),
-                AppleCard(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    children: [
-                      _buildDetailRow(icon: LucideIcons.heartPulse, label: 'Golongan Darah', value: 'O+ (Positif)'),
-                      _buildDivider(),
-                      _buildDetailRow(icon: LucideIcons.alertTriangle, label: 'Riwayat Alergi', value: 'Penisilin / Debu'),
-                      _buildDivider(),
-                      _buildDetailRow(icon: LucideIcons.clipboardList, label: 'Catatan Khusus Medis', value: 'Hipertensi terkontrol dengan rutin minum obat harian'),
-                      _buildDivider(),
-                      _buildDetailRow(icon: LucideIcons.pill, label: 'Jadwal Minum Obat', value: 'Amlodipine 5mg • Pukul 08:00 WAS'),
-                      _buildDivider(),
-                      _buildDetailRow(icon: LucideIcons.shieldCheck, label: 'Polis Asuransi Kesehatan', value: 'Takaful Global #TK-9921-UM (Aktif)'),
-                    ],
-                  ),
-                ).animate().fadeIn(delay: 175.ms),
-                const SizedBox(height: 32),
+
               ],
             ),
           ),

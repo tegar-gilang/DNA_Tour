@@ -252,23 +252,6 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
             ),
             const SizedBox(height: 26),
 
-            // 3. Medical Information Section
-            SectionHeader(title: 'Ringkasan Medis'),
-            AppleCard(
-              padding: const EdgeInsets.all(18),
-              child: Column(
-                children: [
-                  _buildDetailRow(icon: LucideIcons.heartPulse, label: 'Golongan Darah', value: 'O+ (Positif)'),
-                  _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.alertTriangle, label: 'Riwayat Alergi', value: 'Penisilin / Debu'),
-                  _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.clipboardList, label: 'Catatan Kesehatan', value: 'Hipertensi terkontrol dengan rutin minum obat harian'),
-                  _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.shieldCheck, label: 'Polis Asuransi', value: 'Takaful Global #TK-9921-UM'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 26),
 
             // 5. Settings Section
             SectionHeader(title: 'Pengaturan Aplikasi'),
