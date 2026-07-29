@@ -177,8 +177,6 @@ class _FamilyLocationScreenState extends ConsumerState<FamilyLocationScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      StatusBadge(label: 'GPS AKTIF', color: AppColors.successGreen),
                     ],
                   ),
                   const Divider(height: 24),
@@ -186,7 +184,6 @@ class _FamilyLocationScreenState extends ConsumerState<FamilyLocationScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       _buildMetricItem(LucideIcons.user, 'Diperbarui Oleh', journeyState.updatedBy),
-                      _buildMetricItem(LucideIcons.clock, 'Sinkronisasi', journeyState.lastUpdated),
                       _buildMetricItem(LucideIcons.footprints, 'Jarak ke Hotel', '420 m'),
                     ],
                   ),

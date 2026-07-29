@@ -52,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ).animate().scale(duration: 800.ms, curve: Curves.easeOutBack).fadeIn(),
             const SizedBox(height: 24),
             Text(
-              'UmrahSys',
+              'DNA Tour',
               style: GoogleFonts.outfit(
                 fontSize: 36,
                 fontWeight: FontWeight.w800,

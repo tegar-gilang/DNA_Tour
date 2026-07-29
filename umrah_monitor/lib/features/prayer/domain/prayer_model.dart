@@ -66,7 +66,7 @@ class PrayerModel {
       meaning: 'Penyerahan diri sepenuhnya kepada perlindungan Allah saat melangkah meninggalkan kediaman menuju perjalanan suci.',
       reference: 'HR. Abu Daud no. 5095 & Tirmidzi no. 3426',
       virtues: 'Malaikat akan menyeru: "Engkau telah diberi petunjuk, dicukupi kebutuhanmu, dan dilindungi dari segala bahaya serta godaan setan."',
-      audioUrl: 'https://audio.umrahsys.org/doa_safar.mp3',
+      audioUrl: 'https://audio.dnatour.com/doa_safar.mp3',
       isBookmarked: true,
     ),
     PrayerModel(
@@ -79,7 +79,7 @@ class PrayerModel {
       meaning: 'Keyakinan teguh bahwa penjagaan Allah atas keluarga dan harta yang ditinggalkan jauh lebih sempurna dibanding penjagaan manusia.',
       reference: 'HR. Ibnu Majah no. 2825 & Ahmad 2/403',
       virtues: 'Allah senantiasa menjaga dan memelihara keluarga serta amanah yang ditinggalkan selama jamaah beribadah.',
-      audioUrl: 'https://audio.umrahsys.org/pamitan_keluarga.mp3',
+      audioUrl: 'https://audio.dnatour.com/pamitan_keluarga.mp3',
     ),
 
     // --- Ihram & Talbiyah ---
@@ -93,7 +93,7 @@ class PrayerModel {
       meaning: 'Pengakuan ketundukan dan kesiapan batin seorang hamba meninggalkan seluruh kemewahan duniawi demi memasuki keadaan suci Ihram untuk bertamu ke Baitullah.',
       reference: 'HR. Muslim no. 1251',
       virtues: 'Menandai mulainya keharaman larangan Ihram dan dicatatnya setiap langkah menuju Makkah sebagai pahala jihad yang tiada batas.',
-      audioUrl: 'https://audio.umrahsys.org/niat_ihram.mp3',
+      audioUrl: 'https://audio.dnatour.com/niat_ihram.mp3',
       isBookmarked: true,
     ),
     PrayerModel(
@@ -106,7 +106,7 @@ class PrayerModel {
       meaning: 'Syiar utama tauhid dan pernyataan pengabdian mutlak kepada Allah semata.',
       reference: 'HR. Bukhari no. 1549, Muslim no. 1184',
       virtues: 'Disunnahkan dibaca dengan suara lantang bagi laki-laki sepanjang perjalanan hingga memulai Tawaf. Malaikat turut bertalbiyah bersamanya.',
-      audioUrl: 'https://audio.umrahsys.org/talbiyah.mp3',
+      audioUrl: 'https://audio.dnatour.com/talbiyah.mp3',
       isBookmarked: true,
     ),
     PrayerModel(
@@ -119,7 +119,7 @@ class PrayerModel {
       meaning: 'Penyucian lahir dan batin sebelum mengenakan dua helai kain putih yang melambangkan kesetaraan dan ketundukan di hadapan Sang Pencipta.',
       reference: 'Sunnah Manasik & Atsar Sahabat',
       virtues: 'Membantu menghadirkan ketenangan jiwa dan mengikis rasa takabur sebelum memasuki batas suci Miqat.',
-      audioUrl: 'https://audio.umrahsys.org/mandi_ihram.mp3',
+      audioUrl: 'https://audio.dnatour.com/mandi_ihram.mp3',
     ),
 
     // --- Entering Kaaba & Haram ---
@@ -133,7 +133,7 @@ class PrayerModel {
       reference: 'HR. Abu Daud no. 466, Muslim no. 713',
       meaning: 'Permohonan perlindungan dari waswas setan saat memasuki tanah haram dan harapan dibukakannya rahmat yang luas.',
       virtues: 'Diberikan pengamanan dari godaan setan selama berada di dalam masjid.',
-      audioUrl: 'https://audio.umrahsys.org/masuk_haram.mp3',
+      audioUrl: 'https://audio.dnatour.com/masuk_haram.mp3',
     ),
     PrayerModel(
       id: 'p4',
@@ -145,7 +145,7 @@ class PrayerModel {
       meaning: 'Pengagungan rumah Allah dan doa bagi seluruh tamu Allah yang datang dari berbagai penjuru dunia.',
       reference: 'Diriwayatkan oleh Ibnu Abi Syaibah & Imam Syafi\'i',
       virtues: 'Doa orang yang melihat Ka\'bah pertama kali adalah doa yang mustajab (tak tertolak).',
-      audioUrl: 'https://audio.umrahsys.org/lihat_kaabah.mp3',
+      audioUrl: 'https://audio.dnatour.com/lihat_kaabah.mp3',
       isBookmarked: true,
     ),
     PrayerModel(
@@ -158,7 +158,7 @@ class PrayerModel {
       meaning: 'Doa menyambut kedamaian spiritual di pusat rumah Allah yang paling aman dan diberkahi.',
       reference: 'HR. Baihaqi & Sunnah Thawaf',
       virtues: 'Membawa ketenangan pikiran dan perlindungan dari kekacauan saat berada di kerumunan jutaan jamaah.',
-      audioUrl: 'https://audio.umrahsys.org/babussalam.mp3',
+      audioUrl: 'https://audio.dnatour.com/babussalam.mp3',
     ),
 
     // --- Tawaf & Sa'i ---
@@ -172,7 +172,7 @@ class PrayerModel {
       meaning: 'Ikrar keimanan dan kesetiaan penuh kepada sunnah Rasulullah setiap kali melintas di depan Hajar Aswad.',
       reference: 'HR. Baihaqi 5/79 & Thabrani',
       virtues: 'Hajar Aswad akan menjadi saksi yang berbicara pada hari Kiamat bagi siapa saja yang menyentuh atau memberi isyarat kepadanya dengan kejujuran iman.',
-      audioUrl: 'https://audio.umrahsys.org/istilam_hajar.mp3',
+      audioUrl: 'https://audio.dnatour.com/istilam_hajar.mp3',
       isBookmarked: true,
     ),
     PrayerModel(
@@ -185,7 +185,7 @@ class PrayerModel {
       meaning: 'Doa sapu jagat yang mencakup seluruh kebahagiaan hidup di dunia dan keselamatan abadi di akhirat.',
       reference: 'QS. Al-Baqarah: 201 & HR. Abu Daud no. 1892',
       virtues: 'Rasulullah SAW senantiasa membaca doa ini setiap kali berjalan antara Rukun Yamani menuju Hajar Aswad pada setiap putaran Tawaf.',
-      audioUrl: 'https://audio.umrahsys.org/sapujagat.mp3',
+      audioUrl: 'https://audio.dnatour.com/sapujagat.mp3',
       isBookmarked: true,
     ),
     PrayerModel(
@@ -198,7 +198,7 @@ class PrayerModel {
       meaning: 'Meneladani perjuangan Ibunda Hajar dalam mencari air untuk Nabi Ismail AS.',
       reference: 'QS. Al-Baqarah: 158 & HR. Muslim no. 1218',
       virtues: 'Menjadikan ibadah Sa\'i sah sesuai sunnah Rasulullah.',
-      audioUrl: 'https://audio.umrahsys.org/sai_safa.mp3',
+      audioUrl: 'https://audio.dnatour.com/sai_safa.mp3',
     ),
     PrayerModel(
       id: 'p_sai_2',
@@ -210,7 +210,7 @@ class PrayerModel {
       meaning: 'Permohonan ampunan dan rahmat saat melintasi area lembah tempat Ibunda Hajar berlari cepat memperjuangkan keselamatan putranya.',
       reference: 'HR. Baihaqi 5/95 & Atsar Ibnu Mas\'ud',
       virtues: 'Mendatangkan ampunan dosa yang luas dan kekuatan lahir batin menyelesaikan 7 putaran Sa\'i.',
-      audioUrl: 'https://audio.umrahsys.org/lampu_hijau.mp3',
+      audioUrl: 'https://audio.dnatour.com/lampu_hijau.mp3',
     ),
     PrayerModel(
       id: 'p_sai_3',
@@ -222,7 +222,7 @@ class PrayerModel {
       meaning: 'Pengakuan kebesaran Allah di puncak bukit yang menjadi saksi dikabulkannya doa dan pancaran mukjizat air Zamzam.',
       reference: 'HR. Muslim no. 1218',
       virtues: 'Disunnahkan diulang sebanyak 3 kali disertai doa bebas apa saja, karena puncak Marwah adalah tempat yang sangat mustajab.',
-      audioUrl: 'https://audio.umrahsys.org/marwah_top.mp3',
+      audioUrl: 'https://audio.dnatour.com/marwah_top.mp3',
     ),
 
     // --- Tahallul & Zamzam ---
@@ -236,7 +236,7 @@ class PrayerModel {
       meaning: 'Air Zamzam adalah sesuai dengan niat orang yang meminumnya.',
       reference: 'HR. Daruquthni & Al-Hakim',
       virtues: 'Mendapatkan keberkahan ilmu, kelapangan rezeki, dan kesembuhan jasmani rohani.',
-      audioUrl: 'https://audio.umrahsys.org/minum_zamzam.mp3',
+      audioUrl: 'https://audio.dnatour.com/minum_zamzam.mp3',
       isBookmarked: true,
     ),
     PrayerModel(
@@ -249,7 +249,7 @@ class PrayerModel {
       meaning: 'Pengguguran dosa seiring bergugurannya setiap helai rambut dari kepala hamba yang taat.',
       reference: 'Atsar Sahabat & Sunnah Manasik',
       virtues: 'Rasulullah mendoakan ampunan 3 kali bagi jamaah laki-laki yang bercukur gundul (Halq) dan 1 kali bagi yang memotong pendek (Taqshir).',
-      audioUrl: 'https://audio.umrahsys.org/doa_tahallul.mp3',
+      audioUrl: 'https://audio.dnatour.com/doa_tahallul.mp3',
       isBookmarked: true,
     ),
     PrayerModel(
@@ -262,7 +262,7 @@ class PrayerModel {
       meaning: 'Ungkapan rasa syukur terdalam atas kemudahan dan bimbingan Allah menyelesaikan seluruh rukun Umrah.',
       reference: 'Sunnah Manasik Umrah & Thawaf',
       virtues: 'Menandai berakhirnya masa ihram dengan kembalinya kehalalan seluruh larangan, serta harapan ibadah diterima sebagai Umrah Makbula.',
-      audioUrl: 'https://audio.umrahsys.org/syukur_umrah.mp3',
+      audioUrl: 'https://audio.dnatour.com/syukur_umrah.mp3',
     ),
 
     // --- Multazam & Hijr Ismail ---
@@ -276,7 +276,7 @@ class PrayerModel {
       meaning: 'Tawasul di titik paling mustajab di dinding Ka\'bah untuk memohon pembebasan mutlak dari azab neraka bagi diri dan orang tua.',
       reference: 'HR. Ahmad & Sunnah Thawaf',
       virtues: 'Multazam adalah tempat di mana setiap doa yang dipanjatkan oleh seorang mukmin pasti tidak akan ditolak oleh Allah.',
-      audioUrl: 'https://audio.umrahsys.org/doa_multazam.mp3',
+      audioUrl: 'https://audio.dnatour.com/doa_multazam.mp3',
       isBookmarked: true,
     ),
     PrayerModel(
@@ -289,7 +289,7 @@ class PrayerModel {
       meaning: 'Shalat dan berdoa di dalam Hijr Ismail sama hukumnya dengan shalat di dalam bangunan Ka\'bah itu sendiri.',
       reference: 'HR. Abu Daud no. 2028 & Tirmidzi no. 876',
       virtues: 'Mendapat keistimewaan pahala shalat di dalam Ka\'bah dan jaminan minuman telaga Al-Kautsar di akhirat kelak.',
-      audioUrl: 'https://audio.umrahsys.org/hijr_ismail.mp3',
+      audioUrl: 'https://audio.dnatour.com/hijr_ismail.mp3',
     ),
     PrayerModel(
       id: 'p_mul_3',
@@ -301,7 +301,7 @@ class PrayerModel {
       meaning: 'Pengakuan atas kelemahan diri di dekat batu tempat berdirinya Nabi Ibrahim AS saat membangun Ka\'bah.',
       reference: 'Atsar Sahabat & Sunnah Thawaf',
       virtues: 'Dikabulkannya segala hajat mendesak dan dihapuskannya noda kesalahan oleh Allah SWT.',
-      audioUrl: 'https://audio.umrahsys.org/maqam_ibrahim.mp3',
+      audioUrl: 'https://audio.dnatour.com/maqam_ibrahim.mp3',
     ),
 
     // --- Arafah & Mina ---
@@ -315,7 +315,7 @@ class PrayerModel {
       meaning: 'Zikir dan doa paling agung yang diucapkan oleh Nabi Muhammad SAW dan nabi-nabi terdahulu pada hari Wukuf di Arafah.',
       reference: 'HR. Tirmidzi no. 3585',
       virtues: 'Sebaik-baik doa adalah doa pada hari Arafah. Allah membanggakan hamba yang wukuf di hadapan para malaikat.',
-      audioUrl: 'https://audio.umrahsys.org/doa_arafah.mp3',
+      audioUrl: 'https://audio.dnatour.com/doa_arafah.mp3',
       isBookmarked: true,
     ),
     PrayerModel(
@@ -328,7 +328,7 @@ class PrayerModel {
       meaning: 'Doa bermalam di Muzdalifah dan melontar jumrah di Mina sebagai simbol ketundukan mengusir godaan setan.',
       reference: 'HR. Abu Daud & Sunnah Manasik Haji',
       virtues: 'Mendapat limpahan ampunan besar di malam Muzdalifah dan perlindungan dari tipu daya setan di Mina.',
-      audioUrl: 'https://audio.umrahsys.org/muzdalifah_mina.mp3',
+      audioUrl: 'https://audio.dnatour.com/muzdalifah_mina.mp3',
     ),
 
     // --- Masjid Nabawi & Raudhah ---
@@ -342,7 +342,7 @@ class PrayerModel {
       meaning: 'Penghormatan dan rindu mendalam kepada baginda Nabi Muhammad SAW di taman surga (Raudhah).',
       reference: 'Sunnah Ziyarah Nabawiyyah',
       virtues: 'Barangsiapa bershalawat kepadaku di dekat kuburku maka aku mendengarnya langsung.',
-      audioUrl: 'https://audio.umrahsys.org/salam_prophet.mp3',
+      audioUrl: 'https://audio.dnatour.com/salam_prophet.mp3',
       isBookmarked: true,
     ),
     PrayerModel(
@@ -355,7 +355,7 @@ class PrayerModel {
       meaning: 'Penghormatan agung kepada dua sahabat utama yang makamnya berdampingan langsung dengan Rasulullah SAW.',
       reference: 'Sunnah Ziyarah Madinah Al-Munawwarah',
       virtues: 'Mendapat keberkahan mencintai orang-orang saleh dan peneguh keimanan dalam meneladani perjuangan sahabat.',
-      audioUrl: 'https://audio.umrahsys.org/salam_sahabat.mp3',
+      audioUrl: 'https://audio.dnatour.com/salam_sahabat.mp3',
     ),
     PrayerModel(
       id: 'p_nab_3',
@@ -367,7 +367,7 @@ class PrayerModel {
       meaning: 'Harapan akan terbukanya pintu-pintu rezeki dan keberkahan nyata saat melangkah keluar menuju kehidupan sehari-hari.',
       reference: 'HR. Muslim no. 713 & Ibnu Majah',
       virtues: 'Mendapat perlindungan berkelanjutan di jalan pulang serta terbukanya pintu karunia rezeki dari Allah.',
-      audioUrl: 'https://audio.umrahsys.org/keluar_masjid.mp3',
+      audioUrl: 'https://audio.dnatour.com/keluar_masjid.mp3',
     ),
 
     // --- Adhkar & Daily Doa ---
@@ -381,7 +381,7 @@ class PrayerModel {
       meaning: 'Puncak ketundukan, pengakuan dosa, serta pujian tertinggi kepada Allah yang paling dicintai-Nya.',
       reference: 'HR. Bukhari no. 6306',
       virtues: 'Barangsiapa membacanya dengan yakin di pagi hari lalu meninggal sebelum sore, atau membacanya di malam hari lalu meninggal sebelum pagi, maka ia pasti masuk Surga.',
-      audioUrl: 'https://audio.umrahsys.org/sayyidul_istighfar.mp3',
+      audioUrl: 'https://audio.dnatour.com/sayyidul_istighfar.mp3',
       isBookmarked: true,
     ),
     PrayerModel(
@@ -394,7 +394,7 @@ class PrayerModel {
       meaning: 'Penyerahan rasa lelah dan kesulitan fisik selama perjalanan ibadah agar diubah oleh Allah menjadi kelapangan.',
       reference: 'HR. Ibnu Hibban no. 974 & Al-Baihaqi',
       virtues: 'Diberikan kelancaran luar biasa dalam menghadapi setiap kendala perjalanan, keramaian, maupun kelelahan fisik.',
-      audioUrl: 'https://audio.umrahsys.org/kemudahan_urusan.mp3',
+      audioUrl: 'https://audio.dnatour.com/kemudahan_urusan.mp3',
       isBookmarked: true,
     ),
     PrayerModel(
@@ -407,7 +407,7 @@ class PrayerModel {
       meaning: 'Doa yang paling sering dibaca oleh Rasulullah SAW agar hati tidak pernah berpaling dari kebenaran dan ketaatan setelah pulang dari Tanah Suci.',
       reference: 'HR. Tirmidzi no. 2140 & Ahmad',
       virtues: 'Menjaga keistiqamahan ibadah dan kesucian hati agar nilai-nilai Umrah bertahan selamanya sepanjang hayat.',
-      audioUrl: 'https://audio.umrahsys.org/keteguhan_hati.mp3',
+      audioUrl: 'https://audio.dnatour.com/keteguhan_hati.mp3',
       isBookmarked: true,
     ),
   ];

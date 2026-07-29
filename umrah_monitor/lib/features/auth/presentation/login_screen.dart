@@ -354,7 +354,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Belum memiliki akun UmrahSys?',
+                      'Belum memiliki akun DNA Tour?',
                       style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textSecondaryLight),
                     ),
                     TextButton(

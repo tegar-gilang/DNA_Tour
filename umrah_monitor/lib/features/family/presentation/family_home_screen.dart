@@ -74,15 +74,6 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Status GPS Aktif',
-                            style: GoogleFonts.outfit(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primary,
-                            ),
-                          ),
                         ],
                       ),
                       const SizedBox(height: 12),

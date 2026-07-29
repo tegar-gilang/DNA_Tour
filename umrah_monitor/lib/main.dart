@@ -30,7 +30,7 @@ class UmrahMonitorApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Umrah & Pilgrim Monitoring System (UmrahSys)',
+      title: 'Umrah & Pilgrim Monitoring System (DNA Tour)',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

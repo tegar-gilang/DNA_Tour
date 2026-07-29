@@ -276,7 +276,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Saya menyetujui Ketentuan Layanan, Kebijakan Privasi, dan Berbagi Lokasi Real-Time UmrahSys.',
+                              'Saya menyetujui Ketentuan Layanan, Kebijakan Privasi, dan Berbagi Lokasi Real-Time DNA Tour.',
                               style: GoogleFonts.outfit(
                                 fontSize: 13,
                                 height: 1.35,

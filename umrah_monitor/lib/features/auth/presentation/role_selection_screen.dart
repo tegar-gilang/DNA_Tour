@@ -39,7 +39,7 @@ class RoleSelectionScreen extends ConsumerWidget {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'UmrahSys Platform',
+                    'DNA Tour Platform',
                     style: GoogleFonts.outfit(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
