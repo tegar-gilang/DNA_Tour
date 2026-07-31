@@ -83,24 +83,6 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
               child: Row(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.cardDark : Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isDark ? AppColors.borderDark : AppColors.borderLight,
-                      ),
-                    ),
-                    child: IconButton(
-                      icon: Icon(
-                        LucideIcons.arrowLeft,
-                        size: 20,
-                        color: isDark ? Colors.white : AppColors.textPrimaryLight,
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
-                  const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

@@ -204,6 +204,12 @@ final appRouter = GoRouter(
       ],
     ),
 
+    GoRoute(
+      path: '/tour_leader/messages',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) => const MessagesScreen(),
+    ),
+
     // Standalone Modals / Fullscreen Tools
     GoRoute(
       path: '/tour_leader/incidents',

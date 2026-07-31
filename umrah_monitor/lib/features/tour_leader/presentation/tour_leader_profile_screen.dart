@@ -83,11 +83,7 @@ class TourLeaderProfileScreen extends ConsumerWidget {
                 roleSubtitle: 'ID: ${user?.id ?? 'TL-55012'} • Kloter 4 Al-Barakah',
                 avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
                 isVerified: false,
-                statusChips: const [
-                  RoleStatusChip(label: 'Mutawif Resmi Kemenag', iconColor: AppColors.successGreen, icon: LucideIcons.badgeCheck),
-                  RoleStatusChip(label: 'Memimpin', iconColor: AppColors.secondaryLight, icon: LucideIcons.flag),
-                  RoleStatusChip(label: '42 Jamaah Aktif', iconColor: AppColors.secondaryLight, icon: LucideIcons.users),
-                ],
+                statusChips: const [],
                 currentLocation: 'Masjidil Haram, Makkah',
               ),
               const SizedBox(height: 24),
@@ -162,21 +158,7 @@ class TourLeaderProfileScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
 
-              // Emergency Hotline Numbers
-              SectionHeader(title: 'Pusat Layanan Darurat Resmi'),
-              AppleCard(
-                padding: const EdgeInsets.all(18),
-                child: Column(
-                  children: [
-                    _buildHotline(context, 'RS King Abdulaziz Makkah', '+966 12 555 1111', LucideIcons.heartPulse),
-                    const Divider(height: 22),
-                    _buildHotline(context, 'Polisi & Keamanan Masjidil Haram', '999 / 911', LucideIcons.shieldAlert),
-                    const Divider(height: 22),
-                    _buildHotline(context, 'Konsulat Jenderal RI (KJRI Jeddah)', '+966 12 671 1271', LucideIcons.landmark),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
+
 
               // Settings & Logout Card
               SectionHeader(title: 'Pengaturan & Sesi'),
@@ -263,62 +245,6 @@ class TourLeaderProfileScreen extends ConsumerWidget {
                 style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
               ),
             ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildHotline(BuildContext context, String name, String number, IconData icon) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: AppColors.emergencyRed.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: AppColors.emergencyRed, size: 18),
-            ),
-            const SizedBox(width: 14),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w700),
-                ),
-                Text(
-                  number,
-                  style: GoogleFonts.outfit(fontSize: 13, color: AppColors.primary, fontWeight: FontWeight.w600),
-                ),
-              ],
-            ),
-          ],
-        ),
-        InkWell(
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Menghubungi hotline $name ($number)...')),
-            );
-          },
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                const Icon(LucideIcons.phoneCall, size: 14, color: Colors.white),
-                const SizedBox(width: 6),
-                Text('Panggil', style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13)),
-              ],
-            ),
           ),
         ),
       ],
