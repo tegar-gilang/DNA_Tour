@@ -43,10 +43,7 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
                   roleSubtitle: 'Jamaah Terhubung • Suami (${user?.name ?? "Siti Rahma"})',
                   avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
                   isVerified: false,
-                  statusChips: const [
-                    RoleStatusChip(label: 'Aman & Sehat', iconColor: AppColors.successGreen, icon: Icons.check_circle),
-                    RoleStatusChip(label: 'GPS Aktif', iconColor: AppColors.infoBlue, icon: LucideIcons.navigation),
-                  ],
+                  statusChips: const [],
                   currentLocation: journeyState.currentLocation,
                   unreadCount: 3,
                 ).animate().fadeIn().scale(duration: 400.ms),

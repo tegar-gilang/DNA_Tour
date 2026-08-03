@@ -190,11 +190,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
               roleSubtitle: 'ID: ${user?.id ?? 'PL-88210'} • ${user?.groupCode ?? 'Kloter 4 Al-Barakah'}',
               avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
               isVerified: false,
-              statusChips: const [
-                RoleStatusChip(label: 'Jamaah Terverifikasi', iconColor: AppColors.successGreen, icon: LucideIcons.checkCircle2),
-                RoleStatusChip(label: 'ID Digital Siap', iconColor: AppColors.secondaryLight, icon: LucideIcons.creditCard),
-                RoleStatusChip(label: 'Kloter 4 VIP', iconColor: AppColors.infoBlue, icon: LucideIcons.shieldCheck),
-              ],
+              statusChips: const [],
               currentLocation: 'Masjidil Haram, Makkah',
               unreadCount: 3,
             ),

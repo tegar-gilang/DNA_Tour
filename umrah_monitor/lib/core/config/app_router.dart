@@ -124,7 +124,7 @@ final appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/family/location',
-              builder: (context, state) => const FamilyLocationScreen(),
+              builder: (context, state) => const InteractiveMapScreen(),
             ),
           ],
         ),

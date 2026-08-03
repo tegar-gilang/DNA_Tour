@@ -2,33 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../auth/presentation/auth_provider.dart';
+import '../../auth/domain/user_model.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
 import '../domain/prayer_model.dart';
 
-class PrayerDetailScreen extends StatefulWidget {
+class PrayerDetailScreen extends ConsumerStatefulWidget {
   final PrayerModel prayer;
 
   const PrayerDetailScreen({super.key, required this.prayer});
 
   @override
-  State<PrayerDetailScreen> createState() => _PrayerDetailScreenState();
+  ConsumerState<PrayerDetailScreen> createState() => _PrayerDetailScreenState();
 }
 
-class _PrayerDetailScreenState extends State<PrayerDetailScreen> {
+class _PrayerDetailScreenState extends ConsumerState<PrayerDetailScreen> {
   bool _isReadingMode = false;
   double _arabicFontSize = 26.0;
   bool _isPlaying = false;
   final double _audioProgress = 0.35;
 
   void _togglePlay() {
+    final role = ref.read(authProvider).selectedRole;
+    final isMuttawif = role == UserRole.tourLeader;
+    
     setState(() => _isPlaying = !_isPlaying);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(_isPlaying ? 'Playing High-Quality Audio recitation...' : 'Audio paused.'),
-        duration: const Duration(seconds: 1),
-      ),
-    );
+    
+    if (isMuttawif) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_isPlaying ? 'Mulai menyiarkan audio doa "${widget.prayer.title}" ke seluruh perangkat jamaah...' : 'Siaran audio dihentikan.'),
+          duration: const Duration(seconds: 3),
+          backgroundColor: AppColors.emergencyRed,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_isPlaying ? 'Playing High-Quality Audio recitation...' : 'Audio paused.'),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+    }
   }
 
   void _copyPrayer() {
@@ -253,7 +270,7 @@ class _PrayerDetailScreenState extends State<PrayerDetailScreen> {
                         ],
                       ),
                       child: Icon(
-                        _isPlaying ? LucideIcons.pause : LucideIcons.play,
+                        _isPlaying ? LucideIcons.pause : (ref.watch(authProvider).selectedRole == UserRole.tourLeader ? LucideIcons.radio : LucideIcons.play),
                         color: Colors.white,
                         size: 22,
                       ),
@@ -269,8 +286,14 @@ class _PrayerDetailScreenState extends State<PrayerDetailScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              _isPlaying ? 'Playing Recitation...' : 'Audio Recitation Ready',
-                              style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700),
+                              _isPlaying 
+                                  ? (ref.watch(authProvider).selectedRole == UserRole.tourLeader ? 'Menyiarkan ke Jamaah...' : 'Playing Recitation...')
+                                  : (ref.watch(authProvider).selectedRole == UserRole.tourLeader ? 'Siarkan Audio ke Jamaah' : 'Audio Recitation Ready'),
+                              style: GoogleFonts.outfit(
+                                fontSize: 13, 
+                                fontWeight: FontWeight.w700,
+                                color: ref.watch(authProvider).selectedRole == UserRole.tourLeader ? AppColors.emergencyRed : null,
+                              ),
                             ),
                             Text('01:14 / 03:30', style: GoogleFonts.outfit(fontSize: 11, color: AppColors.textSecondaryLight)),
                           ],

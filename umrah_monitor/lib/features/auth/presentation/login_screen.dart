@@ -15,10 +15,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _idController = TextEditingController();
   bool _rememberMe = true;
-  bool _obscurePassword = true;
 
   @override
   void initState() {
@@ -26,29 +24,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final role = ref.read(authProvider).selectedRole ?? UserRole.pilgrim;
       if (role == UserRole.pilgrim) {
-        _emailController.text = UserModel.demoPilgrim.email;
-        _passwordController.text = 'Jamaah1448!';
+        _idController.text = UserModel.demoPilgrim.id;
       } else if (role == UserRole.family) {
-        _emailController.text = UserModel.demoFamily.email;
-        _passwordController.text = 'Family1448!';
+        _idController.text = UserModel.demoFamily.id;
       } else {
-        _emailController.text = UserModel.demoTourLeader.email;
-        _passwordController.text = 'Muthawif1448!';
+        _idController.text = UserModel.demoTourLeader.id;
       }
     });
   }
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    _idController.dispose();
     super.dispose();
   }
 
   Future<void> _handleLogin() async {
     await ref.read(authProvider.notifier).login(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
+          id: _idController.text.trim(),
         );
 
     if (mounted) {
@@ -75,20 +68,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12),
-          child: IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.cardDark : Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(color: isDark ? AppColors.borderDark : AppColors.borderLight, width: 1),
-              ),
-              child: Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: isDark ? Colors.white : AppColors.textPrimaryLight),
-            ),
-            onPressed: () => context.pop(),
-          ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: isDark ? Colors.white : AppColors.textPrimaryLight),
+          onPressed: () => context.pop(),
         ),
       ),
       body: SafeArea(
@@ -179,14 +161,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Email atau ID Paspor',
+                      'ID Pengguna',
                       style: GoogleFonts.outfit(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: isDark ? Colors.white : AppColors.textPrimaryLight,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 24),
                     Container(
                       decoration: BoxDecoration(
                         color: isDark ? AppColors.backgroundDark : const Color(0xFFF8F9FA),
@@ -197,100 +179,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ),
                       child: TextField(
-                        controller: _emailController,
+                        controller: _idController,
                         style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w600, color: isDark ? Colors.white : AppColors.textPrimaryLight),
                         decoration: InputDecoration(
-                          prefixIcon: const Icon(LucideIcons.mail, size: 19, color: AppColors.primary),
-                          hintText: 'Masukkan email atau nomor paspor',
+                          prefixIcon: const Icon(LucideIcons.user, size: 19, color: AppColors.primary),
+                          hintText: 'Masukkan ID Pengguna Anda',
                           hintStyle: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.textSecondaryLight),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Kata Sandi / PIN',
-                      style: GoogleFonts.outfit(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: isDark ? Colors.white : AppColors.textPrimaryLight,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: isDark ? AppColors.backgroundDark : const Color(0xFFF8F9FA),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: isDark ? AppColors.borderDark : AppColors.borderLight.withValues(alpha: 0.8),
-                          width: 1,
-                        ),
-                      ),
-                      child: TextField(
-                        controller: _passwordController,
-                        obscureText: _obscurePassword,
-                        style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w600, color: isDark ? Colors.white : AppColors.textPrimaryLight),
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(LucideIcons.lock, size: 19, color: AppColors.primary),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscurePassword ? LucideIcons.eyeOff : LucideIcons.eye,
-                              size: 19,
-                              color: AppColors.textSecondaryLight,
-                            ),
-                            onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                          ),
-                          hintText: 'Masukkan kata sandi atau PIN keamanan',
-                          hintStyle: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.textSecondaryLight),
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        InkWell(
-                          onTap: () => setState(() => _rememberMe = !_rememberMe),
-                          borderRadius: BorderRadius.circular(8),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 22,
-                                  height: 22,
-                                  child: Checkbox(
-                                    value: _rememberMe,
-                                    onChanged: (val) => setState(() => _rememberMe = val ?? true),
-                                    activeColor: AppColors.primary,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Ingat Saya',
-                                  style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white70 : AppColors.textPrimaryLight),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Instruksi pemulihan kata sandi telah dikirim ke email/nomor terdaftar.')),
-                            );
-                          },
-                          child: Text(
-                            'Lupa Kata Sandi?',
-                            style: GoogleFonts.outfit(color: AppColors.primaryDark, fontWeight: FontWeight.w700, fontSize: 13),
-                          ),
-                        ),
-                      ],
-                    ),
+
                   ],
                 ),
               ),
@@ -348,29 +248,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               const SizedBox(height: 32),
 
-              // Sign Up Link (Belum memiliki akun? Daftar di sini)
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Belum memiliki akun DNA Tour?',
-                      style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textSecondaryLight),
-                    ),
-                    TextButton(
-                      onPressed: () => context.push('/signup'),
-                      child: Text(
-                        'Daftar Sekarang',
-                        style: GoogleFonts.outfit(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primaryDark,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
         ),

@@ -406,8 +406,8 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                     ),
                     _buildQuickActionItem(
                       context: context,
-                      label: 'Absen ke TL',
-                      icon: LucideIcons.userCheck,
+                      label: 'Absensi Otomatis',
+                      icon: LucideIcons.checkSquare,
                       color: AppColors.successGreen,
                       onTap: () {
                         final journeyState = ref.read(journeyProvider);

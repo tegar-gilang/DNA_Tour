@@ -271,17 +271,10 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                     Expanded(
                       child: _buildActionBtn(
                         context,
-                        label: 'Absensi Otomatis',
-                        icon: LucideIcons.checkSquare,
-                        color: AppColors.infoBlue,
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('45 jamaah ditandai Hadir melalui sinkronisasi kedekatan Bluetooth & GPS.'),
-                              backgroundColor: AppColors.successGreen,
-                            ),
-                          );
-                        },
+                        label: 'Kumpulan Doa',
+                        icon: Icons.menu_book_rounded,
+                        color: AppColors.primary,
+                        onTap: () => context.push('/prayer_collection'),
                       ),
                     ),
                     const SizedBox(width: 12),

@@ -75,11 +75,7 @@ class _FamilyProfileScreenState extends ConsumerState<FamilyProfileScreen> {
                       roleSubtitle: 'ID: ${user?.id ?? 'FM-10294'} • Pemantau Keluarga',
                       avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150',
                       isVerified: false,
-                      statusChips: const [
-                        RoleStatusChip(label: 'Akun Terverifikasi', iconColor: AppColors.successGreen, icon: LucideIcons.checkCircle2),
-                        RoleStatusChip(label: 'Notifikasi Aktif', iconColor: AppColors.secondaryLight, icon: LucideIcons.bellRing),
-                        RoleStatusChip(label: 'Akses Real-Time', iconColor: AppColors.infoBlue, icon: LucideIcons.wifi),
-                      ],
+                      statusChips: const [],
                       currentLocation: 'Masjidil Haram, Makkah',
                       unreadCount: 3,
                     ),

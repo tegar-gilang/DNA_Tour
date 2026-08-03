@@ -44,7 +44,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(selectedRole: role, errorMessage: null);
   }
 
-  Future<void> login({required String email, required String password}) async {
+  Future<void> login({required String id}) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     await Future.delayed(const Duration(milliseconds: 600));
 
