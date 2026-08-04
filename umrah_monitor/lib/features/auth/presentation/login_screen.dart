@@ -62,6 +62,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final selectedRole = authState.selectedRole ?? UserRole.pilgrim;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    String getRoleIdLabel() {
+      if (selectedRole == UserRole.pilgrim) return 'ID Jamaah';
+      if (selectedRole == UserRole.family) return 'ID Keluarga';
+      return 'ID Pembimbing';
+    }
+    final idLabel = getRoleIdLabel();
+
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       appBar: AppBar(
@@ -74,10 +81,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
-          child: Column(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
+                child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 12),
@@ -161,7 +171,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ID Pengguna',
+                      idLabel,
                       style: GoogleFonts.outfit(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
@@ -183,7 +193,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w600, color: isDark ? Colors.white : AppColors.textPrimaryLight),
                         decoration: InputDecoration(
                           prefixIcon: const Icon(LucideIcons.user, size: 19, color: AppColors.primary),
-                          hintText: 'Masukkan ID Pengguna Anda',
+                          hintText: 'Masukkan $idLabel Anda',
                           hintStyle: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.textSecondaryLight),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -194,64 +204,65 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 28),
-
-              // Primary Login Button (Stunning Apple Concept with Shadow)
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  gradient: const LinearGradient(
-                    colors: [AppColors.primaryDark, AppColors.primary],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.4),
-                      blurRadius: 24,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: ElevatedButton(
-                  onPressed: authState.isLoading ? null : _handleLogin,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(vertical: 22),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                  ),
-                  child: authState.isLoading
-                      ? const SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Masuk ke Dasbor',
-                              style: GoogleFonts.outfit(
-                                fontSize: 19,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                letterSpacing: 0.4,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            const Icon(LucideIcons.arrowRight, size: 22, color: Colors.white),
-                          ],
-                        ),
-                ),
-              ),
-              const SizedBox(height: 32),
-
             ],
           ),
         ),
       ),
-    );
+      Padding(
+        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: const LinearGradient(
+              colors: [AppColors.primaryDark, AppColors.primary],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.4),
+                blurRadius: 24,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: ElevatedButton(
+            onPressed: authState.isLoading ? null : _handleLogin,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              padding: const EdgeInsets.symmetric(vertical: 22),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            ),
+            child: authState.isLoading
+                ? const SizedBox(
+                    height: 24,
+                    width: 24,
+                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Masuk ke Dasbor',
+                        style: GoogleFonts.outfit(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                          letterSpacing: 0.4,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Icon(LucideIcons.arrowRight, size: 22, color: Colors.white),
+                    ],
+                  ),
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+);
   }
 }
