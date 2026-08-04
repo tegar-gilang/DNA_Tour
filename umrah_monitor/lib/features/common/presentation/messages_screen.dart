@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/design_system/app_colors.dart';
 
 class ConversationItem {
@@ -215,8 +216,17 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 14, 20, 10),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  if (context.canPop())
+                    Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: IconButton(
+                        icon: Icon(LucideIcons.arrowLeft, color: isDark ? Colors.white : AppColors.textPrimaryLight),
+                        onPressed: () => context.pop(),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    ),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

@@ -3,98 +3,25 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
+import '../../tracking/presentation/incident_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class IncidentModel {
-  final String id;
-  final String title;
-  final String pilgrimName;
-  final String type; // 'medical', 'sos', 'lost', 'attendance'
-  final String priority; // 'critical', 'high', 'medium'
-  final String time;
-  final String location;
-  final String status; // 'open', 'investigating', 'resolved'
-
-  const IncidentModel({
-    required this.id,
-    required this.title,
-    required this.pilgrimName,
-    required this.type,
-    required this.priority,
-    required this.time,
-    required this.location,
-    required this.status,
-  });
-
-  IncidentModel copyWith({
-    String? id,
-    String? title,
-    String? pilgrimName,
-    String? type,
-    String? priority,
-    String? time,
-    String? location,
-    String? status,
-  }) {
-    return IncidentModel(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      pilgrimName: pilgrimName ?? this.pilgrimName,
-      type: type ?? this.type,
-      priority: priority ?? this.priority,
-      time: time ?? this.time,
-      location: location ?? this.location,
-      status: status ?? this.status,
-    );
-  }
-}
-
-class IncidentManagementScreen extends StatefulWidget {
+class IncidentManagementScreen extends ConsumerStatefulWidget {
   const IncidentManagementScreen({super.key});
 
   @override
-  State<IncidentManagementScreen> createState() => _IncidentManagementScreenState();
+  ConsumerState<IncidentManagementScreen> createState() => _IncidentManagementScreenState();
 }
 
-class _IncidentManagementScreenState extends State<IncidentManagementScreen> {
+class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScreen> {
   String _selectedFilter = 'Semua';
-
-  final List<IncidentModel> _incidents = [
-    const IncidentModel(
-      id: 'SOS-201',
-      title: 'Darurat Medis: Kelelahan & Pusing Dilaporkan',
-      pilgrimName: 'Hj. Fatimah Zahra (PL-90214)',
-      type: 'medical',
-      priority: 'critical',
-      time: '12:05 WAS (15 menit lalu)',
-      location: 'Area Bukit Safa-Marwah Lantai 2 Dekat Gate 18',
-      status: 'investigating',
-    ),
-    const IncidentModel(
-      id: 'SOS-202',
-      title: 'Terlepas dari Rombongan & Kehilangan Arah',
-      pilgrimName: 'H. Sulaiman Rasyid (PL-88901)',
-      type: 'lost',
-      priority: 'high',
-      time: '11:10 WAS (1 jam lalu)',
-      location: 'Parkiran Bus Jabal Rahmah Area C',
-      status: 'resolved',
-    ),
-    const IncidentModel(
-      id: 'SOS-203',
-      title: 'Gagal Check-In Absensi di Lobi Hotel',
-      pilgrimName: 'H. Budi Santoso (PL-88402)',
-      type: 'attendance',
-      priority: 'medium',
-      time: '09:00 WAS (3 jam lalu)',
-      location: 'Lobi Swissôtel Al Maqam Makkah',
-      status: 'resolved',
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final filteredIncidents = _incidents.where((inc) {
+    final allIncidents = ref.watch(incidentProvider);
+    
+    final filteredIncidents = allIncidents.where((inc) {
       if (_selectedFilter == 'Perlu Respons') return inc.status != 'resolved';
       if (_selectedFilter == 'Investigasi') return inc.status == 'investigating';
       if (_selectedFilter == 'Selesai') return inc.status == 'resolved';
@@ -359,12 +286,7 @@ class _IncidentManagementScreenState extends State<IncidentManagementScreen> {
                                   if (inc.status != 'resolved')
                                     ElevatedButton.icon(
                                       onPressed: () {
-                                        setState(() {
-                                          final idx = _incidents.indexWhere((x) => x.id == inc.id);
-                                          if (idx != -1) {
-                                            _incidents[idx] = inc.copyWith(status: 'resolved');
-                                          }
-                                        });
+                                        ref.read(incidentProvider.notifier).updateIncidentStatus(inc.id, 'resolved');
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
                                             content: Text('Insiden ${inc.id} berhasil ditandai Selesai Ditangani!'),
@@ -474,21 +396,18 @@ class _IncidentManagementScreenState extends State<IncidentManagementScreen> {
                       );
                       return;
                     }
-                    setState(() {
-                      _incidents.insert(
-                        0,
-                        IncidentModel(
-                          id: 'SOS-${DateTime.now().millisecondsSinceEpoch % 1000}',
-                          title: descCtrl.text.trim().isEmpty ? 'Laporan Bantuan Darurat' : descCtrl.text.trim(),
-                          pilgrimName: nameCtrl.text.trim(),
-                          type: 'sos',
-                          priority: 'high',
-                          time: 'Baru saja',
-                          location: 'Area Masjidil Haram / Hotel Swissôtel',
-                          status: 'investigating',
-                        ),
-                      );
-                    });
+                    ref.read(incidentProvider.notifier).addIncident(
+                      IncidentModel(
+                        id: 'SOS-${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}',
+                        title: descCtrl.text.trim().isEmpty ? 'Laporan Bantuan Darurat' : descCtrl.text.trim(),
+                        pilgrimName: nameCtrl.text.trim(),
+                        type: 'sos',
+                        priority: 'high',
+                        time: 'Baru Saja',
+                        location: 'Area Masjidil Haram / Hotel Swissôtel',
+                        status: 'open',
+                      ),
+                    );
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

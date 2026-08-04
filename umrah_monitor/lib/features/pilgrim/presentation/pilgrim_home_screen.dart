@@ -62,7 +62,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                 // Brief Profile Hero Summary Card combined with Prayer Reminder
                 RoleProfileSummaryCard(
                   name: user?.name ?? 'H. Ahmad Zaki Al-Farizi',
-                  roleSubtitle: 'Jamaah Umrah • Kloter 4 Al-Barakah',
+                  roleSubtitle: 'Kloter 4 Al-Barakah',
                   avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
                   isVerified: false,
                   statusChips: const [],

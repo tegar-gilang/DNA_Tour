@@ -8,6 +8,7 @@ import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
 import '../../auth/presentation/auth_provider.dart';
 import '../../tracking/presentation/journey_provider.dart';
+import '../../tracking/presentation/pilgrim_attendance_provider.dart';
 
 class TourLeaderDashboardScreen extends ConsumerWidget {
   const TourLeaderDashboardScreen({super.key});
@@ -17,6 +18,10 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
     final authState = ref.watch(authProvider);
     final user = authState.user;
     final journeyState = ref.watch(journeyProvider);
+    final allPilgrims = ref.watch(pilgrimAttendanceProvider);
+    final presentCount = allPilgrims.where((p) => p.status == 'checked_in').length;
+    final totalCount = allPilgrims.length;
+    final progressValue = totalCount > 0 ? presentCount / totalCount : 0.0;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -77,7 +82,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            '(2/36)',
+                            '($presentCount/$totalCount)',
                             style: GoogleFonts.outfit(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
@@ -90,7 +95,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: LinearProgressIndicator(
-                          value: 2 / 36,
+                          value: progressValue,
                           minHeight: 8,
                           backgroundColor: AppColors.primary.withValues(alpha: 0.15),
                           valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),

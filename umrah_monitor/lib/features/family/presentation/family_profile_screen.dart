@@ -72,7 +72,7 @@ class _FamilyProfileScreenState extends ConsumerState<FamilyProfileScreen> {
                     // Brief Hero Profile Summary Card
                     RoleProfileSummaryCard(
                       name: user?.name ?? 'Siti Rahma Al-Farizi',
-                      roleSubtitle: 'ID: ${user?.id ?? 'FM-10294'} • Pemantau Keluarga',
+                      roleSubtitle: 'Pemantau Keluarga',
                       avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150',
                       isVerified: false,
                       statusChips: const [],

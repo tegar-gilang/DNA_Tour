@@ -542,7 +542,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
       statusLabel = 'SELESAI';
       statusIcon = LucideIcons.checkCircle2;
     } else if (item.status == 'in_progress') {
-      statusColor = AppColors.primary;
+      statusColor = AppColors.infoBlue;
       statusLabel = 'BERLANGSUNG';
       statusIcon = LucideIcons.clock;
     } else {
@@ -594,7 +594,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                       color: item.status == 'completed'
                           ? AppColors.successGreen.withValues(alpha: 0.6)
                           : (item.status == 'in_progress'
-                              ? AppColors.primary.withValues(alpha: 0.4)
+                              ? AppColors.infoBlue.withValues(alpha: 0.6)
                               : (isDark ? Colors.white12 : AppColors.borderLight)),
                       borderRadius: BorderRadius.circular(2),
                     ),
@@ -610,7 +610,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
               child: AppleCard(
                 padding: const EdgeInsets.all(16),
                 border: item.status == 'in_progress'
-                    ? Border.all(color: AppColors.primary, width: 1.5)
+                    ? Border.all(color: AppColors.infoBlue, width: 1.5)
                     : null,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

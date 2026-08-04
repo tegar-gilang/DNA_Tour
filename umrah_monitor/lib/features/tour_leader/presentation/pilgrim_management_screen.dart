@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
+import '../../tracking/presentation/incident_provider.dart';
 import '../../tracking/presentation/pilgrim_attendance_provider.dart';
 
 class PilgrimConditionTag {
@@ -24,7 +25,20 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
   final _searchController = TextEditingController();
   String _searchQuery = '';
 
-  List<PilgrimConditionTag> _getPilgrimConditions(dynamic p) {
+  List<PilgrimConditionTag> _getPilgrimConditions(dynamic p, List<IncidentModel> activeIncidents) {
+    final pilgrimIncidents = activeIncidents.where((i) => i.pilgrimName.contains(p.name)).toList();
+    if (pilgrimIncidents.isNotEmpty) {
+      final conditions = <PilgrimConditionTag>[];
+      for (final inc in pilgrimIncidents) {
+        String label = 'DARURAT SOS';
+        if (inc.title.toLowerCase().contains('medis')) label = 'DARURAT MEDIS';
+        else if (inc.title.toLowerCase().contains('tersesat')) label = 'TERSESAT';
+        else if (inc.title.toLowerCase().contains('kecelakaan')) label = 'KECELAKAAN';
+        else if (inc.title.toLowerCase().contains('bantuan')) label = 'BUTUH BANTUAN';
+        conditions.add(PilgrimConditionTag(label, AppColors.emergencyRed));
+      }
+      return conditions;
+    }
     if (p.status == 'checked_in') {
       return [const PilgrimConditionTag('HADIR (SUDAH ABSEN)', AppColors.successGreen)];
     }
@@ -57,6 +71,9 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final allPilgrims = ref.watch(pilgrimAttendanceProvider);
+    final allIncidents = ref.watch(incidentProvider);
+    final activeIncidents = allIncidents.where((i) => i.status != 'resolved').toList();
+
     final filteredList = allPilgrims.where((p) {
       if (_searchQuery.isNotEmpty &&
           !p.name.toLowerCase().contains(_searchQuery.toLowerCase()) &&
@@ -64,11 +81,15 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
           !p.passport.toLowerCase().contains(_searchQuery.toLowerCase())) {
         return false;
       }
-      final conditions = _getPilgrimConditions(p);
-      if (_filter == 'Hadir / Aman') return conditions.any((c) => c.label == 'HADIR (SUDAH ABSEN)');
+      final conditions = _getPilgrimConditions(p, activeIncidents);
+      if (_filter == 'Hadir') return conditions.any((c) => c.label == 'HADIR (SUDAH ABSEN)');
       if (_filter == 'Belum Absen') return conditions.any((c) => c.label == 'BELUM ABSEN');
       if (_filter == 'Di Luar Jangkauan') return conditions.any((c) => c.label == 'DI LUAR JANGKAUAN');
       if (_filter == 'Pantauan Medis') return conditions.any((c) => c.label == 'PERLU PANTAUAN MEDIS');
+      if (_filter == 'Darurat Medis') return conditions.any((c) => c.label == 'DARURAT MEDIS');
+      if (_filter == 'Tersesat') return conditions.any((c) => c.label == 'TERSESAT');
+      if (_filter == 'Kecelakaan') return conditions.any((c) => c.label == 'KECELAKAAN');
+      if (_filter == 'Butuh Bantuan') return conditions.any((c) => c.label == 'BUTUH BANTUAN');
       return true;
     }).toList();
 
@@ -143,7 +164,7 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
               child: Row(
-                children: ['Semua', 'Hadir / Aman', 'Belum Absen', 'Di Luar Jangkauan', 'Pantauan Medis'].map((tab) {
+                children: ['Semua', 'Hadir', 'Belum Absen', 'Di Luar Jangkauan', 'Pantauan Medis', 'Darurat Medis', 'Tersesat', 'Kecelakaan', 'Butuh Bantuan'].map((tab) {
                   final isSelected = _filter == tab;
                   return Padding(
                     padding: const EdgeInsets.only(right: 8),
@@ -202,8 +223,10 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                       itemCount: filteredList.length,
                       itemBuilder: (context, index) {
                         final p = filteredList[index];
-                        final conditions = _getPilgrimConditions(p);
-                        final isMissingOrAlert = conditions.any((c) => c.label == 'DI LUAR JANGKAUAN');
+                        final conditions = _getPilgrimConditions(p, activeIncidents);
+                        final hasEmergency = activeIncidents.any((i) => i.pilgrimName.contains(p.name));
+                        final isRed = p.status == 'pending' || p.status == 'missing' || hasEmergency;
+                        final isGreen = p.status == 'checked_in' && !hasEmergency;
 
                         return Container(
                           margin: const EdgeInsets.only(bottom: 14),
@@ -212,14 +235,14 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                             color: isDark ? AppColors.cardDark : Colors.white,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: isMissingOrAlert
+                              color: isRed
                                   ? AppColors.emergencyRed
-                                  : (isDark ? AppColors.borderDark : AppColors.borderLight),
-                              width: isMissingOrAlert ? 1.5 : 1,
+                                  : (isGreen ? AppColors.successGreen : (isDark ? AppColors.borderDark : AppColors.borderLight)),
+                              width: (isRed || isGreen) ? 1.5 : 1,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: isMissingOrAlert ? 0.06 : 0.02),
+                                color: Colors.black.withValues(alpha: isRed ? 0.06 : 0.02),
                                 blurRadius: 12,
                                 offset: const Offset(0, 4),
                               ),
@@ -311,54 +334,29 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                               ),
                               const SizedBox(height: 6),
 
-                              // Health Status
-                              Row(
-                                children: [
-                                  Icon(
-                                    LucideIcons.heartPulse,
-                                    size: 15,
-                                    color: p.status == 'missing' ? AppColors.emergencyRed : AppColors.successGreen,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    p.health,
-                                    style: GoogleFonts.outfit(
-                                      fontSize: 13,
-                                      color: p.status == 'missing' ? AppColors.emergencyRed : AppColors.textSecondaryLight,
-                                      fontWeight: p.status == 'missing' ? FontWeight.w600 : FontWeight.normal,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Divider(height: 24),
 
-                              // Actions Pill Bar
+
+                              const Divider(height: 24),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
-                                  _buildCardAction(LucideIcons.phoneCall, 'Telepon', () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Menghubungi ${p.name} (${p.phone})...')),
-                                    );
-                                  }),
-                                  _buildCardAction(LucideIcons.messageSquare, 'Pesan Chat', () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Membuka chat pribadi dengan ${p.name}...')),
-                                    );
-                                  }),
-                                  _buildCardAction(LucideIcons.navigation, 'Lacak GPS', () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Memfokuskan peta pada koordinat GPS ${p.name}...')),
-                                    );
-                                  }),
-                                  _buildCardAction(LucideIcons.userCheck, 'Tandai Hadir', () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('${p.name} berhasil ditandai Hadir secara manual!'),
-                                        backgroundColor: AppColors.successGreen,
-                                      ),
-                                    );
-                                  }),
+                                  Expanded(
+                                    child: _buildCardAction(LucideIcons.navigation, 'Lacak GPS', () {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('Memfokuskan peta pada koordinat GPS ${p.name}...')),
+                                      );
+                                    }),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: _buildCardAction(LucideIcons.userCheck, 'Tandai Hadir', () {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text('${p.name} berhasil ditandai Hadir secara manual!'),
+                                          backgroundColor: AppColors.successGreen,
+                                        ),
+                                      );
+                                    }),
+                                  ),
                                 ],
                               ),
                             ],
@@ -384,6 +382,7 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 15, color: AppColors.primary),
             const SizedBox(width: 6),

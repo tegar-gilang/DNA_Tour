@@ -80,7 +80,7 @@ class TourLeaderProfileScreen extends ConsumerWidget {
               // Brief Hero Profile Summary Card (Same as Home Page without Prayer Reminder)
               RoleProfileSummaryCard(
                 name: user?.name ?? 'Ust. Muhammad Ridwan, Lc.',
-                roleSubtitle: 'ID: ${user?.id ?? 'TL-55012'} • Kloter 4 Al-Barakah',
+                roleSubtitle: 'Kloter 4 Al-Barakah',
                 avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
                 isVerified: false,
                 statusChips: const [],

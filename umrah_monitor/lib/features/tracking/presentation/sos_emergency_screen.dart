@@ -8,6 +8,8 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
 import '../../auth/presentation/auth_provider.dart';
+import '../../tracking/presentation/incident_provider.dart';
+import '../../tracking/presentation/journey_provider.dart';
 
 class SosEmergencyScreen extends ConsumerStatefulWidget {
   const SosEmergencyScreen({super.key});
@@ -81,6 +83,22 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
   }
 
   void _transmitEmergencyPacket() {
+    final user = ref.read(authProvider).user;
+    final location = ref.read(journeyProvider).currentLocation;
+    
+    ref.read(incidentProvider.notifier).addIncident(
+      IncidentModel(
+        id: 'SOS-${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}',
+        title: 'Darurat: $_selectedDistressType',
+        pilgrimName: user?.name ?? 'Jamaah (PL-88210)',
+        type: 'sos',
+        priority: 'critical',
+        time: 'Baru Saja',
+        location: location,
+        status: 'open',
+      ),
+    );
+
     setState(() {
       _isCountdownActive = false;
       _isEmergencySent = true;

@@ -40,7 +40,7 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
                 // Pilgrim Hero Summary Card without verified icon
                 RoleProfileSummaryCard(
                   name: 'H. Ahmad Zaki Al-Farizi',
-                  roleSubtitle: 'Jamaah Terhubung • Suami (${user?.name ?? "Siti Rahma"})',
+                  roleSubtitle: 'Suami (${user?.name ?? "Siti Rahma"})',
                   avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
                   isVerified: false,
                   statusChips: const [],

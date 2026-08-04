@@ -82,7 +82,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'ID: ${user?.id ?? 'PL-88210'} • ${user?.groupCode ?? 'Kloter 4 VIP'}',
+                      user?.groupCode ?? 'Kloter 4 VIP',
                       style: GoogleFonts.outfit(
                         fontSize: 13,
                         color: AppColors.textSecondaryLight,
@@ -187,7 +187,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
             // Brief Hero Profile Summary Card (Same as Home Page without Prayer Reminder)
             RoleProfileSummaryCard(
               name: user?.name ?? 'H. Ahmad Zaki Al-Farizi',
-              roleSubtitle: 'ID: ${user?.id ?? 'PL-88210'} • ${user?.groupCode ?? 'Kloter 4 Al-Barakah'}',
+              roleSubtitle: user?.groupCode ?? 'Kloter 4 Al-Barakah',
               avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
               isVerified: false,
               statusChips: const [],

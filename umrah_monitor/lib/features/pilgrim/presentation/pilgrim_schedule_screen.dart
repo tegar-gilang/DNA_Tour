@@ -210,7 +210,7 @@ class _PilgrimScheduleScreenState extends State<PilgrimScheduleScreen> {
             statusLabel = 'Completed';
             statusIcon = LucideIcons.checkCircle2;
           } else if (cp.status == 'in_progress') {
-            statusColor = AppColors.primary;
+            statusColor = AppColors.infoBlue;
             statusLabel = 'Current Phase';
             statusIcon = LucideIcons.clock;
           } else {
@@ -257,7 +257,7 @@ class _PilgrimScheduleScreenState extends State<PilgrimScheduleScreen> {
                     child: AppleCard(
                       padding: const EdgeInsets.all(16),
                       border: cp.status == 'in_progress'
-                          ? Border.all(color: AppColors.primary, width: 1.5)
+                          ? Border.all(color: AppColors.infoBlue, width: 1.5)
                           : null,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
