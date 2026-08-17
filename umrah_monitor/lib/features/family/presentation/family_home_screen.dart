@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
@@ -23,7 +21,7 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
     final authState = ref.watch(authProvider);
     final user = authState.user;
     final journeyState = ref.watch(journeyProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
 
     return Scaffold(
       body: SafeArea(
@@ -46,7 +44,7 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
                   statusChips: const [],
                   currentLocation: journeyState.currentLocation,
                   unreadCount: 3,
-                ).animate().fadeIn().scale(duration: 400.ms),
+                ),
                 const SizedBox(height: 24),
 
                 // Aktivitas Perjalanan Saat Ini (Sync from journey provider)
@@ -63,7 +61,7 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
                           Expanded(
                             child: Text(
                               '${journeyState.currentActivity}:',
-                              style: GoogleFonts.outfit(
+                              style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
                                 color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -95,7 +93,7 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
                           Expanded(
                             child: Text(
                               journeyState.currentLocation,
-                              style: GoogleFonts.outfit(
+                              style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.textSecondaryLight,
@@ -117,7 +115,7 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
                       _buildDetailRow(icon: LucideIcons.timer, label: 'Estimasi Waktu (ETA)', value: journeyState.eta),
                     ],
                   ),
-                ).animate().fadeIn(delay: 135.ms),
+                ),
                 const SizedBox(height: 24),
 
                 // 1. Personal Information Section (Full & Detailed as in Pilgrim Page)
@@ -139,7 +137,7 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
                       _buildDetailRow(icon: LucideIcons.phoneCall, label: 'Kontak Darurat Terdaftar', value: 'Siti Rahma (+62 811-9988-7766)'),
                     ],
                   ),
-                ).animate().fadeIn(delay: 125.ms),
+                ),
                 const SizedBox(height: 24),
 
                 // 2. Journey Information Section
@@ -165,7 +163,7 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
                       _buildDetailRow(icon: LucideIcons.planeLanding, label: 'Tanggal Kepulangan', value: '22 Juli 2026 (MED - CGK)'),
                     ],
                   ),
-                ).animate().fadeIn(delay: 150.ms),
+                ),
                 const SizedBox(height: 24),
 
 
@@ -198,7 +196,7 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
               Expanded(
                 child: Text(
                   label,
-                  style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
+                  style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
                 ),
               ),
             ],
@@ -209,7 +207,7 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
           flex: 6,
           child: Text(
             value,
-            style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
             textAlign: TextAlign.right,
           ),
         ),

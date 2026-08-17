@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
@@ -46,12 +45,12 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
               const SizedBox(height: 22),
               Text(
                 'Kartu ID Digital Resmi',
-                style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w700),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 6),
               Text(
                 'Diverifikasi Kementerian Haji & Umrah Saudi. Terhubung melalui Tour Leader.',
-                style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
+                style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -66,7 +65,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                     BoxShadow(
                       color: AppColors.primary.withValues(alpha: 0.15),
                       blurRadius: 20,
-                      offset: const Offset(0, 8),
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
@@ -74,7 +73,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                   children: [
                     Text(
                       user?.name ?? 'Jamaah Umrah',
-                      style: GoogleFonts.outfit(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                         color: AppColors.textPrimaryLight,
@@ -83,12 +82,40 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                     const SizedBox(height: 4),
                     Text(
                       user?.groupCode ?? 'Kloter 4 VIP',
-                      style: GoogleFonts.outfit(
+                      style: TextStyle(
                         fontSize: 13,
                         color: AppColors.textSecondaryLight,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
+                    // QR Code SISKOPATUH
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: AppColors.borderLight),
+                      ),
+                      child: Image.network(
+                        'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SISKOPATUH-${user?.id ?? '123456'}',
+                        width: 150,
+                        height: 150,
+                        errorBuilder: (context, error, stackTrace) => const Icon(
+                          Icons.qr_code_2,
+                          size: 150,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Scan untuk verifikasi SISKOPATUH',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textSecondaryLight,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     StatusBadge(label: 'TERVERIFIKASI & AKTIF', color: AppColors.successGreen),
                   ],
                 ),
@@ -119,7 +146,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final user = authState.user;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
@@ -138,7 +165,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                       children: [
                         Text(
                           'Profil Jamaah',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.w800,
                             letterSpacing: -0.6,
@@ -148,7 +175,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                         const SizedBox(height: 2),
                         Text(
                           'Identitas Jamaah, Itinerary & Riwayat Medis',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
@@ -257,8 +284,8 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                 children: [
                   ListTile(
                     leading: const Icon(LucideIcons.globe, color: AppColors.primary, size: 20),
-                    title: Text('Pilihan Bahasa', style: GoogleFonts.outfit(fontWeight: FontWeight.w600, fontSize: 14)),
-                    subtitle: Text(_selectedLanguage, style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight)),
+                    title: Text('Pilihan Bahasa', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                    subtitle: Text(_selectedLanguage, style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
                     trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 15),
                     onTap: () {
                       showModalBottomSheet(
@@ -300,8 +327,8 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                   const Divider(height: 1, thickness: 0.5),
                   SwitchListTile(
                     secondary: const Icon(LucideIcons.moon, color: AppColors.secondaryDark, size: 20),
-                    title: Text('Mode Gelap (Dark Mode)', style: GoogleFonts.outfit(fontWeight: FontWeight.w600, fontSize: 14)),
-                    subtitle: Text('Sesuaikan tema warna tampilan aplikasi', style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight)),
+                    title: Text('Mode Gelap (Dark Mode)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                    subtitle: Text('Sesuaikan tema warna tampilan aplikasi', style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
                     value: _darkMode,
                     activeThumbColor: AppColors.primary,
                     onChanged: (val) {
@@ -312,8 +339,8 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                   const Divider(height: 1, thickness: 0.5),
                   SwitchListTile(
                     secondary: const Icon(LucideIcons.bellRing, color: AppColors.infoBlue, size: 20),
-                    title: Text('Notifikasi & Pemberitahuan', style: GoogleFonts.outfit(fontWeight: FontWeight.w600, fontSize: 14)),
-                    subtitle: Text('Peringatan sholat, jadwal kegiatan, dan siaran darurat', style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight)),
+                    title: Text('Notifikasi & Pemberitahuan', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                    subtitle: Text('Peringatan sholat, jadwal kegiatan, dan siaran darurat', style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
                     value: _notificationsEnabled,
                     activeThumbColor: AppColors.primary,
                     onChanged: (val) => setState(() => _notificationsEnabled = val),
@@ -321,8 +348,8 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                   const Divider(height: 1, thickness: 0.5),
                   SwitchListTile(
                     secondary: const Icon(LucideIcons.navigation, color: AppColors.successGreen, size: 20),
-                    title: Text('Berbagi Lokasi GPS', style: GoogleFonts.outfit(fontWeight: FontWeight.w600, fontSize: 14)),
-                    subtitle: Text('Izinkan pemantauan real-time untuk Pembimbing & Keluarga', style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight)),
+                    title: Text('Berbagi Lokasi GPS', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                    subtitle: Text('Izinkan pemantauan real-time untuk Pembimbing & Keluarga', style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
                     value: _locationPermissionEnabled,
                     activeThumbColor: AppColors.primary,
                     onChanged: (val) => setState(() => _locationPermissionEnabled = val),
@@ -352,7 +379,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                   const Divider(height: 1, thickness: 0.5),
                   ListTile(
                     leading: const Icon(LucideIcons.logOut, color: AppColors.emergencyRed, size: 20),
-                    title: Text('Keluar dari Akun (Logout)', style: GoogleFonts.outfit(color: AppColors.emergencyRed, fontWeight: FontWeight.w700, fontSize: 14)),
+                    title: Text('Keluar dari Akun (Logout)', style: TextStyle(color: AppColors.emergencyRed, fontWeight: FontWeight.w700, fontSize: 14)),
                     onTap: () {
                       ref.read(authProvider.notifier).logout();
                       context.go('/');
@@ -393,7 +420,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
               Expanded(
                 child: Text(
                   label,
-                  style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
+                  style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
                 ),
               ),
             ],
@@ -404,7 +431,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
           flex: 6,
           child: Text(
             value,
-            style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
             textAlign: TextAlign.right,
           ),
         ),
@@ -415,7 +442,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
   Widget _buildSupportItem({required IconData icon, required String title, required VoidCallback onTap}) {
     return ListTile(
       leading: Icon(icon, color: AppColors.textPrimaryLight, size: 20),
-      title: Text(title, style: GoogleFonts.outfit(fontWeight: FontWeight.w600, fontSize: 14)),
+      title: Text(title, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
       trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 15, color: AppColors.textSecondaryLight),
       onTap: onTap,
     );

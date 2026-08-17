@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/presentation/auth_provider.dart';
@@ -104,7 +104,7 @@ class _PrayerDetailScreenState extends ConsumerState<PrayerDetailScreen> {
                 children: [
                   const Icon(LucideIcons.type, size: 18, color: AppColors.primary),
                   const SizedBox(width: 10),
-                  Text('Arabic Font Size: ${_arabicFontSize.toInt()}px', style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w600)),
+                  Text('Arabic Font Size: ${_arabicFontSize.toInt()}px', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
                   Expanded(
                     child: Slider(
                       value: _arabicFontSize,
@@ -129,7 +129,7 @@ class _PrayerDetailScreenState extends ConsumerState<PrayerDetailScreen> {
                     const SizedBox(height: 12),
                     Text(
                       widget.prayer.title,
-                      style: GoogleFonts.outfit(
+                      style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w800,
                       ),
@@ -167,7 +167,7 @@ class _PrayerDetailScreenState extends ConsumerState<PrayerDetailScreen> {
                       padding: const EdgeInsets.all(16),
                       child: Text(
                         widget.prayer.latin,
-                        style: GoogleFonts.outfit(
+                        style: TextStyle(
                           fontSize: 16,
                           fontStyle: FontStyle.italic,
                           color: AppColors.primary,
@@ -186,7 +186,7 @@ class _PrayerDetailScreenState extends ConsumerState<PrayerDetailScreen> {
                         children: [
                           Text(
                             widget.prayer.translation,
-                            style: GoogleFonts.outfit(
+                            style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                               height: 1.5,
@@ -197,13 +197,13 @@ class _PrayerDetailScreenState extends ConsumerState<PrayerDetailScreen> {
                             children: [
                               Icon(LucideIcons.lightbulb, size: 18, color: AppColors.secondaryDark),
                               const SizedBox(width: 8),
-                              Text('Spiritual Meaning / Makna', style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.secondaryDark)),
+                              Text('Spiritual Meaning / Makna', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.secondaryDark)),
                             ],
                           ),
                           const SizedBox(height: 6),
                           Text(
                             widget.prayer.meaning,
-                            style: GoogleFonts.outfit(
+                            style: TextStyle(
                               fontSize: 14,
                               color: Theme.of(context).textTheme.bodyMedium?.color,
                               height: 1.5,
@@ -225,14 +225,14 @@ class _PrayerDetailScreenState extends ConsumerState<PrayerDetailScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Source / Hadith:', style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primaryDark)),
-                              Text(widget.prayer.reference, style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w800, color: AppColors.primaryDark)),
+                              Text('Source / Hadith:', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primaryDark)),
+                              Text(widget.prayer.reference, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: AppColors.primaryDark)),
                             ],
                           ),
                           const SizedBox(height: 10),
                           Text(
                             widget.prayer.virtues,
-                            style: GoogleFonts.outfit(fontSize: 13, color: AppColors.onPrimaryContainer, height: 1.4),
+                            style: TextStyle(fontSize: 13, color: AppColors.onPrimaryContainer, height: 1.4),
                           ),
                         ],
                       ),
@@ -289,13 +289,13 @@ class _PrayerDetailScreenState extends ConsumerState<PrayerDetailScreen> {
                               _isPlaying 
                                   ? (ref.watch(authProvider).selectedRole == UserRole.tourLeader ? 'Menyiarkan ke Jamaah...' : 'Playing Recitation...')
                                   : (ref.watch(authProvider).selectedRole == UserRole.tourLeader ? 'Siarkan Audio ke Jamaah' : 'Audio Recitation Ready'),
-                              style: GoogleFonts.outfit(
+                              style: TextStyle(
                                 fontSize: 13, 
                                 fontWeight: FontWeight.w700,
                                 color: ref.watch(authProvider).selectedRole == UserRole.tourLeader ? AppColors.emergencyRed : null,
                               ),
                             ),
-                            Text('01:14 / 03:30', style: GoogleFonts.outfit(fontSize: 11, color: AppColors.textSecondaryLight)),
+                            Text('01:14 / 03:30', style: TextStyle(fontSize: 11, color: AppColors.textSecondaryLight)),
                           ],
                         ),
                         LinearProgressIndicator(

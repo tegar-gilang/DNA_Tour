@@ -2,8 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
@@ -41,7 +39,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
     final authState = ref.watch(authProvider);
     final journeyState = ref.watch(journeyProvider);
     final user = authState.user;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
     final now = DateTime.now();
     final nextPrayer = PrayerScheduleUtils.getNextPrayer(now);
     final countdownText = PrayerScheduleUtils.formatCountdown(nextPrayer.targetTime, spaced: true);
@@ -95,7 +93,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                                   Expanded(
                                     child: Text(
                                       'Sholat: ${nextPrayer.name}',
-                                      style: GoogleFonts.outfit(
+                                      style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w700,
                                         color: Colors.white,
@@ -116,7 +114,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                               ),
                               child: Text(
                                 '${nextPrayer.timeFormatted} WIB',
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w700,
                                   color: AppColors.secondaryLight,
@@ -136,7 +134,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                                 children: [
                                   Text(
                                     'Sisa Waktu Menjelang Adzan',
-                                    style: GoogleFonts.outfit(
+                                    style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.white70,
                                       fontWeight: FontWeight.w500,
@@ -147,7 +145,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                                   const SizedBox(height: 4),
                                   Text(
                                     countdownText,
-                                    style: GoogleFonts.outfit(
+                                    style: TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.w800,
                                       color: Colors.white,
@@ -176,7 +174,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                                     const SizedBox(width: 6),
                                     Text(
                                       'Semua Jadwal',
-                                      style: GoogleFonts.outfit(
+                                      style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w700,
                                         color: AppColors.primaryDark,
@@ -191,7 +189,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                       ],
                     ),
                   ),
-                ).animate().fadeIn().scale(duration: 400.ms),
+                ),
                 const SizedBox(height: 26),
 
                 // 3. Apple Wallet / Flighty Structured Information List Card
@@ -219,7 +217,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                           Expanded(
                             child: Text(
                               '${journeyState.currentActivity}:',
-                              style: GoogleFonts.outfit(
+                              style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
                                 color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -230,7 +228,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                           const SizedBox(width: 8),
                           Text(
                             '(2/36)',
-                            style: GoogleFonts.outfit(
+                            style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
                               color: AppColors.primary,
@@ -260,7 +258,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                           Expanded(
                             child: Text(
                               journeyState.currentLocation,
-                              style: GoogleFonts.outfit(
+                              style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.textSecondaryLight,
@@ -331,7 +329,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                               child: Text(
                                 'Lihat Jadwal',
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
                                   color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -354,7 +352,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                               child: Text(
                                 'Lihat Peta',
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
                                   color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -377,7 +375,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                               child: Text(
                                 'Detail Info',
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
                                   color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -389,7 +387,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                       ),
                     ],
                   ),
-                ).animate().fadeIn(delay: 100.ms),
+                ),
                 const SizedBox(height: 26),
 
                 // 4. Quick Actions (Super Clean Rounded Squircle Icons)
@@ -450,7 +448,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                       },
                     ),
                   ],
-                ).animate().fadeIn(delay: 150.ms),
+                ),
                 const SizedBox(height: 26),
 
                 // 5. Worship Companion
@@ -518,7 +516,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                 flex: 4,
                 child: Text(
                   label,
-                  style: GoogleFonts.outfit(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: AppColors.textSecondaryLight,
@@ -531,7 +529,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                 child: Text(
                   value,
                   textAlign: TextAlign.right,
-                  style: GoogleFonts.outfit(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -560,7 +558,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
     required Color color,
     required VoidCallback onTap,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
@@ -591,7 +589,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
             const SizedBox(height: 8),
             Text(
               label,
-              style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -634,12 +632,12 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w800),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 3),
                 Text(
                   subtitle,
-                  style: GoogleFonts.outfit(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                     color: AppColors.textSecondaryLight,

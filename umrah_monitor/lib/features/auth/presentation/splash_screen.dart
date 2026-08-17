@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/design_system/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -39,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.secondary.withValues(alpha: 0.2),
-                    blurRadius: 32,
+                    blurRadius: 6,
                     spreadRadius: 4,
                   ),
                 ],
@@ -49,27 +47,27 @@ class _SplashScreenState extends State<SplashScreen> {
                 size: 72,
                 color: AppColors.secondaryLight,
               ),
-            ).animate().scale(duration: 800.ms, curve: Curves.easeOutBack).fadeIn(),
+            ),
             const SizedBox(height: 24),
             Text(
               'DNA Tour',
-              style: GoogleFonts.outfit(
+              style: TextStyle(
                 fontSize: 36,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
                 letterSpacing: -0.5,
               ),
-            ).animate().fadeIn(delay: 300.ms, duration: 600.ms).moveY(begin: 15, end: 0),
+            ),
             const SizedBox(height: 8),
             Text(
               'Platform Terpadu Pemantauan & Panduan Ibadah Umrah',
-              style: GoogleFonts.outfit(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w400,
                 color: Colors.white.withValues(alpha: 0.8),
                 letterSpacing: 0.2,
               ),
-            ).animate().fadeIn(delay: 500.ms, duration: 600.ms),
+            ),
           ],
         ),
       ),

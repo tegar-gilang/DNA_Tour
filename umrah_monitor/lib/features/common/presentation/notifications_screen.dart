@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -255,7 +254,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
     final filtered = _filteredNotifications;
 
     // Group items by dateGroup
@@ -304,7 +303,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                             children: [
                               Text(
                                 'Pusat Notifikasi',
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w800,
                                   color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -321,7 +320,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                                   ),
                                   child: Text(
                                     '$_unreadCount baru',
-                                    style: GoogleFonts.outfit(
+                                    style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w700,
                                       color: AppColors.primary,
@@ -358,13 +357,13 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                       _searchQuery = val.trim();
                     });
                   },
-                  style: GoogleFonts.outfit(
+                  style: TextStyle(
                     fontSize: 14,
                     color: isDark ? Colors.white : AppColors.textPrimaryLight,
                   ),
                   decoration: InputDecoration(
                     hintText: 'Cari peringatan, jadwal sholat, info bus...',
-                    hintStyle: GoogleFonts.outfit(
+                    hintStyle: TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondaryLight,
                     ),
@@ -424,7 +423,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         child: Center(
                           child: Text(
                             filter,
-                            style: GoogleFonts.outfit(
+                            style: TextStyle(
                               fontSize: 13,
                               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                               color: isSelected
@@ -462,7 +461,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                           const SizedBox(height: 16),
                           Text(
                             'Tidak ada notifikasi ditemukan',
-                            style: GoogleFonts.outfit(
+                            style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w700,
                               color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -471,7 +470,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                           const SizedBox(height: 4),
                           Text(
                             'Coba sesuaikan kata kunci pencarian atau filter kategori Anda.',
-                            style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
+                            style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
                           ),
                         ],
                       ),
@@ -490,7 +489,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                               padding: const EdgeInsets.only(top: 10, bottom: 8, left: 4),
                               child: Text(
                                 dateKey.toUpperCase(),
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w700,
                                   letterSpacing: 1.0,
@@ -564,7 +563,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                           children: [
                             Text(
                               item.category.toUpperCase(),
-                              style: GoogleFonts.outfit(
+                              style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
                                 color: item.color,
@@ -586,7 +585,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         ),
                         Text(
                           item.time,
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                             color: AppColors.textSecondaryLight,
@@ -597,7 +596,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                     const SizedBox(height: 5),
                     Text(
                       item.title,
-                      style: GoogleFonts.outfit(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: !item.isRead ? FontWeight.w700 : FontWeight.w600,
                         color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -607,7 +606,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                     const SizedBox(height: 10),
                     Text(
                       item.subtitle,
-                      style: GoogleFonts.outfit(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                         color: isDark ? Colors.white70 : AppColors.textSecondaryLight,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/design_system/app_colors.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -91,7 +90,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         Text(
                           page['title']!,
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.w700,
                             color: Theme.of(context).textTheme.titleLarge?.color,
@@ -101,7 +100,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         Text(
                           page['subtitle']!,
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 16,
                             height: 1.5,
                             color: Theme.of(context).textTheme.bodyMedium?.color,

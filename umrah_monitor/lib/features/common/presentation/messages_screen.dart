@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/design_system/app_colors.dart';
@@ -200,7 +199,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
 
     if (_activeConversation != null) {
       return _buildChatRoomView(context, isDark);
@@ -233,7 +232,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                       children: [
                         Text(
                           'Pesan',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.w800,
                             letterSpacing: -0.5,
@@ -243,7 +242,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                         const SizedBox(height: 2),
                         Text(
                           'Komunikasi Kloter & Darurat',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 12.5,
                             fontWeight: FontWeight.w500,
                             color: AppColors.textSecondaryLight,
@@ -275,10 +274,10 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                       _searchQuery = val.trim();
                     });
                   },
-                  style: GoogleFonts.outfit(fontSize: 14, color: isDark ? Colors.white : AppColors.textPrimaryLight),
+                  style: TextStyle(fontSize: 14, color: isDark ? Colors.white : AppColors.textPrimaryLight),
                   decoration: InputDecoration(
                     hintText: 'Cari percakapan...',
-                    hintStyle: GoogleFonts.outfit(fontSize: 13.5, color: AppColors.textSecondaryLight),
+                    hintStyle: TextStyle(fontSize: 13.5, color: AppColors.textSecondaryLight),
                     prefixIcon: const Icon(LucideIcons.search, size: 16, color: AppColors.textSecondaryLight),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
@@ -318,12 +317,12 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                           const SizedBox(height: 16),
                           Text(
                             'Pesan tidak ditemukan',
-                            style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.textPrimaryLight),
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.textPrimaryLight),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             'Coba gunakan kata kunci lain.',
-                            style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
+                            style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
                           ),
                         ],
                       ),
@@ -444,7 +443,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                               ),
                               child: Text(
                                 c.roleBadge,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 9,
                                   fontWeight: FontWeight.w700,
                                   color: c.roleColor,
@@ -456,7 +455,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                             Flexible(
                               child: Text(
                                 c.name,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: c.unreadCount > 0 ? FontWeight.w700 : FontWeight.w600,
                                   color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -475,7 +474,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                       const SizedBox(width: 6),
                       Text(
                         c.time,
-                        style: GoogleFonts.outfit(
+                        style: TextStyle(
                           fontSize: 11.5,
                           fontWeight: c.unreadCount > 0 ? FontWeight.w700 : FontWeight.w500,
                           color: c.unreadCount > 0 ? AppColors.primary : AppColors.textSecondaryLight,
@@ -489,7 +488,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                       Expanded(
                         child: Text(
                           c.lastMessage,
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 13,
                             height: 1.3,
                             color: c.unreadCount > 0
@@ -511,7 +510,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                           ),
                           child: Text(
                             '${c.unreadCount}',
-                            style: GoogleFonts.outfit(
+                            style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w800,
                               color: Colors.white,
@@ -627,7 +626,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                               ),
                               child: Text(
                                 c.roleBadge,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 9,
                                   fontWeight: FontWeight.w700,
                                   color: c.roleColor,
@@ -639,7 +638,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                             Flexible(
                               child: Text(
                                 c.name,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w800,
                                   color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -653,7 +652,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                         const SizedBox(height: 1),
                         Text(
                           _isTyping ? 'mengetik pesan...' : (c.isOnline ? 'Online • Aktif' : 'Offline'),
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                             color: _isTyping || c.isOnline ? AppColors.primary : AppColors.textSecondaryLight,
@@ -733,7 +732,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                             ),
                             child: Text(
                               m.dateGroup,
-                              style: GoogleFonts.outfit(
+                              style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.textSecondaryLight,
@@ -773,7 +772,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                       const SizedBox(width: 8),
                       Text(
                         'mengetik...',
-                        style: GoogleFonts.outfit(
+                        style: TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondaryLight,
                         ),
@@ -825,7 +824,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                           children: [
                             const Icon(LucideIcons.image, size: 18, color: AppColors.secondaryDark),
                             const SizedBox(width: 12),
-                            Text('Galeri / Foto', style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w600)),
+                            Text('Galeri / Foto', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                           ],
                         ),
                       ),
@@ -835,7 +834,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                           children: [
                             const Icon(LucideIcons.fileText, size: 18, color: AppColors.infoBlue),
                             const SizedBox(width: 12),
-                            Text('Dokumen / PDF', style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w600)),
+                            Text('Dokumen / PDF', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                           ],
                         ),
                       ),
@@ -845,7 +844,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                           children: [
                             const Icon(LucideIcons.mapPin, size: 18, color: AppColors.successGreen),
                             const SizedBox(width: 12),
-                            Text('Lokasi Langsung', style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w600)),
+                            Text('Lokasi Langsung', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                           ],
                         ),
                       ),
@@ -864,13 +863,13 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                       child: TextField(
                         controller: _messageController,
                         onSubmitted: (_) => _sendMessage(),
-                        style: GoogleFonts.outfit(
+                        style: TextStyle(
                           fontSize: 15,
                           color: isDark ? Colors.white : AppColors.textPrimaryLight,
                         ),
                         decoration: InputDecoration(
                           hintText: 'Ketik pesan...',
-                          hintStyle: GoogleFonts.outfit(
+                          hintStyle: TextStyle(
                             fontSize: 15,
                             color: AppColors.textSecondaryLight,
                           ),
@@ -926,7 +925,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                 padding: const EdgeInsets.only(left: 4, bottom: 6),
                 child: Text(
                   m.senderName,
-                  style: GoogleFonts.outfit(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textSecondaryLight,
@@ -984,7 +983,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                           Flexible(
                             child: Text(
                               m.attachmentName ?? 'Lampiran',
-                              style: GoogleFonts.outfit(
+                              style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
                                 color: textColor,
@@ -997,7 +996,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                     ),
                   Text(
                     m.text,
-                    style: GoogleFonts.outfit(
+                    style: TextStyle(
                       fontSize: 15,
                       height: 1.4,
                       color: textColor,
@@ -1015,7 +1014,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                 children: [
                   Text(
                     m.time,
-                    style: GoogleFonts.outfit(
+                    style: TextStyle(
                       fontSize: 11,
                       color: AppColors.textSecondaryLight,
                     ),

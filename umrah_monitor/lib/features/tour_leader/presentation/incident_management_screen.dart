@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
@@ -18,7 +17,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
     final allIncidents = ref.watch(incidentProvider);
     
     final filteredIncidents = allIncidents.where((inc) {
@@ -55,7 +54,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
                       children: [
                         Text(
                           'Pusat Respons SOS & Insiden',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.w800,
                             letterSpacing: -0.5,
@@ -65,7 +64,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
                         const SizedBox(height: 2),
                         Text(
                           'Pemantauan & Penanganan Darurat Jamaah Kloter 4',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 13,
                             color: AppColors.emergencyRed,
                             fontWeight: FontWeight.w600,
@@ -77,7 +76,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
                   ElevatedButton.icon(
                     onPressed: () => _showCreateIncidentModal(context),
                     icon: const Icon(LucideIcons.plus, size: 16, color: Colors.white),
-                    label: Text('Catat', style: GoogleFonts.outfit(fontWeight: FontWeight.w700, color: Colors.white)),
+                    label: Text('Catat', style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.emergencyRed,
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -114,7 +113,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
                         ),
                         child: Text(
                           tab,
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                             color: isSelected ? Colors.white : (isDark ? Colors.white70 : AppColors.textPrimaryLight),
@@ -139,7 +138,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
                           const SizedBox(height: 14),
                           Text(
                             'Tidak ada insiden darurat pada kategori ini',
-                            style: GoogleFonts.outfit(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
                               color: AppColors.textSecondaryLight,
@@ -202,7 +201,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
                                       const SizedBox(width: 8),
                                       Text(
                                         inc.id,
-                                        style: GoogleFonts.outfit(
+                                        style: TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w800,
                                           color: priorityColor,
@@ -216,7 +215,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
                               const SizedBox(height: 12),
                               Text(
                                 inc.title,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.w700,
                                   color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -229,7 +228,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
                                   const SizedBox(width: 8),
                                   Text(
                                     inc.pilgrimName,
-                                    style: GoogleFonts.outfit(
+                                    style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
                                       color: isDark ? Colors.white70 : AppColors.textPrimaryLight,
@@ -245,7 +244,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
                                   Expanded(
                                     child: Text(
                                       inc.location,
-                                      style: GoogleFonts.outfit(
+                                      style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w600,
                                         color: AppColors.textSecondaryLight,
@@ -261,7 +260,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
                                   const SizedBox(width: 8),
                                   Text(
                                     inc.time,
-                                    style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight),
+                                    style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight),
                                   ),
                                 ],
                               ),
@@ -276,7 +275,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
                                       );
                                     },
                                     icon: const Icon(LucideIcons.heartPulse, size: 16, color: AppColors.primary),
-                                    label: Text('Kirim Bantuan Medis', style: GoogleFonts.outfit(fontWeight: FontWeight.w600, color: AppColors.primary)),
+                                    label: Text('Kirim Bantuan Medis', style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.primary)),
                                     style: OutlinedButton.styleFrom(
                                       side: const BorderSide(color: AppColors.primary),
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -295,7 +294,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
                                         );
                                       },
                                       icon: const Icon(LucideIcons.checkCircle2, size: 16, color: Colors.white),
-                                      label: Text('Tandai Selesai', style: GoogleFonts.outfit(fontWeight: FontWeight.w700, color: Colors.white)),
+                                      label: Text('Tandai Selesai', style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white)),
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: AppColors.successGreen,
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -324,7 +323,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        final isDark = Theme.of(context).brightness == Brightness.dark;
+        const isDark = false;
         return Container(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom + 20,
@@ -354,33 +353,33 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Catat Laporan Insiden Baru', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w700)),
+                  Text('Catat Laporan Insiden Baru', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
                   IconButton(icon: const Icon(LucideIcons.x, size: 20), onPressed: () => Navigator.pop(context)),
                 ],
               ),
               const SizedBox(height: 16),
-              Text('ID atau Nama Jamaah:', style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w600)),
+              Text('ID atau Nama Jamaah:', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
               const SizedBox(height: 6),
               TextField(
                 controller: nameCtrl,
-                style: GoogleFonts.outfit(fontSize: 14),
+                style: TextStyle(fontSize: 14),
                 decoration: InputDecoration(
                   hintText: 'Contoh: H. Ahmad Zaki (PL-88210)...',
-                  hintStyle: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
+                  hintStyle: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                   contentPadding: const EdgeInsets.all(14),
                 ),
               ),
               const SizedBox(height: 14),
-              Text('Deskripsi Insiden & Penanganan:', style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w600)),
+              Text('Deskripsi Insiden & Penanganan:', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
               const SizedBox(height: 6),
               TextField(
                 controller: descCtrl,
                 maxLines: 3,
-                style: GoogleFonts.outfit(fontSize: 14),
+                style: TextStyle(fontSize: 14),
                 decoration: InputDecoration(
                   hintText: 'Jelaskan kondisi darurat atau bantuan yang diperlukan...',
-                  hintStyle: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
+                  hintStyle: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                   contentPadding: const EdgeInsets.all(14),
                 ),
@@ -421,7 +420,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
-                  child: Text('Simpan & Siagakan Tim', style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 15)),
+                  child: Text('Simpan & Siagakan Tim', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 15)),
                 ),
               ),
               const SizedBox(height: 12),

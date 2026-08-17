@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
@@ -91,7 +91,7 @@ class _PrayerCollectionScreenState extends State<PrayerCollectionScreen> {
                       return Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: ChoiceChip(
-                          label: Text(cat, style: GoogleFonts.outfit(fontWeight: FontWeight.w600, fontSize: 13)),
+                          label: Text(cat, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
                           selected: isSelected,
                           onSelected: (val) => setState(() => _selectedCategory = cat),
                           selectedColor: AppColors.primary,
@@ -114,7 +114,7 @@ class _PrayerCollectionScreenState extends State<PrayerCollectionScreen> {
                       children: [
                         Icon(LucideIcons.bookOpen, size: 64, color: AppColors.textTertiaryLight),
                         const SizedBox(height: 16),
-                        Text('No doa matches your query', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w600)),
+                        Text('No doa matches your query', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                       ],
                     ),
                   )
@@ -158,7 +158,7 @@ class _PrayerCollectionScreenState extends State<PrayerCollectionScreen> {
                               const SizedBox(height: 10),
                               Text(
                                 p.title,
-                                style: GoogleFonts.outfit(fontSize: 17, fontWeight: FontWeight.w700),
+                                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
                               ),
                               const SizedBox(height: 10),
                               Align(
@@ -177,7 +177,7 @@ class _PrayerCollectionScreenState extends State<PrayerCollectionScreen> {
                               const SizedBox(height: 10),
                               Text(
                                 p.latin,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 13,
                                   fontStyle: FontStyle.italic,
                                   color: AppColors.primary,
@@ -186,7 +186,7 @@ class _PrayerCollectionScreenState extends State<PrayerCollectionScreen> {
                               const SizedBox(height: 6),
                               Text(
                                 p.translation,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 13,
                                   color: Theme.of(context).textTheme.bodyMedium?.color,
                                   height: 1.4,
@@ -202,12 +202,12 @@ class _PrayerCollectionScreenState extends State<PrayerCollectionScreen> {
                                     children: [
                                       const Icon(LucideIcons.volume2, size: 16, color: AppColors.secondaryDark),
                                       const SizedBox(width: 6),
-                                      Text('Audio Available', style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.secondaryDark)),
+                                      Text('Audio Available', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.secondaryDark)),
                                     ],
                                   ),
                                   Text(
                                     'Read Full & Virtues →',
-                                    style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primary),
+                                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primary),
                                   ),
                                 ],
                               ),

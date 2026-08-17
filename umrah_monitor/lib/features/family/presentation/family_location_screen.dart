@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
@@ -24,7 +23,7 @@ class _FamilyLocationScreenState extends ConsumerState<FamilyLocationScreen> {
       appBar: AppBar(
         title: Text(
           'Peta Lokasi Live Jamaah',
-          style: GoogleFonts.outfit(fontWeight: FontWeight.w700),
+          style: TextStyle(fontWeight: FontWeight.w700),
         ),
         actions: [
           IconButton(
@@ -117,7 +116,7 @@ class _FamilyLocationScreenState extends ConsumerState<FamilyLocationScreen> {
                         ),
                         child: Text(
                           layer,
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                             color: isSelected ? Colors.white : AppColors.textPrimaryLight,
@@ -163,13 +162,13 @@ class _FamilyLocationScreenState extends ConsumerState<FamilyLocationScreen> {
                                 children: [
                                   Text(
                                     journeyState.currentLocation,
-                                    style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w700),
+                                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   Text(
                                     'Aktivitas: ${journeyState.currentActivity}',
-                                    style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight),
+                                    style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight),
                                   ),
                                 ],
                               ),
@@ -208,7 +207,7 @@ class _FamilyLocationScreenState extends ConsumerState<FamilyLocationScreen> {
           ),
           child: Text(
             label,
-            style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white),
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white),
           ),
         ),
         const SizedBox(height: 4),
@@ -245,9 +244,9 @@ class _FamilyLocationScreenState extends ConsumerState<FamilyLocationScreen> {
           child: Icon(icon, size: 18, color: AppColors.primary),
         ),
         const SizedBox(height: 6),
-        Text(value, style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w700)),
+        Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
         const SizedBox(height: 1),
-        Text(label, style: GoogleFonts.outfit(fontSize: 11, color: AppColors.textSecondaryLight, fontWeight: FontWeight.w500)),
+        Text(label, style: TextStyle(fontSize: 11, color: AppColors.textSecondaryLight, fontWeight: FontWeight.w500)),
       ],
     );
   }

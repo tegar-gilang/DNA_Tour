@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
@@ -145,7 +144,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
-        final isDark = Theme.of(ctx).brightness == Brightness.dark;
+        const isDark = false;
         return StatefulBuilder(
           builder: (ctx, setModalState) {
             return Container(
@@ -180,7 +179,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                       children: [
                         Text(
                           isEditing ? 'Ubah Agenda Kegiatan' : 'Tambah Agenda Kegiatan Baru',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w700,
                             color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -217,7 +216,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                           value: statusValue,
                           isExpanded: true,
                           dropdownColor: isDark ? AppColors.cardDark : Colors.white,
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 15,
                             color: isDark ? Colors.white : AppColors.textPrimaryLight,
                           ),
@@ -254,11 +253,11 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                                 children: [
                                   Text(
                                     'Siarkan Notifikasi ke Jamaah?',
-                                    style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w600),
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                                   ),
                                   Text(
                                     'Kirim pemberitahuan otomatis ke ponsel 45 jamaah',
-                                    style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight),
+                                    style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight),
                                   ),
                                 ],
                               ),
@@ -329,7 +328,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                         ),
                         child: Text(
                           isEditing ? 'Simpan Perubahan Agenda' : 'Simpan & Publikasikan Agenda',
-                          style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w700),
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
                         ),
                       ),
                     ),
@@ -348,7 +347,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
       padding: const EdgeInsets.only(bottom: 6),
       child: Text(
         label,
-        style: GoogleFonts.outfit(
+        style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
           color: isDark ? Colors.white70 : AppColors.textPrimaryLight,
@@ -366,10 +365,10 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
       child: TextField(
         controller: controller,
         maxLines: maxLines,
-        style: GoogleFonts.outfit(fontSize: 14, color: isDark ? Colors.white : AppColors.textPrimaryLight),
+        style: TextStyle(fontSize: 14, color: isDark ? Colors.white : AppColors.textPrimaryLight),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
+          hintStyle: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
@@ -416,12 +415,12 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text('Hapus Agenda?', style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
+        title: Text('Hapus Agenda?', style: TextStyle(fontWeight: FontWeight.w700)),
         content: Text('Apakah Anda yakin ingin menghapus "${item.title}" dari jadwal resmi rombongan?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Batal', style: GoogleFonts.outfit(color: AppColors.textSecondaryLight)),
+            child: Text('Batal', style: TextStyle(color: AppColors.textSecondaryLight)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -434,7 +433,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
               );
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.emergencyRed),
-            child: Text('Hapus', style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.w600)),
+            child: Text('Hapus', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
           ),
         ],
       ),
@@ -443,7 +442,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
     final total = _agendaList.length;
 
     return Scaffold(
@@ -464,7 +463,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                       children: [
                         Text(
                           'Kelola Jadwal Rombongan',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.w800,
                             letterSpacing: -0.6,
@@ -474,7 +473,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                         const SizedBox(height: 2),
                         Text(
                           'Kloter 4 Al-Barakah ($total Agenda)',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 13,
                             color: AppColors.primary,
                             fontWeight: FontWeight.w600,
@@ -486,7 +485,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                   ElevatedButton.icon(
                     onPressed: () => _showAddEditAgendaModal(),
                     icon: const Icon(LucideIcons.plus, size: 16, color: Colors.white),
-                    label: Text('Tambah', style: GoogleFonts.outfit(fontWeight: FontWeight.w700, color: Colors.white)),
+                    label: Text('Tambah', style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -510,7 +509,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                           const SizedBox(height: 12),
                           Text(
                             'Belum ada agenda kegiatan',
-                            style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textSecondaryLight),
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textSecondaryLight),
                           ),
                         ],
                       ),
@@ -645,7 +644,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                     // Title
                     Text(
                       item.title,
-                      style: GoogleFonts.outfit(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -660,7 +659,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                         Expanded(
                           child: Text(
                             item.location,
-                            style: GoogleFonts.outfit(
+                            style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
                               color: AppColors.primary,
@@ -677,7 +676,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                         Expanded(
                           child: Text(
                             item.date,
-                            style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight),
+                            style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight),
                           ),
                         ),
                       ],
@@ -686,7 +685,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                       const SizedBox(height: 8),
                       Text(
                         item.description,
-                        style: GoogleFonts.outfit(
+                        style: TextStyle(
                           fontSize: 13,
                           height: 1.4,
                           color: isDark ? Colors.white70 : AppColors.textSecondaryLight,
@@ -709,7 +708,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                                   children: [
                                     const Icon(LucideIcons.circle, size: 15, color: AppColors.textTertiaryLight),
                                     const SizedBox(width: 10),
-                                    Text('Jadikan Akan Datang', style: GoogleFonts.outfit(fontSize: 13)),
+                                    Text('Jadikan Akan Datang', style: TextStyle(fontSize: 13)),
                                   ],
                                 ),
                               ),
@@ -719,7 +718,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                                   children: [
                                     const Icon(LucideIcons.clock, size: 15, color: AppColors.primary),
                                     const SizedBox(width: 10),
-                                    Text('Jadikan Berlangsung', style: GoogleFonts.outfit(fontSize: 13)),
+                                    Text('Jadikan Berlangsung', style: TextStyle(fontSize: 13)),
                                   ],
                                 ),
                               ),
@@ -729,7 +728,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                                   children: [
                                     const Icon(LucideIcons.checkCircle2, size: 15, color: AppColors.successGreen),
                                     const SizedBox(width: 10),
-                                    Text('Tandai Selesai', style: GoogleFonts.outfit(fontSize: 13)),
+                                    Text('Tandai Selesai', style: TextStyle(fontSize: 13)),
                                   ],
                                 ),
                               ),
@@ -747,7 +746,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                                   const SizedBox(width: 6),
                                   Text(
                                     'Ubah Status',
-                                    style: GoogleFonts.outfit(
+                                    style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
                                       color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -782,7 +781,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
                                   const SizedBox(width: 6),
                                   Text(
                                     item.isBroadcasted ? 'Telah Disiarkan' : 'Siarkan Reminder',
-                                    style: GoogleFonts.outfit(
+                                    style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w700,
                                       color: item.isBroadcasted ? AppColors.successGreen : AppColors.primary,

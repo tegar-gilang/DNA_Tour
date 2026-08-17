@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
@@ -22,7 +20,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
     final presentCount = allPilgrims.where((p) => p.status == 'checked_in').length;
     final totalCount = allPilgrims.length;
     final progressValue = totalCount > 0 ? presentCount / totalCount : 0.0;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
@@ -45,7 +43,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                   avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
                   statusChips: const [],
                   currentLocation: 'Masjidil Haram, Makkah',
-                ).animate().fadeIn().scale(duration: 400.ms),
+                ),
                 const SizedBox(height: 24),
 
                 // Aktivitas Perjalanan Saat Ini (Sama seperti pada role Jamaah)
@@ -72,7 +70,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                           Expanded(
                             child: Text(
                               '${journeyState.currentActivity}:',
-                              style: GoogleFonts.outfit(
+                              style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
                                 color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -83,7 +81,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                           const SizedBox(width: 8),
                           Text(
                             '($presentCount/$totalCount)',
-                            style: GoogleFonts.outfit(
+                            style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
                               color: AppColors.primary,
@@ -113,7 +111,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                           Expanded(
                             child: Text(
                               journeyState.currentLocation,
-                              style: GoogleFonts.outfit(
+                              style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.textSecondaryLight,
@@ -184,7 +182,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                               child: Text(
                                 'Lihat Jadwal',
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
                                   color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -207,7 +205,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                               child: Text(
                                 'Lihat Peta',
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
                                   color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -230,7 +228,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                               child: Text(
                                 'Perbarui',
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
                                   color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -242,7 +240,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                ).animate().fadeIn().scale(duration: 400.ms),
+                ),
                 const SizedBox(height: 24),
 
                 // Quick Operational Actions
@@ -321,7 +319,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                 child: const Icon(LucideIcons.radio, color: AppColors.emergencyRed, size: 20),
               ),
               const SizedBox(width: 12),
-              Text('Siarkan Pengumuman Rombongan', style: GoogleFonts.outfit(fontWeight: FontWeight.w700, fontSize: 18)),
+              Text('Siarkan Pengumuman Rombongan', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18)),
             ],
           ),
           content: Column(
@@ -330,16 +328,16 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
             children: [
               Text(
                 'Pemberitahuan darurat ini akan berbunyi di 45 ponsel jamaah dan keluarga pemantau secara seketika.',
-                style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight, height: 1.4),
+                style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight, height: 1.4),
               ),
               const SizedBox(height: 28),
               TextField(
                 controller: controller,
                 maxLines: 3,
-                style: GoogleFonts.outfit(fontSize: 14),
+                style: TextStyle(fontSize: 14),
                 decoration: InputDecoration(
                   hintText: 'Tulis pesan (misal: Segera berkumpul di lobi hotel dalam 15 menit)...',
-                  hintStyle: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
+                  hintStyle: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                   contentPadding: const EdgeInsets.all(14),
                 ),
@@ -349,7 +347,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Batal', style: GoogleFonts.outfit(color: AppColors.textSecondaryLight, fontWeight: FontWeight.w600)),
+              child: Text('Batal', style: TextStyle(color: AppColors.textSecondaryLight, fontWeight: FontWeight.w600)),
             ),
             ElevatedButton(
               onPressed: () {
@@ -365,7 +363,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                 backgroundColor: AppColors.emergencyRed,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              child: Text('Siarkan Sekarang', style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.w700)),
+              child: Text('Siarkan Sekarang', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
             ),
           ],
         );
@@ -391,7 +389,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
       builder: (context) {
         return StatefulBuilder(
           builder: (ctx, setModalState) {
-            final isDark = Theme.of(ctx).brightness == Brightness.dark;
+            const isDark = false;
             return Container(
               padding: EdgeInsets.only(
                 bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
@@ -424,7 +422,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                       children: [
                         Text(
                           'Perbarui Tahapan Perjalanan',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w700,
                             color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -466,7 +464,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                           value: statusValue,
                           isExpanded: true,
                           dropdownColor: isDark ? AppColors.cardDark : Colors.white,
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 15,
                             color: isDark ? Colors.white : AppColors.textPrimaryLight,
                           ),
@@ -502,11 +500,11 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                               children: [
                                 Text(
                                   'Siarkan Notifikasi ke Jamaah?',
-                                  style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w600),
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                                 ),
                                 Text(
                                   'Kirim pemberitahuan otomatis ke ponsel 45 jamaah',
-                                  style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight),
+                                  style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight),
                                 ),
                               ],
                             ),
@@ -553,7 +551,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                         ),
                         child: Text(
                           'Simpan & Publikasikan Agenda',
-                          style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w700),
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
                         ),
                       ),
                     ),
@@ -572,7 +570,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
       padding: const EdgeInsets.only(bottom: 6),
       child: Text(
         label,
-        style: GoogleFonts.outfit(
+        style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
           color: isDark ? Colors.white70 : AppColors.textPrimaryLight,
@@ -590,10 +588,10 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
       child: TextField(
         controller: controller,
         maxLines: maxLines,
-        style: GoogleFonts.outfit(fontSize: 14, color: isDark ? Colors.white : AppColors.textPrimaryLight),
+        style: TextStyle(fontSize: 14, color: isDark ? Colors.white : AppColors.textPrimaryLight),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
+          hintStyle: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
@@ -620,7 +618,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
           Flexible(
             child: Text(
               label,
-              style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w700, color: color),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: color),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -650,7 +648,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                 flex: 4,
                 child: Text(
                   label,
-                  style: GoogleFonts.outfit(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: AppColors.textSecondaryLight,
@@ -663,7 +661,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                 child: Text(
                   value,
                   textAlign: TextAlign.right,
-                  style: GoogleFonts.outfit(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: isDark ? Colors.white : AppColors.textPrimaryLight,

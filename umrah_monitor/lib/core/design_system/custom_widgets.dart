@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'app_colors.dart';
@@ -28,7 +27,7 @@ class AppleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
     final cardColor = color ?? (isDark ? AppColors.cardDark : AppColors.cardLight);
 
     return Container(
@@ -96,7 +95,7 @@ class StatusBadge extends StatelessWidget {
           ],
           Text(
             label,
-            style: GoogleFonts.outfit(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
               color: color,
@@ -122,7 +121,7 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
     return Padding(
       padding: const EdgeInsets.only(bottom: 14, top: 6),
       child: Row(
@@ -130,7 +129,7 @@ class SectionHeader extends StatelessWidget {
         children: [
           Text(
             title,
-            style: GoogleFonts.outfit(
+            style: TextStyle(
               fontSize: 20, // Increased for elderly legibility
               fontWeight: FontWeight.w800,
               letterSpacing: -0.4,
@@ -153,7 +152,7 @@ class SectionHeader extends StatelessWidget {
                 ),
                 child: Text(
                   actionText!,
-                  style: GoogleFonts.outfit(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     color: AppColors.primary,
@@ -181,7 +180,7 @@ class GlassContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
 
     return Container(
       padding: padding,
@@ -214,7 +213,7 @@ class AppleGlassNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
 
     return Container(
       decoration: BoxDecoration(
@@ -228,7 +227,7 @@ class AppleGlassNavbar extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.45 : 0.08),
-            blurRadius: 24,
+            blurRadius: 4,
             offset: const Offset(0, -6),
           ),
         ],
@@ -267,7 +266,7 @@ class AppleGlassNavbar extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         item.label,
-                        style: GoogleFonts.outfit(
+                        style: TextStyle(
                           fontSize: 12,
                           fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                           color: color,
@@ -330,11 +329,7 @@ class RoleProfileSummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: colors,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: colors.isNotEmpty ? colors.last : AppColors.primary,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: Colors.white.withValues(alpha: 0.25),
@@ -344,7 +339,7 @@ class RoleProfileSummaryCard extends StatelessWidget {
           BoxShadow(
             color: colors.last.withValues(alpha: 0.35),
             blurRadius: 22,
-            offset: const Offset(0, 8),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -380,7 +375,7 @@ class RoleProfileSummaryCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             name,
-                            style: GoogleFonts.outfit(
+                            style: TextStyle(
                               fontSize: 21, // Increased for elderly legibility
                               fontWeight: FontWeight.w800,
                               color: Colors.white,
@@ -395,7 +390,7 @@ class RoleProfileSummaryCard extends StatelessWidget {
                     const SizedBox(height: 3),
                     Text(
                       roleSubtitle,
-                      style: GoogleFonts.outfit(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: Colors.white.withValues(alpha: 0.9), // Higher contrast for older eyes
@@ -438,7 +433,7 @@ class RoleProfileSummaryCard extends StatelessWidget {
                           child: Center(
                             child: Text(
                               unreadCount! > 9 ? '9+' : '$unreadCount',
-                              style: GoogleFonts.outfit(
+                              style: TextStyle(
                                 fontSize: 9,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.white,
@@ -480,7 +475,7 @@ class RoleProfileSummaryCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Lokasi Terkini', style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.85))),
+                    Text('Lokasi Terkini', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.85))),
                     const SizedBox(height: 4),
                     Row(
                       children: [
@@ -489,7 +484,7 @@ class RoleProfileSummaryCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             currentLocation,
-                            style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white),
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -539,7 +534,7 @@ class RoleStatusChip extends StatelessWidget {
           ],
           Text(
             label,
-            style: GoogleFonts.outfit(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
               color: Colors.white,

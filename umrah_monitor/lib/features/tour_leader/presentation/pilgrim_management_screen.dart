@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../tracking/presentation/incident_provider.dart';
@@ -69,7 +68,7 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
     final allPilgrims = ref.watch(pilgrimAttendanceProvider);
     final allIncidents = ref.watch(incidentProvider);
     final activeIncidents = allIncidents.where((i) => i.status != 'resolved').toList();
@@ -110,7 +109,7 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                       children: [
                         Text(
                           'Pantau Status & Absensi Jamaah',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
                             color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -118,7 +117,7 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                         ),
                         Text(
                           'Daftar jamaah kloter aktif beserta posisinya',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 13,
                             color: AppColors.textSecondaryLight,
                           ),
@@ -145,12 +144,12 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                 child: TextField(
                   controller: _searchController,
                   onChanged: (val) => setState(() => _searchQuery = val),
-                  style: GoogleFonts.outfit(
+                  style: TextStyle(
                     color: isDark ? Colors.white : AppColors.textPrimaryLight,
                   ),
                   decoration: InputDecoration(
                     hintText: 'Cari nama, ID Gelang, atau nomor paspor...',
-                    hintStyle: GoogleFonts.outfit(color: AppColors.textSecondaryLight, fontSize: 14),
+                    hintStyle: TextStyle(color: AppColors.textSecondaryLight, fontSize: 14),
                     icon: Icon(LucideIcons.search, size: 20, color: AppColors.textSecondaryLight),
                     border: InputBorder.none,
                   ),
@@ -183,7 +182,7 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                         ),
                         child: Text(
                           tab,
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                             color: isSelected ? Colors.white : (isDark ? Colors.white70 : AppColors.textPrimaryLight),
@@ -208,7 +207,7 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                           const SizedBox(height: 12),
                           Text(
                             'Tidak ada jamaah ditemukan',
-                            style: GoogleFonts.outfit(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: AppColors.textSecondaryLight,
@@ -262,7 +261,7 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                                     ),
                                     child: Text(
                                       p.id,
-                                      style: GoogleFonts.outfit(
+                                      style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w800,
                                         color: AppColors.primary,
@@ -285,7 +284,7 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                                             ),
                                             child: Text(
                                               cond.label,
-                                              style: GoogleFonts.outfit(
+                                              style: TextStyle(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w800,
                                                 color: cond.color,
@@ -303,7 +302,7 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                               // Name
                               Text(
                                 p.name,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700,
                                   color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -319,7 +318,7 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                                   Expanded(
                                     child: Text(
                                       p.location,
-                                      style: GoogleFonts.outfit(
+                                      style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w600,
                                         color: isDark ? Colors.white70 : AppColors.textPrimaryLight,
@@ -328,7 +327,7 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
                                   ),
                                   Text(
                                     p.lastSeen,
-                                    style: GoogleFonts.outfit(fontSize: 11, color: AppColors.textSecondaryLight),
+                                    style: TextStyle(fontSize: 11, color: AppColors.textSecondaryLight),
                                   ),
                                 ],
                               ),
@@ -388,7 +387,7 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
             const SizedBox(width: 6),
             Text(
               label,
-              style: GoogleFonts.outfit(
+              style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
                 color: AppColors.primary,

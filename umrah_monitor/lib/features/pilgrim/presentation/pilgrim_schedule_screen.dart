@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
@@ -129,7 +128,7 @@ class _PilgrimScheduleScreenState extends State<PilgrimScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       body: SafeArea(
@@ -147,7 +146,7 @@ class _PilgrimScheduleScreenState extends State<PilgrimScheduleScreen> {
                       children: [
                         Text(
                           'Jadwal Perjalanan',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.w800,
                             letterSpacing: -0.6,
@@ -159,7 +158,7 @@ class _PilgrimScheduleScreenState extends State<PilgrimScheduleScreen> {
                           widget.isFamilyView
                               ? 'Kloter 4 Al-Barakah VIP • Jadwal Jamaah Dipantau Keluarga'
                               : 'Kloter 4 Al-Barakah VIP • Rangkaian Ibadah',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
@@ -273,7 +272,7 @@ class _PilgrimScheduleScreenState extends State<PilgrimScheduleScreen> {
                           const SizedBox(height: 10),
                           Text(
                             cp.title,
-                            style: GoogleFonts.outfit(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
                             ),
@@ -286,7 +285,7 @@ class _PilgrimScheduleScreenState extends State<PilgrimScheduleScreen> {
                               Expanded(
                                 child: Text(
                                   cp.location,
-                                  style: GoogleFonts.outfit(
+                                  style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.primary,
@@ -302,7 +301,7 @@ class _PilgrimScheduleScreenState extends State<PilgrimScheduleScreen> {
                               const SizedBox(width: 6),
                               Text(
                                 cp.date,
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 12,
                                   color: AppColors.textSecondaryLight,
                                 ),
@@ -312,7 +311,7 @@ class _PilgrimScheduleScreenState extends State<PilgrimScheduleScreen> {
                           const SizedBox(height: 10),
                           Text(
                             cp.description,
-                            style: GoogleFonts.outfit(
+                            style: TextStyle(
                               fontSize: 13,
                               height: 1.4,
                               fontWeight: FontWeight.w500,

@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
@@ -150,13 +149,13 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
           const SizedBox(height: 20),
           Text(
             'Pemancar Darurat SOS',
-            style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             'Pilih jenis kondisi darurat. Paket darurat otomatis berisi koordinat GPS akurat, baterai, waktu, serta identitas Anda akan langsung dikirim ke Tour Leader, Keluarga, dan Pusat Operasional.',
-            style: GoogleFonts.outfit(fontSize: 14, height: 1.4, color: AppColors.textSecondaryLight),
+            style: TextStyle(fontSize: 14, height: 1.4, color: AppColors.textSecondaryLight),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 28),
@@ -164,7 +163,7 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
           if (_isCountdownActive)
             _buildCountdownBanner()
           else ...[
-            Text('PILIH KATEGORI KONDISI DARURAT UNTUK DIKIRIM:', style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.textSecondaryLight)),
+            Text('PILIH KATEGORI KONDISI DARURAT UNTUK DIKIRIM:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.textSecondaryLight)),
             const SizedBox(height: 16),
             ..._distressOptions.map((option) {
               return Padding(
@@ -188,9 +187,9 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(option['type'], style: GoogleFonts.outfit(fontSize: 17, fontWeight: FontWeight.w700, color: option['color'])),
+                            Text(option['type'], style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: option['color'])),
                             const SizedBox(height: 4),
-                            Text(option['desc'], style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight)),
+                            Text(option['desc'], style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight)),
                           ],
                         ),
                       ),
@@ -215,7 +214,7 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
         boxShadow: [
           BoxShadow(
             color: AppColors.emergencyRed.withValues(alpha: 0.5),
-            blurRadius: 24,
+            blurRadius: 4,
             spreadRadius: 4,
           ),
         ],
@@ -224,17 +223,17 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
         children: [
           Text(
             'MENGIRIM SINYAL SOS DALAM',
-            style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w800, color: Colors.white70, letterSpacing: 2),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Colors.white70, letterSpacing: 2),
           ),
           const SizedBox(height: 12),
           Text(
             '$_countdownSeconds',
-            style: GoogleFonts.outfit(fontSize: 72, fontWeight: FontWeight.w900, color: Colors.white),
+            style: TextStyle(fontSize: 72, fontWeight: FontWeight.w900, color: Colors.white),
           ).animate(key: ValueKey(_countdownSeconds)).scale(begin: const Offset(1.4, 1.4), end: const Offset(1, 1), duration: 300.ms),
           const SizedBox(height: 12),
           Text(
             'Jenis Darurat: $_selectedDistressType',
-            style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white),
           ),
           const SizedBox(height: 24),
           SizedBox(
@@ -252,7 +251,7 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
           ),
         ],
       ),
-    ).animate().fadeIn().scale(duration: 400.ms);
+    );
   }
 
   Widget _buildSentState(BuildContext context, user) {
@@ -269,16 +268,16 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
               border: Border.all(color: AppColors.successGreen, width: 3),
             ),
             child: const Icon(Icons.check_circle_rounded, size: 64, color: AppColors.successGreen),
-          ).animate().scale(duration: 500.ms, curve: Curves.easeOutBack),
+          ),
           const SizedBox(height: 24),
           Text(
             'PAKET SOS TERKIRIM',
-            style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.successGreen),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.successGreen),
           ),
           const SizedBox(height: 12),
           Text(
             'Sinyal darurat Anda ($_selectedDistressType) telah diterima oleh Tour Leader Ust. Muhammad Ridwan dan Pusat Operasional Al-Barakah.',
-            style: GoogleFonts.outfit(fontSize: 15, height: 1.5),
+            style: TextStyle(fontSize: 15, height: 1.5),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 28),
@@ -327,8 +326,8 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight)),
-        Text(value, style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700)),
+        Text(label, style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight)),
+        Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
       ],
     );
   }

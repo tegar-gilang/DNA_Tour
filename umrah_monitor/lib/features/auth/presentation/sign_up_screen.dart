@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../domain/user_model.dart';
@@ -88,7 +87,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final selectedRole = ref.watch(authProvider).selectedRole ?? UserRole.pilgrim;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
@@ -102,7 +101,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         ),
         title: Text(
           'Daftar Akun Baru',
-          style: GoogleFonts.outfit(
+          style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
             color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -137,7 +136,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     const SizedBox(width: 8),
                     Text(
                       'Mendaftar sebagai: ${selectedRole.displayNameID}',
-                      style: GoogleFonts.outfit(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: AppColors.primary,
@@ -150,7 +149,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
               Text(
                 'Lengkapi Data Diri',
-                style: GoogleFonts.outfit(
+                style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.6,
@@ -160,7 +159,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               const SizedBox(height: 6),
               Text(
                 'Isi formulir di bawah ini agar terhubung secara aman dengan kloter, mutawif, dan pemantauan keluarga.',
-                style: GoogleFonts.outfit(
+                style: TextStyle(
                   fontSize: 14,
                   height: 1.4,
                   color: AppColors.textSecondaryLight,
@@ -181,7 +180,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.04),
-                      blurRadius: 16,
+                      blurRadius: 2,
                       offset: const Offset(0, 6),
                     ),
                   ],
@@ -277,7 +276,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           Expanded(
                             child: Text(
                               'Saya menyetujui Ketentuan Layanan, Kebijakan Privasi, dan Berbagi Lokasi Real-Time DNA Tour.',
-                              style: GoogleFonts.outfit(
+                              style: TextStyle(
                                 fontSize: 13,
                                 height: 1.35,
                                 color: isDark ? Colors.white70 : AppColors.textPrimaryLight,
@@ -312,7 +311,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           children: [
                             Text(
                               'Daftar & Aktifkan Akun',
-                              style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w700),
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                             ),
                             const SizedBox(width: 8),
                             const Icon(LucideIcons.arrowRight, size: 18),
@@ -329,13 +328,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   children: [
                     Text(
                       'Sudah memiliki akun?',
-                      style: GoogleFonts.outfit(fontSize: 14, color: AppColors.textSecondaryLight),
+                      style: TextStyle(fontSize: 14, color: AppColors.textSecondaryLight),
                     ),
                     TextButton(
                       onPressed: () => context.pop(),
                       child: Text(
                         'Masuk di Sini',
-                        style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.primary),
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.primary),
                       ),
                     ),
                   ],
@@ -354,7 +353,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         label,
-        style: GoogleFonts.outfit(
+        style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
           color: isDark ? Colors.white70 : AppColors.textPrimaryLight,
@@ -378,11 +377,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       child: TextField(
         controller: controller,
         keyboardType: keyboardType,
-        style: GoogleFonts.outfit(fontSize: 15, color: isDark ? Colors.white : AppColors.textPrimaryLight),
+        style: TextStyle(fontSize: 15, color: isDark ? Colors.white : AppColors.textPrimaryLight),
         decoration: InputDecoration(
           prefixIcon: Icon(icon, size: 18, color: AppColors.textSecondaryLight),
           hintText: hint,
-          hintStyle: GoogleFonts.outfit(fontSize: 14, color: AppColors.textSecondaryLight),
+          hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondaryLight),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
@@ -405,7 +404,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       child: TextField(
         controller: controller,
         obscureText: obscure,
-        style: GoogleFonts.outfit(fontSize: 15, color: isDark ? Colors.white : AppColors.textPrimaryLight),
+        style: TextStyle(fontSize: 15, color: isDark ? Colors.white : AppColors.textPrimaryLight),
         decoration: InputDecoration(
           prefixIcon: const Icon(LucideIcons.lock, size: 18, color: AppColors.textSecondaryLight),
           suffixIcon: IconButton(
@@ -417,7 +416,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             onPressed: onToggle,
           ),
           hintText: hint,
-          hintStyle: GoogleFonts.outfit(fontSize: 14, color: AppColors.textSecondaryLight),
+          hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondaryLight),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),

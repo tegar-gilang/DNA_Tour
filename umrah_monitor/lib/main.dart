@@ -33,8 +33,7 @@ class UmrahMonitorApp extends StatelessWidget {
       title: 'Umrah & Pilgrim Monitoring System (DNA Tour)',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system, // Supports both M3 Apple-minimalist Light & Dark
+      themeMode: ThemeMode.light, // Enforce Light mode
       routerConfig: appRouter,
     );
   }

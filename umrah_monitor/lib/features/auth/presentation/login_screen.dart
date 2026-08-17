@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../domain/user_model.dart';
@@ -60,7 +59,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final selectedRole = authState.selectedRole ?? UserRole.pilgrim;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
 
     String getRoleIdLabel() {
       if (selectedRole == UserRole.pilgrim) return 'ID Jamaah';
@@ -114,7 +113,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         const SizedBox(width: 8),
                         Text(
                           'Akses Peran: ${selectedRole.displayNameID}',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
                             color: AppColors.primaryDark,
@@ -130,7 +129,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               // Title Greeting
               Text(
                 'Assalamu\'alaikum,',
-                style: GoogleFonts.outfit(
+                style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.8,
@@ -140,7 +139,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(height: 6),
               Text(
                 'Silakan masuk untuk mengakses dasbor pemantauan, lokasi real-time, dan layanan ibadah Umrah Anda.',
-                style: GoogleFonts.outfit(
+                style: TextStyle(
                   fontSize: 15,
                   height: 1.45,
                   color: AppColors.textSecondaryLight,
@@ -162,8 +161,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.04),
-                      blurRadius: 24,
-                      offset: const Offset(0, 10),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
@@ -172,7 +171,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   children: [
                     Text(
                       idLabel,
-                      style: GoogleFonts.outfit(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -190,11 +189,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       child: TextField(
                         controller: _idController,
-                        style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w600, color: isDark ? Colors.white : AppColors.textPrimaryLight),
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: isDark ? Colors.white : AppColors.textPrimaryLight),
                         decoration: InputDecoration(
                           prefixIcon: const Icon(LucideIcons.user, size: 19, color: AppColors.primary),
                           hintText: 'Masukkan $idLabel Anda',
-                          hintStyle: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.textSecondaryLight),
+                          hintStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.textSecondaryLight),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
@@ -210,32 +209,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ),
       Padding(
         padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            gradient: const LinearGradient(
-              colors: [AppColors.primaryDark, AppColors.primary],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.4),
-                blurRadius: 24,
-                offset: const Offset(0, 10),
-              ),
-            ],
+        child: ElevatedButton(
+          onPressed: authState.isLoading ? null : _handleLogin,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            padding: const EdgeInsets.symmetric(vertical: 22),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           ),
-          child: ElevatedButton(
-            onPressed: authState.isLoading ? null : _handleLogin,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              padding: const EdgeInsets.symmetric(vertical: 22),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            ),
-            child: authState.isLoading
+          child: authState.isLoading
                 ? const SizedBox(
                     height: 24,
                     width: 24,
@@ -246,7 +227,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     children: [
                       Text(
                         'Masuk ke Dasbor',
-                        style: GoogleFonts.outfit(
+                        style: TextStyle(
                           fontSize: 19,
                           fontWeight: FontWeight.w800,
                           color: Colors.white,
@@ -259,7 +240,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
           ),
         ),
-      ),
     ],
   ),
 ),

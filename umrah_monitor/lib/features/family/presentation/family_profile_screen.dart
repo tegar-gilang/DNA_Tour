@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
@@ -22,7 +21,7 @@ class _FamilyProfileScreenState extends ConsumerState<FamilyProfileScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final user = authState.user;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
@@ -41,7 +40,7 @@ class _FamilyProfileScreenState extends ConsumerState<FamilyProfileScreen> {
                       children: [
                         Text(
                           'Akun Pemantau Keluarga',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.w800,
                             letterSpacing: -0.6,
@@ -51,7 +50,7 @@ class _FamilyProfileScreenState extends ConsumerState<FamilyProfileScreen> {
                         const SizedBox(height: 2),
                         Text(
                           'Pemantauan Real-Time & Informasi Jamaah',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
@@ -96,7 +95,7 @@ class _FamilyProfileScreenState extends ConsumerState<FamilyProfileScreen> {
                               const SizedBox(width: 8),
                               Text(
                                 'Kebijakan Keamanan Data Jamaah',
-                                style: GoogleFonts.outfit(
+                                style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
                                   color: isDark ? Colors.white : AppColors.onSecondaryContainer,
@@ -128,15 +127,15 @@ class _FamilyProfileScreenState extends ConsumerState<FamilyProfileScreen> {
                       child: Column(
                         children: [
                           SwitchListTile(
-                            title: Text('Peringatan Darurat SOS', style: GoogleFonts.outfit(fontWeight: FontWeight.w600, fontSize: 15)),
-                            subtitle: Text('Sirine darurat instan berprioritas tinggi jika terjadi insiden kritis', style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight)),
+                            title: Text('Peringatan Darurat SOS', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+                            subtitle: Text('Sirine darurat instan berprioritas tinggi jika terjadi insiden kritis', style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
                             value: _sosAlertEnabled,
                             activeThumbColor: AppColors.emergencyRed,
                             onChanged: (val) => setState(() => _sosAlertEnabled = val),
                           ),
                           SwitchListTile(
-                            title: Text('Notifikasi Check-In & Kabar Ibadah', style: GoogleFonts.outfit(fontWeight: FontWeight.w600, fontSize: 15)),
-                            subtitle: Text('Kabar saat jamaah tiba di hotel, masjid, atau bandara', style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight)),
+                            title: Text('Notifikasi Check-In & Kabar Ibadah', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+                            subtitle: Text('Kabar saat jamaah tiba di hotel, masjid, atau bandara', style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
                             value: _checkInAlertEnabled,
                             activeThumbColor: AppColors.primary,
                             onChanged: (val) => setState(() => _checkInAlertEnabled = val),
@@ -144,7 +143,7 @@ class _FamilyProfileScreenState extends ConsumerState<FamilyProfileScreen> {
                           const Divider(height: 1),
                           ListTile(
                             leading: const Icon(LucideIcons.logOut, color: AppColors.emergencyRed),
-                            title: Text('Keluar dari Akun Keluarga', style: GoogleFonts.outfit(color: AppColors.emergencyRed, fontWeight: FontWeight.w700)),
+                            title: Text('Keluar dari Akun Keluarga', style: TextStyle(color: AppColors.emergencyRed, fontWeight: FontWeight.w700)),
                             onTap: () {
                               ref.read(authProvider.notifier).logout();
                               context.go('/role_selection');
@@ -190,7 +189,7 @@ class _FamilyProfileScreenState extends ConsumerState<FamilyProfileScreen> {
           Expanded(
             child: Text(
               text,
-              style: GoogleFonts.outfit(
+              style: TextStyle(
                 fontSize: 13,
                 height: 1.35,
                 color: isAllowed ? (isDark ? Colors.white : AppColors.textPrimaryLight) : AppColors.emergencyRed,

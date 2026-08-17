@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../domain/user_model.dart';
@@ -15,7 +13,7 @@ class RoleSelectionScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
     final selectedRole = authState.selectedRole ?? UserRole.pilgrim;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
@@ -40,33 +38,33 @@ class RoleSelectionScreen extends ConsumerWidget {
                   const SizedBox(width: 12),
                   Text(
                     'DNA Tour Platform',
-                    style: GoogleFonts.outfit(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       color: isDark ? Colors.white : AppColors.textPrimaryLight,
                     ),
                   ),
                 ],
-              ).animate().fadeIn().moveY(begin: -10, end: 0),
+              ),
               const SizedBox(height: 52),
               Text(
                 'Selamat Datang',
-                style: GoogleFonts.outfit(
+                style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.8,
                   color: isDark ? Colors.white : AppColors.textPrimaryLight,
                 ),
-              ).animate().fadeIn(delay: 100.ms).moveY(begin: 10, end: 0),
+              ),
               const SizedBox(height: 8),
               Text(
                 'Pilih peran Anda untuk memuat dasbor pemantauan, izin akses, serta layanan ibadah secara terpadu dan real-time.',
-                style: GoogleFonts.outfit(
+                style: TextStyle(
                   fontSize: 15,
                   height: 1.4,
                   color: AppColors.textSecondaryLight,
                 ),
-              ).animate().fadeIn(delay: 150.ms),
+              ),
               const SizedBox(height: 32),
               Expanded(
                 child: ListView(
@@ -80,7 +78,7 @@ class RoleSelectionScreen extends ConsumerWidget {
                       icon: LucideIcons.user,
                       isSelected: selectedRole == UserRole.pilgrim,
                       onTap: () => ref.read(authProvider.notifier).selectRole(UserRole.pilgrim),
-                    ).animate().fadeIn(delay: 250.ms).moveX(begin: -15, end: 0),
+                    ),
                     const SizedBox(height: 14),
                     _buildRoleCard(
                       context: context,
@@ -90,7 +88,7 @@ class RoleSelectionScreen extends ConsumerWidget {
                       icon: LucideIcons.heartHandshake,
                       isSelected: selectedRole == UserRole.family,
                       onTap: () => ref.read(authProvider.notifier).selectRole(UserRole.family),
-                    ).animate().fadeIn(delay: 350.ms).moveX(begin: -15, end: 0),
+                    ),
                     const SizedBox(height: 14),
                     _buildRoleCard(
                       context: context,
@@ -100,7 +98,7 @@ class RoleSelectionScreen extends ConsumerWidget {
                       icon: LucideIcons.flag,
                       isSelected: selectedRole == UserRole.tourLeader,
                       onTap: () => ref.read(authProvider.notifier).selectRole(UserRole.tourLeader),
-                    ).animate().fadeIn(delay: 450.ms).moveX(begin: -15, end: 0),
+                    ),
                   ],
                 ),
               ),
@@ -122,14 +120,14 @@ class RoleSelectionScreen extends ConsumerWidget {
                     children: [
                       Text(
                         'Lanjutkan ke Halaman Masuk',
-                        style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.w800, letterSpacing: 0.3),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, letterSpacing: 0.3),
                       ),
                       const SizedBox(width: 10),
                       const Icon(LucideIcons.arrowRight, size: 22),
                     ],
                   ),
                 ),
-              ).animate().fadeIn(delay: 550.ms),
+              ),
               const SizedBox(height: 32),
             ],
           ),
@@ -147,7 +145,7 @@ class RoleSelectionScreen extends ConsumerWidget {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
@@ -194,7 +192,7 @@ class RoleSelectionScreen extends ConsumerWidget {
                 children: [
                   Text(
                     title,
-                    style: GoogleFonts.outfit(
+                    style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w700,
                       color: isSelected && !isDark ? AppColors.primaryDark : (isDark ? Colors.white : AppColors.textPrimaryLight),
@@ -203,7 +201,7 @@ class RoleSelectionScreen extends ConsumerWidget {
                   const SizedBox(height: 4),
                   Text(
                     description,
-                    style: GoogleFonts.outfit(
+                    style: TextStyle(
                       fontSize: 13,
                       height: 1.35,
                       color: isSelected && !isDark

@@ -53,8 +53,8 @@ class AppColors {
   static List<BoxShadow> get softShadowLight => [
     BoxShadow(
       color: Color(0xFF0F172A).withValues(alpha: 0.08),
-      blurRadius: 24,
-      offset: const Offset(0, 8),
+      blurRadius: 4,
+      offset: const Offset(0, 2),
     ),
     BoxShadow(
       color: Color(0xFF0F172A).withValues(alpha: 0.04),
@@ -66,8 +66,8 @@ class AppColors {
   static List<BoxShadow> get softShadowDark => [
     BoxShadow(
       color: Colors.black.withValues(alpha: 0.45),
-      blurRadius: 24,
-      offset: const Offset(0, 8),
+      blurRadius: 4,
+      offset: const Offset(0, 2),
     ),
   ];
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -161,7 +160,7 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
   }
 
   String get _tileUrl {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
     if (_currentTileIndex == 1) {
       return 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png';
     } else if (_currentTileIndex == 2 || (_currentTileIndex == 0 && isDark)) {
@@ -198,7 +197,7 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
                 ),
                 child: Text(
                   pin.title.split(' ').take(2).join(' '),
-                  style: GoogleFonts.outfit(fontSize: 10.5, fontWeight: FontWeight.w700, color: Colors.white),
+                  style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: Colors.white),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -275,7 +274,7 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(pin.title, style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.w700)),
+                      Text(pin.title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
                       const SizedBox(height: 4),
                       StatusBadge(label: pin.category.toUpperCase(), color: pin.color),
                     ],
@@ -284,7 +283,7 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
               ],
             ),
             const SizedBox(height: 14),
-            Text(pin.subtitle, style: GoogleFonts.outfit(fontSize: 14, color: AppColors.textSecondaryLight, height: 1.4)),
+            Text(pin.subtitle, style: TextStyle(fontSize: 14, color: AppColors.textSecondaryLight, height: 1.4)),
             const SizedBox(height: 20),
             Row(
               children: [
@@ -362,7 +361,7 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
   @override
   Widget build(BuildContext context) {
     final journeyState = ref.watch(journeyProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
 
     return Scaffold(
       appBar: AppBar(
@@ -427,7 +426,7 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
                           },
                           decoration: InputDecoration(
                             hintText: 'Cari Ka\'bah, Hotel, Bus, Rumah Sakit...',
-                            hintStyle: GoogleFonts.outfit(fontSize: 14, color: AppColors.textSecondaryLight),
+                            hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondaryLight),
                             border: InputBorder.none,
                             enabledBorder: InputBorder.none,
                             focusedBorder: InputBorder.none,
@@ -462,7 +461,7 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
                         child: FilterChip(
                           label: Text(
                             filter,
-                            style: GoogleFonts.outfit(
+                            style: TextStyle(
                               fontSize: 12,
                               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                               color: isSelected ? Colors.white : (isDark ? Colors.white70 : AppColors.textPrimaryLight),
@@ -557,7 +556,7 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
                           const SizedBox(width: 10),
                           Text(
                             'Panduan Navigasi Aktif',
-                            style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w700),
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
                           ),
                         ],
                       ),
@@ -599,7 +598,7 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
                       Expanded(
                         child: Text(
                           'Titik Kumpul Berikutnya: Gerbang 1 Pintu King Abdulaziz / Lobi Safa',
-                          style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondaryLight),
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondaryLight),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -653,11 +652,11 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
           children: [
             Icon(icon, size: 14, color: color),
             const SizedBox(width: 4),
-            Text(label, style: GoogleFonts.outfit(fontSize: 11, color: AppColors.textSecondaryLight)),
+            Text(label, style: TextStyle(fontSize: 11, color: AppColors.textSecondaryLight)),
           ],
         ),
         const SizedBox(height: 3),
-        Text(value, style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700)),
+        Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
       ],
     );
   }
@@ -691,7 +690,7 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
               const SizedBox(height: 18),
               Text(
                 'Daftar Titik Lokasi & Panduan (${_filteredPins.length})',
-                style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.w700),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 12),
               ConstrainedBox(
@@ -707,8 +706,8 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
                         backgroundColor: p.color.withValues(alpha: 0.15),
                         child: Icon(p.icon, color: p.color, size: 20),
                       ),
-                      title: Text(p.title, style: GoogleFonts.outfit(fontWeight: FontWeight.w600, fontSize: 14)),
-                      subtitle: Text(p.subtitle, style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight)),
+                      title: Text(p.title, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                      subtitle: Text(p.subtitle, style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
                       trailing: IconButton(
                         icon: const Icon(LucideIcons.navigation, size: 18, color: AppColors.primary),
                         onPressed: () {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
@@ -14,7 +13,7 @@ class TourLeaderProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
     final user = authState.user;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    const isDark = false;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
@@ -34,7 +33,7 @@ class TourLeaderProfileScreen extends ConsumerWidget {
                       children: [
                         Text(
                           'Profil Pembimbing & Mutawif',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.w800,
                             letterSpacing: -0.6,
@@ -44,7 +43,7 @@ class TourLeaderProfileScreen extends ConsumerWidget {
                         const SizedBox(height: 2),
                         Text(
                           'Akun Resmi, Alokasi Kloter & Laporan',
-                          style: GoogleFonts.outfit(
+                          style: TextStyle(
                             fontSize: 13,
                             color: AppColors.primary,
                             fontWeight: FontWeight.w600,
@@ -119,8 +118,8 @@ class TourLeaderProfileScreen extends ConsumerWidget {
                         ),
                         child: const Icon(LucideIcons.fileSpreadsheet, color: AppColors.primary, size: 20),
                       ),
-                      title: Text('Unduh Rekap Absensi Harian', style: GoogleFonts.outfit(fontWeight: FontWeight.w700, fontSize: 15)),
-                      subtitle: Text('Format PDF / Excel lengkap seluruh check-in', style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight)),
+                      title: Text('Unduh Rekap Absensi Harian', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                      subtitle: Text('Format PDF / Excel lengkap seluruh check-in', style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
                       trailing: const Icon(LucideIcons.download, size: 18, color: AppColors.primary),
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -141,8 +140,8 @@ class TourLeaderProfileScreen extends ConsumerWidget {
                         ),
                         child: const Icon(LucideIcons.fileText, color: AppColors.infoBlue, size: 20),
                       ),
-                      title: Text('Unduh Log Kesehatan & Insiden', style: GoogleFonts.outfit(fontWeight: FontWeight.w700, fontSize: 15)),
-                      subtitle: Text('Dokumen resmi pemeriksaan Kementerian Agama & Kemenhaj', style: GoogleFonts.outfit(fontSize: 12, color: AppColors.textSecondaryLight)),
+                      title: Text('Unduh Log Kesehatan & Insiden', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                      subtitle: Text('Dokumen resmi pemeriksaan Kementerian Agama & Kemenhaj', style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
                       trailing: const Icon(LucideIcons.download, size: 18, color: AppColors.infoBlue),
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -175,11 +174,11 @@ class TourLeaderProfileScreen extends ConsumerWidget {
                         ),
                         child: const Icon(LucideIcons.globe, color: AppColors.secondaryDark, size: 20),
                       ),
-                      title: Text('Bahasa Aplikasi', style: GoogleFonts.outfit(fontWeight: FontWeight.w600, fontSize: 15)),
+                      title: Text('Bahasa Aplikasi', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('Bahasa Indonesia', style: GoogleFonts.outfit(fontWeight: FontWeight.w700, color: AppColors.primary)),
+                          Text('Bahasa Indonesia', style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.primary)),
                           const SizedBox(width: 6),
                           const Icon(LucideIcons.chevronRight, size: 16, color: AppColors.textTertiaryLight),
                         ],
@@ -198,7 +197,7 @@ class TourLeaderProfileScreen extends ConsumerWidget {
                       ),
                       title: Text(
                         'Keluar dari Akun Pembimbing',
-                        style: GoogleFonts.outfit(color: AppColors.emergencyRed, fontWeight: FontWeight.w700, fontSize: 15),
+                        style: TextStyle(color: AppColors.emergencyRed, fontWeight: FontWeight.w700, fontSize: 15),
                       ),
                       onTap: () {
                         ref.read(authProvider.notifier).logout();
@@ -237,12 +236,12 @@ class TourLeaderProfileScreen extends ConsumerWidget {
             children: [
               Text(
                 title,
-                style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w700),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 3),
               Text(
                 subtitle,
-                style: GoogleFonts.outfit(fontSize: 13, color: AppColors.textSecondaryLight),
+                style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
               ),
             ],
           ),
