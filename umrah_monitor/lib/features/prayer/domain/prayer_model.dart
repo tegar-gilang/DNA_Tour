@@ -43,6 +43,7 @@ class PrayerModel {
 
   static const List<String> categories = [
     'Semua Kategori',
+    'Favorit Saya',
     'Persiapan Keberangkatan',
     'Ihram & Niat',
     'Masjidil Haram & Tawaf',

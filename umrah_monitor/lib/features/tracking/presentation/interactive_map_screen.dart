@@ -39,7 +39,6 @@ class InteractiveMapScreen extends ConsumerStatefulWidget {
 class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
   final MapController _mapController = MapController();
   int _currentTileIndex = 0; // 0: OpenStreetMap Standard, 1: CartoDB Voyager, 2: CartoDB Dark Matter
-  bool _showLiveTrafficOverlay = true;
   String _activeFilter = 'Semua';
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
@@ -160,7 +159,7 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
   }
 
   String get _tileUrl {
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     if (_currentTileIndex == 1) {
       return 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png';
     } else if (_currentTileIndex == 2 || (_currentTileIndex == 0 && isDark)) {
@@ -332,18 +331,6 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
     );
   }
 
-  void _toggleTraffic() {
-    setState(() {
-      _showLiveTrafficOverlay = !_showLiveTrafficOverlay;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Lapisan Keramaian Jamaah: ${_showLiveTrafficOverlay ? "AKTIF" : "NONAKTIF"}'),
-        duration: const Duration(seconds: 1),
-      ),
-    );
-  }
-
   void _recenterLocation() {
     _mapController.move(_centerMakkah, 16.0);
     ScaffoldMessenger.of(context).showSnackBar(
@@ -361,7 +348,7 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
   @override
   Widget build(BuildContext context) {
     final journeyState = ref.watch(journeyProvider);
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -507,14 +494,7 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
                   iconColor: AppColors.primary,
                   onTap: _toggleMapType,
                 ),
-                const SizedBox(height: 10),
-                _buildFab(
-                  icon: LucideIcons.car,
-                  tooltip: 'Info Keramaian (${_showLiveTrafficOverlay ? "AKTIF" : "NONAKTIF"})',
-                  color: _showLiveTrafficOverlay ? AppColors.primary : (isDark ? AppColors.cardDark : AppColors.cardLight),
-                  iconColor: _showLiveTrafficOverlay ? Colors.white : AppColors.textSecondaryLight,
-                  onTap: _toggleTraffic,
-                ),
+
                 const SizedBox(height: 10),
                 _buildFab(
                   icon: LucideIcons.navigation,

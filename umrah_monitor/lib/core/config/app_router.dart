@@ -10,7 +10,6 @@ import '../../features/pilgrim/presentation/pilgrim_schedule_screen.dart';
 import '../../features/pilgrim/presentation/pilgrim_profile_screen.dart';
 import '../../features/family/presentation/family_shell.dart';
 import '../../features/family/presentation/family_home_screen.dart';
-import '../../features/family/presentation/family_location_screen.dart';
 import '../../features/family/presentation/family_updates_screen.dart';
 import '../../features/family/presentation/family_profile_screen.dart';
 import '../../features/tour_leader/presentation/tour_leader_shell.dart';
@@ -235,7 +234,7 @@ final appRouter = GoRouter(
       path: '/prayer_detail/:id',
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) {
-        final prayer = state.extra as PrayerModel;
+        final prayer = (state.extra is PrayerModel) ? (state.extra as PrayerModel) : PrayerModel.masterCollection.first;
         return PrayerDetailScreen(prayer: prayer);
       },
     ),

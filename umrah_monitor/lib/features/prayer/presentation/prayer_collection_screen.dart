@@ -1,32 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../../auth/presentation/auth_provider.dart';
+import '../../auth/domain/user_model.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
 import '../domain/prayer_model.dart';
+import 'prayer_audio_provider.dart';
+import 'prayer_bookmarks_provider.dart';
 
-class PrayerCollectionScreen extends StatefulWidget {
+class PrayerCollectionScreen extends ConsumerStatefulWidget {
   const PrayerCollectionScreen({super.key});
 
   @override
-  State<PrayerCollectionScreen> createState() => _PrayerCollectionScreenState();
+  ConsumerState<PrayerCollectionScreen> createState() => _PrayerCollectionScreenState();
 }
 
-class _PrayerCollectionScreenState extends State<PrayerCollectionScreen> {
-  String _selectedCategory = 'All Categories';
+class _PrayerCollectionScreenState extends ConsumerState<PrayerCollectionScreen> {
+  String _selectedCategory = 'Semua Kategori';
   String _searchQuery = '';
   final _searchController = TextEditingController();
   final List<PrayerModel> _prayers = List.from(PrayerModel.masterCollection);
 
-  void _toggleBookmark(int index) {
-    setState(() {
-      _prayers[index] = _prayers[index].copyWith(isBookmarked: !_prayers[index].isBookmarked);
-    });
+  void _toggleBookmark(String prayerId) {
+    ref.read(prayerBookmarksProvider.notifier).toggleBookmark(prayerId);
+    final isBookmarked = ref.read(prayerBookmarksProvider).contains(prayerId);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(_prayers[index].isBookmarked ? 'Added to Bookmarks & Favorites' : 'Removed from Bookmarks'),
+        content: Text(isBookmarked ? '⭐ Doa berhasil disimpan ke Favorit Saya' : 'Doa dihapus dari Favorit'),
         duration: const Duration(seconds: 1),
       ),
     );
@@ -34,10 +37,18 @@ class _PrayerCollectionScreenState extends State<PrayerCollectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authProvider);
+    final audioState = ref.watch(prayerAudioProvider);
+    final bookmarkedIds = ref.watch(prayerBookmarksProvider);
+    final currentRole = authState.selectedRole ?? authState.user?.role ?? UserRole.pilgrim;
     final filteredPrayers = _prayers.where((p) {
-      if (_selectedCategory != 'All Categories' && p.category != _selectedCategory) {
+      final isBookmarked = bookmarkedIds.contains(p.id);
+      if (_selectedCategory == 'Favorit Saya') {
+        if (!isBookmarked) return false;
+      } else if (_selectedCategory != 'Semua Kategori' && p.category != _selectedCategory) {
         return false;
       }
+
       if (_searchQuery.isNotEmpty &&
           !p.title.toLowerCase().contains(_searchQuery.toLowerCase()) &&
           !p.latin.toLowerCase().contains(_searchQuery.toLowerCase()) &&
@@ -91,6 +102,13 @@ class _PrayerCollectionScreenState extends State<PrayerCollectionScreen> {
                       return Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: ChoiceChip(
+                          avatar: cat == 'Favorit Saya'
+                              ? Icon(
+                                  Icons.bookmark_rounded,
+                                  size: 16,
+                                  color: isSelected ? Colors.white : AppColors.secondaryDark,
+                                )
+                              : null,
                           label: Text(cat, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
                           selected: isSelected,
                           onSelected: (val) => setState(() => _selectedCategory = cat),
@@ -112,9 +130,25 @@ class _PrayerCollectionScreenState extends State<PrayerCollectionScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(LucideIcons.bookOpen, size: 64, color: AppColors.textTertiaryLight),
+                        Icon(
+                          _selectedCategory == 'Favorit Saya' ? Icons.bookmark_rounded : LucideIcons.bookOpen,
+                          size: 64,
+                          color: AppColors.textTertiaryLight,
+                        ),
                         const SizedBox(height: 16),
-                        Text('No doa matches your query', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                        Text(
+                          _selectedCategory == 'Favorit Saya'
+                              ? 'Belum ada doa favorit yang disimpan'
+                              : 'Tidak ada doa yang sesuai pencarian',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                        if (_selectedCategory == 'Favorit Saya') ...[
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Ketuk ikon bookmark pada doa untuk menyimpannya di sini.',
+                            style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
+                          ),
+                        ],
                       ],
                     ),
                   )
@@ -123,14 +157,14 @@ class _PrayerCollectionScreenState extends State<PrayerCollectionScreen> {
                     itemCount: filteredPrayers.length,
                     itemBuilder: (context, index) {
                       final p = filteredPrayers[index];
-                      final masterIdx = _prayers.indexWhere((item) => item.id == p.id);
+                      final isBookmarked = bookmarkedIds.contains(p.id);
+                      final isThisActive = audioState.activePrayerId == p.id;
+                      final isThisPlaying = isThisActive && audioState.isPlaying;
 
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 14),
                         child: AppleCard(
-                          onTap: () {
-                            context.push('/prayer_detail/${p.id}', extra: p);
-                          },
+                          onTap: null,
                           padding: const EdgeInsets.all(18),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,11 +177,11 @@ class _PrayerCollectionScreenState extends State<PrayerCollectionScreen> {
                                     children: [
                                       IconButton(
                                         icon: Icon(
-                                          p.isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded,
-                                          color: p.isBookmarked ? AppColors.secondaryDark : AppColors.textTertiaryLight,
+                                          isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded,
+                                          color: isBookmarked ? AppColors.secondaryDark : AppColors.textTertiaryLight,
                                           size: 22,
                                         ),
-                                        onPressed: () => _toggleBookmark(masterIdx),
+                                        onPressed: () => _toggleBookmark(p.id),
                                         constraints: const BoxConstraints(),
                                         padding: const EdgeInsets.all(4),
                                       ),
@@ -198,16 +232,49 @@ class _PrayerCollectionScreenState extends State<PrayerCollectionScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    children: [
-                                      const Icon(LucideIcons.volume2, size: 16, color: AppColors.secondaryDark),
-                                      const SizedBox(width: 6),
-                                      Text('Audio Available', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.secondaryDark)),
-                                    ],
-                                  ),
-                                  Text(
-                                    'Read Full & Virtues →',
-                                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primary),
+                                  InkWell(
+                                    onTap: () {
+                                      final isMutawif = currentRole == UserRole.tourLeader;
+                                      ref.read(prayerAudioProvider.notifier).playPrayer(p, isBroadcasting: isMutawif);
+                                    },
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                      decoration: BoxDecoration(
+                                        color: isThisPlaying
+                                            ? (audioState.isMutawifBroadcasting ? AppColors.emergencyRed : AppColors.primary)
+                                            : AppColors.secondaryDark.withValues(alpha: 0.12),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: isThisPlaying
+                                              ? (audioState.isMutawifBroadcasting ? AppColors.emergencyRed : AppColors.primary)
+                                              : AppColors.secondaryDark.withValues(alpha: 0.3),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            isThisPlaying
+                                                ? LucideIcons.pause
+                                                : (isThisActive && audioState.isMutawifBroadcasting ? LucideIcons.radio : LucideIcons.volume2),
+                                            size: 14,
+                                            color: isThisPlaying ? Colors.white : AppColors.secondaryDark,
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            isThisPlaying
+                                                ? (audioState.isMutawifBroadcasting ? '🔴 SIARAN MUTAWIF' : 'Memutar Audio...')
+                                                : (currentRole == UserRole.tourLeader ? 'Siarkan Audio' : 'Audio Available'),
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700,
+                                              color: isThisPlaying ? Colors.white : AppColors.secondaryDark,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -218,6 +285,83 @@ class _PrayerCollectionScreenState extends State<PrayerCollectionScreen> {
                     },
                   ),
           ),
+
+          // Sticky Bottom Audio Player Bar
+          if (audioState.activePrayerId != null)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                boxShadow: AppColors.softShadowLight,
+                border: Border(top: BorderSide(color: AppColors.borderLight)),
+              ),
+              child: Row(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      ref.read(prayerAudioProvider.notifier).togglePlayPause();
+                    },
+                    borderRadius: BorderRadius.circular(24),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: audioState.isMutawifBroadcasting ? AppColors.emergencyRed : AppColors.primary,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: (audioState.isMutawifBroadcasting ? AppColors.emergencyRed : AppColors.primary).withValues(alpha: 0.4),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        audioState.isPlaying ? LucideIcons.pause : (audioState.isMutawifBroadcasting ? LucideIcons.radio : LucideIcons.play),
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                audioState.isMutawifBroadcasting
+                                    ? '🔴 SIARAN LIVE MUTAWIF: ${audioState.activePrayerTitle}'
+                                    : 'AUDIO DOA: ${audioState.activePrayerTitle}',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  color: audioState.isMutawifBroadcasting ? AppColors.emergencyRed : AppColors.primary,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            Text('${audioState.positionText} / ${audioState.durationText}', style: const TextStyle(fontSize: 11, color: AppColors.textSecondaryLight)),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        LinearProgressIndicator(
+                          value: audioState.isPlaying ? audioState.progress : 0.0,
+                          backgroundColor: AppColors.borderLight,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            audioState.isMutawifBroadcasting ? AppColors.emergencyRed : AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );
