@@ -20,7 +20,6 @@ class PrayerDetailScreen extends ConsumerStatefulWidget {
 
 class _PrayerDetailScreenState extends ConsumerState<PrayerDetailScreen> {
   bool _isReadingMode = false;
-  double _arabicFontSize = 26.0;
   bool _isPlaying = false;
   final double _audioProgress = 0.35;
 
@@ -96,28 +95,6 @@ class _PrayerDetailScreenState extends ConsumerState<PrayerDetailScreen> {
                 ),
               ),
 
-            // Font Size Controls Banner
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              color: Theme.of(context).cardColor,
-              child: Row(
-                children: [
-                  const Icon(LucideIcons.type, size: 18, color: AppColors.primary),
-                  const SizedBox(width: 10),
-                  Text('Arabic Font Size: ${_arabicFontSize.toInt()}px', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                  Expanded(
-                    child: Slider(
-                      value: _arabicFontSize,
-                      min: 18.0,
-                      max: 42.0,
-                      activeColor: AppColors.primary,
-                      onChanged: (val) => setState(() => _arabicFontSize = val),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
             // Main Prayer Body
             Expanded(
               child: SingleChildScrollView(
@@ -151,7 +128,7 @@ class _PrayerDetailScreenState extends ConsumerState<PrayerDetailScreen> {
                       child: Text(
                         widget.prayer.arabic,
                         style: GoogleFonts.amiri(
-                          fontSize: _arabicFontSize,
+                          fontSize: 26,
                           height: 2.0,
                           fontWeight: FontWeight.w700,
                           color: Theme.of(context).textTheme.titleLarge?.color,
