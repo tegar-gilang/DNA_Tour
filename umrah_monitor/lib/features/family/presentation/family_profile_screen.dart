@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
+import '../../../../core/theme/theme_provider.dart';
 import '../../auth/presentation/auth_provider.dart';
 
 class FamilyProfileScreen extends ConsumerStatefulWidget {
@@ -21,7 +22,8 @@ class _FamilyProfileScreenState extends ConsumerState<FamilyProfileScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final user = authState.user;
-    const isDark = false;
+    final currentThemeMode = ref.watch(themeModeProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
@@ -110,7 +112,6 @@ class _FamilyProfileScreenState extends ConsumerState<FamilyProfileScreen> {
                           _buildPermItem('Menghubungi & berkirim pesan dengan Mutawif pendamping', true, isDark),
                           Divider(height: 20, color: isDark ? AppColors.borderDark : AppColors.secondary.withValues(alpha: 0.2)),
                           _buildPermItem('Tidak dapat mengubah data pribadi atau profil medis jamaah (Hanya Baca)', false, isDark),
-                          _buildPermItem('Tidak dapat memodifikasi jadwal, hotel, atau alokasi bus', false, isDark),
                         ],
                       ),
                     ),
@@ -127,15 +128,29 @@ class _FamilyProfileScreenState extends ConsumerState<FamilyProfileScreen> {
                       child: Column(
                         children: [
                           SwitchListTile(
-                            title: Text('Peringatan Darurat SOS', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
-                            subtitle: Text('Sirine darurat instan berprioritas tinggi jika terjadi insiden kritis', style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
+                            secondary: const Icon(LucideIcons.moon, color: AppColors.secondaryDark, size: 20),
+                            title: const Text('Mode Gelap (Dark Mode)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+                            subtitle: const Text('Sesuaikan tema warna tampilan aplikasi', style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
+                            value: currentThemeMode == ThemeMode.dark,
+                            activeThumbColor: AppColors.primary,
+                            onChanged: (val) {
+                              ref.read(themeModeProvider.notifier).setThemeMode(val ? ThemeMode.dark : ThemeMode.light);
+                            },
+                          ),
+                          const Divider(height: 1),
+                          SwitchListTile(
+                            secondary: const Icon(LucideIcons.alertTriangle, color: AppColors.secondaryDark, size: 20),
+                            title: const Text('Peringatan Darurat SOS', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+                            subtitle: const Text('Sirine darurat instan berprioritas tinggi jika terjadi insiden kritis', style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
                             value: _sosAlertEnabled,
-                            activeThumbColor: AppColors.emergencyRed,
+                            activeThumbColor: AppColors.primary,
                             onChanged: (val) => setState(() => _sosAlertEnabled = val),
                           ),
+                          const Divider(height: 1),
                           SwitchListTile(
-                            title: Text('Notifikasi Check-In & Kabar Ibadah', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
-                            subtitle: Text('Kabar saat jamaah tiba di hotel, masjid, atau bandara', style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
+                            secondary: const Icon(LucideIcons.bellRing, color: AppColors.secondaryDark, size: 20),
+                            title: const Text('Notifikasi Check-In & Kabar Ibadah', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+                            subtitle: const Text('Kabar saat jamaah tiba di hotel, masjid, atau bandara', style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
                             value: _checkInAlertEnabled,
                             activeThumbColor: AppColors.primary,
                             onChanged: (val) => setState(() => _checkInAlertEnabled = val),

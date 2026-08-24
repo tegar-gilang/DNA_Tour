@@ -68,7 +68,7 @@ class _PilgrimManagementScreenState extends ConsumerState<PilgrimManagementScree
 
   @override
   Widget build(BuildContext context) {
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final allPilgrims = ref.watch(pilgrimAttendanceProvider);
     final allIncidents = ref.watch(incidentProvider);
     final activeIncidents = allIncidents.where((i) => i.status != 'resolved').toList();

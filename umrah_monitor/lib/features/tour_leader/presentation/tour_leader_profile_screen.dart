@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
+import '../../../../core/theme/theme_provider.dart';
 import '../../auth/presentation/auth_provider.dart';
 
 class TourLeaderProfileScreen extends ConsumerWidget {
@@ -13,7 +14,8 @@ class TourLeaderProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
     final user = authState.user;
-    const isDark = false;
+    final currentThemeMode = ref.watch(themeModeProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
@@ -96,8 +98,6 @@ class TourLeaderProfileScreen extends ConsumerWidget {
                     _buildGroupRow('Kloter 4 Al-Barakah', '45 Jamaah Terdaftar • Fase Aktif Makkah', AppColors.primary),
                     const Divider(height: 24),
                     _buildGroupRow('Hotel Swissôtel Al Maqam Makkah', '23 Kamar Dialokasikan • Lantai 14 Check-In', AppColors.secondaryDark),
-                    const Divider(height: 24),
-                    _buildGroupRow('Bus VIP #08 Al-Safwa', 'Sopir: Ahmad Al-Ghamdi (+966 55 998 812)', AppColors.infoBlue),
                   ],
                 ),
               ),
@@ -184,6 +184,24 @@ class TourLeaderProfileScreen extends ConsumerWidget {
                         ],
                       ),
                       onTap: () {},
+                    ),
+                    const Divider(height: 1),
+                    SwitchListTile(
+                      secondary: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(LucideIcons.moon, color: AppColors.primary, size: 20),
+                      ),
+                      title: const Text('Mode Gelap (Dark Mode)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+                      subtitle: const Text('Sesuaikan tema warna tampilan aplikasi', style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
+                      value: currentThemeMode == ThemeMode.dark,
+                      activeThumbColor: AppColors.primary,
+                      onChanged: (val) {
+                        ref.read(themeModeProvider.notifier).setThemeMode(val ? ThemeMode.dark : ThemeMode.light);
+                      },
                     ),
                     const Divider(height: 1),
                     ListTile(

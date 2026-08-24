@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
+import '../../../../core/theme/theme_provider.dart';
 import '../../auth/presentation/auth_provider.dart';
 
 class PilgrimProfileScreen extends ConsumerStatefulWidget {
@@ -14,7 +15,6 @@ class PilgrimProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
-  bool _darkMode = false;
   bool _notificationsEnabled = true;
   bool _locationPermissionEnabled = true;
   String _selectedLanguage = 'English (Bahasa Indonesia)';
@@ -146,7 +146,8 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final user = authState.user;
-    const isDark = false;
+    final currentThemeMode = ref.watch(themeModeProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
@@ -329,11 +330,10 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                     secondary: const Icon(LucideIcons.moon, color: AppColors.secondaryDark, size: 20),
                     title: Text('Mode Gelap (Dark Mode)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                     subtitle: Text('Sesuaikan tema warna tampilan aplikasi', style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
-                    value: _darkMode,
+                    value: currentThemeMode == ThemeMode.dark,
                     activeThumbColor: AppColors.primary,
                     onChanged: (val) {
-                      setState(() => _darkMode = val);
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Preferensi tema diperbarui.')));
+                      ref.read(themeModeProvider.notifier).setThemeMode(val ? ThemeMode.dark : ThemeMode.light);
                     },
                   ),
                   const Divider(height: 1, thickness: 0.5),

@@ -254,7 +254,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final filtered = _filteredNotifications;
 
     // Group items by dateGroup

@@ -59,7 +59,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final selectedRole = authState.selectedRole ?? UserRole.pilgrim;
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     String getRoleIdLabel() {
       if (selectedRole == UserRole.pilgrim) return 'ID Jamaah';

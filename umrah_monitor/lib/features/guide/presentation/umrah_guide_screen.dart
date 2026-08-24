@@ -178,7 +178,7 @@ class _UmrahGuideScreenState extends State<UmrahGuideScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -305,7 +305,7 @@ class _ExpandableStepCardState extends State<_ExpandableStepCard> {
 
   @override
   Widget build(BuildContext context) {
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return IntrinsicHeight(
       child: Row(

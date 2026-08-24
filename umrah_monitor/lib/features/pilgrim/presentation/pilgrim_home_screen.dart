@@ -39,7 +39,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
     final authState = ref.watch(authProvider);
     final journeyState = ref.watch(journeyProvider);
     final user = authState.user;
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final now = DateTime.now();
     final nextPrayer = PrayerScheduleUtils.getNextPrayer(now);
     final countdownText = PrayerScheduleUtils.formatCountdown(nextPrayer.targetTime, spaced: true);
@@ -558,7 +558,7 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
     required Color color,
     required VoidCallback onTap,
   }) {
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),

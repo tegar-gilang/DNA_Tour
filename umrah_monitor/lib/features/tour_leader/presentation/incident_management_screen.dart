@@ -17,7 +17,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
 
   @override
   Widget build(BuildContext context) {
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final allIncidents = ref.watch(incidentProvider);
     
     final filteredIncidents = allIncidents.where((inc) {
@@ -323,7 +323,7 @@ class _IncidentManagementScreenState extends ConsumerState<IncidentManagementScr
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        const isDark = false;
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         return Container(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom + 20,

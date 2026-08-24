@@ -144,7 +144,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
-        const isDark = false;
+        final isDark = Theme.of(ctx).brightness == Brightness.dark;
         return StatefulBuilder(
           builder: (ctx, setModalState) {
             return Container(
@@ -442,7 +442,7 @@ class _TourLeaderScheduleScreenState extends ConsumerState<TourLeaderScheduleScr
 
   @override
   Widget build(BuildContext context) {
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final total = _agendaList.length;
 
     return Scaffold(

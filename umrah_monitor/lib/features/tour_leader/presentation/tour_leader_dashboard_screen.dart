@@ -20,7 +20,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
     final presentCount = allPilgrims.where((p) => p.status == 'checked_in').length;
     final totalCount = allPilgrims.length;
     final progressValue = totalCount > 0 ? presentCount / totalCount : 0.0;
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
@@ -389,7 +389,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
       builder: (context) {
         return StatefulBuilder(
           builder: (ctx, setModalState) {
-            const isDark = false;
+            final isDark = Theme.of(ctx).brightness == Brightness.dark;
             return Container(
               padding: EdgeInsets.only(
                 bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,

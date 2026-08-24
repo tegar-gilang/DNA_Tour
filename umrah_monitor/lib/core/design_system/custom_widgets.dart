@@ -27,7 +27,7 @@ class AppleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardColor = color ?? (isDark ? AppColors.cardDark : AppColors.cardLight);
 
     return Container(
@@ -121,7 +121,7 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.only(bottom: 14, top: 6),
       child: Row(
@@ -180,7 +180,7 @@ class GlassContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       padding: padding,
@@ -213,7 +213,7 @@ class AppleGlassNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       decoration: BoxDecoration(
@@ -241,7 +241,7 @@ class AppleGlassNavbar extends StatelessWidget {
             children: List.generate(items.length, (index) {
               final item = items[index];
               final isSelected = currentIndex == index;
-              final color = isSelected ? AppColors.primary : AppColors.textSecondaryLight;
+              final color = isSelected ? AppColors.primary : (isDark ? Colors.white70 : AppColors.textSecondaryLight);
 
               return InkWell(
                 onTap: () => onItemSelected(index),

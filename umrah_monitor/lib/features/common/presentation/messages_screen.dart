@@ -199,7 +199,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (_activeConversation != null) {
       return _buildChatRoomView(context, isDark);

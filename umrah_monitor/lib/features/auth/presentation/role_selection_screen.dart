@@ -13,7 +13,7 @@ class RoleSelectionScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
     final selectedRole = authState.selectedRole ?? UserRole.pilgrim;
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
@@ -145,7 +145,7 @@ class RoleSelectionScreen extends ConsumerWidget {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),

@@ -21,9 +21,10 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
     final authState = ref.watch(authProvider);
     final user = authState.user;
     final journeyState = ref.watch(journeyProvider);
-    const isDark = false;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
@@ -155,8 +156,6 @@ class _FamilyHomeScreenState extends ConsumerState<FamilyHomeScreen> {
                       _buildDetailRow(icon: LucideIcons.building, label: 'Hotel Penginapan Makkah', value: 'Swissôtel Al Maqam • Kamar 1408'),
                       _buildDivider(),
                       _buildDetailRow(icon: LucideIcons.building2, label: 'Hotel Penginapan Madinah', value: 'Oberoi Madinah • Kamar 512'),
-                      _buildDivider(),
-                      _buildDetailRow(icon: LucideIcons.bus, label: 'Bus Alokasi', value: 'Bus #08 Al-Safwa VIP Express'),
                       _buildDivider(),
                       _buildDetailRow(icon: LucideIcons.planeTakeoff, label: 'Tanggal Keberangkatan', value: '10 Juli 2026 (CGK - JED)'),
                       _buildDivider(),
