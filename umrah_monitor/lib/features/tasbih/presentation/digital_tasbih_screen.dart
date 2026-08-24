@@ -1,53 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
+import '../domain/tasbih_model.dart';
+import 'tasbih_provider.dart';
 
-class DigitalTasbihScreen extends StatefulWidget {
+class DigitalTasbihScreen extends ConsumerStatefulWidget {
   const DigitalTasbihScreen({super.key});
 
   @override
-  State<DigitalTasbihScreen> createState() => _DigitalTasbihScreenState();
+  ConsumerState<DigitalTasbihScreen> createState() => _DigitalTasbihScreenState();
 }
 
-class _DigitalTasbihScreenState extends State<DigitalTasbihScreen> {
-  int _counter = 0;
-  int _target = 33;
-  String _selectedDzikir = 'Subhanallah (سُبْحَانَ ٱللَّٰهِ)';
-
-  final List<String> _dzikirList = [
-    'Subhanallah (سُبْحَانَ ٱللَّٰهِ)',
-    'Alhamdulillah (ٱلْحَمْدُ لِلَّٰهِ)',
-    'Allahu Akbar (ٱللَّٰهُ أَكْبَرُ)',
-    'Laa Ilaaha Illallah (لَا إِلَٰهَ إِلَّا ٱللَّٰهُ)',
-    'Astaghfirullah (أَسْتَغْفِرُ ٱللَّٰهَ)',
-    'Shalawat Nabi (اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ)',
-    'Custom / Bebas',
-  ];
-
-  final List<int> _targetOptions = [33, 99, 100, 500, 1000];
-
-  void _increment() {
+class _DigitalTasbihScreenState extends ConsumerState<DigitalTasbihScreen> {
+  void _handleIncrement(TasbihModel tasbih) {
     HapticFeedback.lightImpact();
     SystemSound.play(SystemSoundType.click);
-    setState(() {
-      _counter++;
-      if (_counter == _target) {
-        HapticFeedback.heavyImpact();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Target $_target tercapai untuk $_selectedDzikir! Alhamdulillah.'),
-            backgroundColor: AppColors.successGreen,
-            duration: const Duration(seconds: 2),
-          ),
-        );
-      }
-    });
+    ref.read(tasbihProvider.notifier).increment();
+
+    if (tasbih.counter + 1 == tasbih.target) {
+      HapticFeedback.heavyImpact();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Target ${tasbih.target} tercapai untuk ${tasbih.selectedDzikir}! Alhamdulillah.'),
+          backgroundColor: AppColors.successGreen,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
-  void _reset() {
+  void _showResetDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -58,7 +44,7 @@ class _DigitalTasbihScreenState extends State<DigitalTasbihScreen> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              setState(() => _counter = 0);
+              ref.read(tasbihProvider.notifier).reset();
             },
             child: const Text('Atur Ulang'),
           ),
@@ -69,7 +55,7 @@ class _DigitalTasbihScreenState extends State<DigitalTasbihScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final progress = _target > 0 ? (_counter / _target).clamp(0.0, 1.0) : 0.0;
+    final tasbih = ref.watch(tasbihProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -112,7 +98,7 @@ class _DigitalTasbihScreenState extends State<DigitalTasbihScreen> {
                         Text('Dzikir Pilihan:', style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondaryLight)),
                         const SizedBox(height: 8),
                         DropdownButtonFormField<String>(
-                          initialValue: _selectedDzikir,
+                          initialValue: tasbih.selectedDzikir,
                           isExpanded: true,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
@@ -129,14 +115,16 @@ class _DigitalTasbihScreenState extends State<DigitalTasbihScreen> {
                             ),
                             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           ),
-                          items: _dzikirList.map((d) {
+                          items: tasbih.dzikirList.map((d) {
                             return DropdownMenuItem(
                               value: d,
                               child: Text(d, style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimaryLight)),
                             );
                           }).toList(),
                           onChanged: (val) {
-                            if (val != null) setState(() => _selectedDzikir = val);
+                            if (val != null) {
+                              ref.read(tasbihProvider.notifier).setSelectedDzikir(val);
+                            }
                           },
                         ),
                         const SizedBox(height: 16),
@@ -150,14 +138,14 @@ class _DigitalTasbihScreenState extends State<DigitalTasbihScreen> {
                                 scrollDirection: Axis.horizontal,
                                 physics: const BouncingScrollPhysics(),
                                 child: Row(
-                                  children: _targetOptions.map((t) {
-                                    final isSel = _target == t;
+                                  children: tasbih.targetOptions.map((t) {
+                                    final isSel = tasbih.target == t;
                                     return Padding(
                                       padding: const EdgeInsets.only(left: 8),
                                       child: ChoiceChip(
                                         label: Text('$t'),
                                         selected: isSel,
-                                        onSelected: (val) => setState(() => _target = t),
+                                        onSelected: (val) => ref.read(tasbihProvider.notifier).setTarget(t),
                                         selectedColor: AppColors.primary,
                                         backgroundColor: Colors.transparent,
                                         shape: RoundedRectangleBorder(
@@ -195,7 +183,7 @@ class _DigitalTasbihScreenState extends State<DigitalTasbihScreen> {
                       Material(
                         color: Colors.transparent,
                         child: InkWell(
-                          onTap: _counter > 0 ? () => setState(() => _counter--) : null,
+                          onTap: tasbih.counter > 0 ? () => ref.read(tasbihProvider.notifier).decrement() : null,
                           borderRadius: BorderRadius.circular(22),
                           child: Container(
                             width: 68,
@@ -225,11 +213,11 @@ class _DigitalTasbihScreenState extends State<DigitalTasbihScreen> {
                       ),
                       const SizedBox(width: 26),
 
-                      // Center Giant Circle Counter (Without 'KETUK UNTUK MENGHITUNG' text)
+                      // Center Giant Circle Counter
                       Flexible(
                         child: FittedBox(
                           child: GestureDetector(
-                            onTap: _increment,
+                            onTap: () => _handleIncrement(tasbih),
                             child: Container(
                               width: 244,
                               height: 244,
@@ -255,7 +243,7 @@ class _DigitalTasbihScreenState extends State<DigitalTasbihScreen> {
                                     width: 228,
                                     height: 228,
                                     child: CircularProgressIndicator(
-                                      value: progress,
+                                      value: tasbih.progress,
                                       strokeWidth: 10,
                                       backgroundColor: AppColors.primary.withValues(alpha: 0.08),
                                       valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
@@ -265,7 +253,7 @@ class _DigitalTasbihScreenState extends State<DigitalTasbihScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        '$_counter',
+                                        '${tasbih.counter}',
                                         style: GoogleFonts.poppins(
                                           fontSize: 78,
                                           fontWeight: FontWeight.w900,
@@ -274,7 +262,7 @@ class _DigitalTasbihScreenState extends State<DigitalTasbihScreen> {
                                         ),
                                       ),
                                       Text(
-                                        '/ $_target',
+                                        '/ ${tasbih.target}',
                                         style: GoogleFonts.poppins(
                                           fontSize: 20,
                                           fontWeight: FontWeight.w700,
@@ -291,11 +279,11 @@ class _DigitalTasbihScreenState extends State<DigitalTasbihScreen> {
                       ),
                       const SizedBox(width: 26),
 
-                      // Right Box: Atur Ulang (rotateCcw) icon enlarged (68x68, icon 32)
+                      // Right Box: Atur Ulang (rotateCcw) icon enlarged
                       Material(
                         color: Colors.transparent,
                         child: InkWell(
-                          onTap: _reset,
+                          onTap: _showResetDialog,
                           borderRadius: BorderRadius.circular(22),
                           child: Container(
                             width: 68,

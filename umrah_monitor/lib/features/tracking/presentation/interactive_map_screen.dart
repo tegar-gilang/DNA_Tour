@@ -159,10 +159,9 @@ class _InteractiveMapScreenState extends ConsumerState<InteractiveMapScreen> {
   }
 
   String get _tileUrl {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     if (_currentTileIndex == 1) {
       return 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png';
-    } else if (_currentTileIndex == 2 || (_currentTileIndex == 0 && isDark)) {
+    } else if (_currentTileIndex == 2) {
       return 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png';
     }
     return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';

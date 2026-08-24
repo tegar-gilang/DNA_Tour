@@ -3,7 +3,9 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'app_colors.dart';
 
-class AppleCard extends StatelessWidget {
+import 'package:flutter/services.dart';
+
+class AppleCard extends StatefulWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
   final VoidCallback? onTap;
@@ -26,21 +28,66 @@ class AppleCard extends StatelessWidget {
   });
 
   @override
+  State<AppleCard> createState() => _AppleCardState();
+}
+
+class _AppleCardState extends State<AppleCard> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 90),
+      reverseDuration: const Duration(milliseconds: 140),
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.982).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onTapDown(TapDownDetails details) {
+    if (widget.onTap != null) {
+      _controller.forward();
+    }
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    if (widget.onTap != null) {
+      _controller.reverse();
+    }
+  }
+
+  void _onTapCancel() {
+    if (widget.onTap != null) {
+      _controller.reverse();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardColor = color ?? (isDark ? AppColors.cardDark : AppColors.cardLight);
+    final cardColor = widget.color ?? (isDark ? AppColors.cardDark : AppColors.cardLight);
 
-    return Container(
+    final content = Container(
       decoration: BoxDecoration(
-        color: gradient == null ? cardColor : null,
-        gradient: gradient,
-        borderRadius: borderRadius ?? BorderRadius.circular(20),
-        border: border ??
+        color: widget.gradient == null ? cardColor : null,
+        gradient: widget.gradient,
+        borderRadius: widget.borderRadius ?? BorderRadius.circular(20),
+        border: widget.border ??
             Border.all(
               color: isDark ? AppColors.borderDark : AppColors.borderLight,
-              width: 1.5, // Crisp 1.5px border for clear container boundary
+              width: 1.5,
             ),
-        boxShadow: hasShadow
+        boxShadow: widget.hasShadow
             ? [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.07),
@@ -53,11 +100,132 @@ class AppleCard extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: onTap,
-          borderRadius: borderRadius ?? BorderRadius.circular(20),
+          onTap: widget.onTap != null
+              ? () {
+                  HapticFeedback.lightImpact();
+                  widget.onTap!();
+                }
+              : null,
+          splashFactory: InkSparkle.splashFactory,
+          borderRadius: widget.borderRadius ?? BorderRadius.circular(20),
           child: Padding(
-            padding: padding,
-            child: child,
+            padding: widget.padding,
+            child: widget.child,
+          ),
+        ),
+      ),
+    );
+
+    if (widget.onTap == null) return content;
+
+    return GestureDetector(
+      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+      onTapCancel: _onTapCancel,
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: content,
+      ),
+    );
+  }
+}
+
+class SmoothButton extends StatefulWidget {
+  final Widget child;
+  final VoidCallback? onTap;
+  final BorderRadius? borderRadius;
+  final EdgeInsetsGeometry? padding;
+  final Color? color;
+  final Border? border;
+  final Gradient? gradient;
+
+  const SmoothButton({
+    super.key,
+    required this.child,
+    this.onTap,
+    this.borderRadius,
+    this.padding,
+    this.color,
+    this.border,
+    this.gradient,
+  });
+
+  @override
+  State<SmoothButton> createState() => _SmoothButtonState();
+}
+
+class _SmoothButtonState extends State<SmoothButton> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 90),
+      reverseDuration: const Duration(milliseconds: 140),
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onTapDown(TapDownDetails details) {
+    if (widget.onTap != null) {
+      _controller.forward();
+    }
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    if (widget.onTap != null) {
+      _controller.reverse();
+    }
+  }
+
+  void _onTapCancel() {
+    if (widget.onTap != null) {
+      _controller.reverse();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+      onTapCancel: _onTapCancel,
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: Container(
+          decoration: BoxDecoration(
+            color: widget.gradient == null ? widget.color : null,
+            gradient: widget.gradient,
+            borderRadius: widget.borderRadius ?? BorderRadius.circular(16),
+            border: widget.border,
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: widget.onTap != null
+                  ? () {
+                      HapticFeedback.selectionClick();
+                      widget.onTap!();
+                    }
+                  : null,
+              splashFactory: InkSparkle.splashFactory,
+              borderRadius: widget.borderRadius ?? BorderRadius.circular(16),
+              child: Padding(
+                padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: widget.child,
+              ),
+            ),
           ),
         ),
       ),

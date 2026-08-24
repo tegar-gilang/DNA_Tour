@@ -5,31 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/presentation/auth_provider.dart';
 import '../../auth/domain/user_model.dart';
 
-class NotificationItem {
-  final String id;
-  final String title;
-  final String subtitle;
-  final String time;
-  final String dateGroup; // 'Today', 'Yesterday', 'Earlier This Week'
-  final String category; // 'Emergency', 'Journey', 'Prayer', 'Broadcasts', 'Meeting', 'Hotel', 'Bus Departure', 'Health', 'Incident'
-  final String priorityLabel; // 'HIGH PRIORITY', 'URGENT', 'ROUTINE', 'IMPORTANT'
-  final IconData icon;
-  final Color color;
-  bool isRead;
-
-  NotificationItem({
-    required this.id,
-    required this.title,
-    required this.subtitle,
-    required this.time,
-    required this.dateGroup,
-    required this.category,
-    required this.priorityLabel,
-    required this.icon,
-    required this.color,
-    this.isRead = false,
-  });
-}
+import '../domain/notification_model.dart';
+import 'notification_provider.dart';
 
 class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
@@ -77,160 +54,25 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     'Insiden',
   ];
 
-  final List<NotificationItem> _allNotifications = [
-    NotificationItem(
-      id: 'n1',
-      title: 'Peringatan Cuaca Darurat: Gelombang Panas Ekstrem',
-      subtitle: 'Suhu siang hari di Makkah diperkirakan mencapai 44°C. Harap tetap berada di area teduh atau lobi hotel antara pukul 12:00 dan 15:00 Waktu Arab Saudi.',
-      time: '10:15 AST',
-      dateGroup: 'Hari Ini',
-      category: 'Darurat',
-      priorityLabel: 'URGEN',
-      icon: LucideIcons.alertTriangle,
-      color: AppColors.emergencyRed,
-      isRead: false,
-    ),
-    NotificationItem(
-      id: 'n_fam_1',
-      title: 'Perpindahan Aktivitas: Menuju Sa\'i di Bukit Shafa',
-      subtitle: 'Jamaah H. Ahmad Zaki Al-Farizi telah selesai melontar Thawaf dan kini berpindah ke kegiatan selanjutnya: Sa\'i 7 putaran.',
-      time: '09:10 AST',
-      dateGroup: 'Hari Ini',
-      category: 'Aktivitas',
-      priorityLabel: 'PENTING',
-      icon: LucideIcons.arrowRightCircle,
-      color: AppColors.primary,
-      isRead: false,
-    ),
-    NotificationItem(
-      id: 'n_fam_2',
-      title: 'Aktivitas Selesai: Ibadah Thawaf Selesai',
-      subtitle: 'Alhamdulillah, jamaah H. Ahmad Zaki Al-Farizi telah selesai melakukan aktivitas Thawaf mengelilingi Ka\'bah dengan selamat.',
-      time: '08:55 AST',
-      dateGroup: 'Hari Ini',
-      category: 'Aktivitas',
-      priorityLabel: 'PENTING',
-      icon: LucideIcons.checkCircle2,
-      color: AppColors.successGreen,
-      isRead: true,
-    ),
-    NotificationItem(
-      id: 'n2',
-      title: 'Pengingat Sholat: Adzan Dzuhur Segera Tiba',
-      subtitle: 'Adzan Dzuhur akan berkumandang dalam 25 menit. Siapkan wudhu Anda dan segera menuju Gerbang 1 King Abdulaziz.',
-      time: '11:45 AST',
-      dateGroup: 'Hari Ini',
-      category: 'Sholat',
-      priorityLabel: 'PRIORITAS TINGGI',
-      icon: Icons.mosque_rounded,
-      color: AppColors.secondaryDark,
-      isRead: false,
-    ),
-    NotificationItem(
-      id: 'n3',
-      title: 'Kabar Perjalanan: Memulai Fase Thawaf & Sa\'i',
-      subtitle: 'Pembimbing Ust. Ridwan memperbarui status kloter menjadi "Menuju Masjidil Haram". Status absensi: Hadir.',
-      time: '08:20 AST',
-      dateGroup: 'Hari Ini',
-      category: 'Perjalanan',
-      priorityLabel: 'PENTING',
-      icon: LucideIcons.compass,
-      color: AppColors.primary,
-      isRead: false,
-    ),
-    NotificationItem(
-      id: 'n4',
-      title: 'Keberangkatan Bus: Bersiap di Lobi Hotel',
-      subtitle: 'Bus VIP #08 Al-Safwa telah parkir di depan lobi Swissôtel Al Maqam. Seluruh jamaah dimohon naik ke bus dalam 10 menit.',
-      time: '07:50 AST',
-      dateGroup: 'Hari Ini',
-      category: 'Keberangkatan Bus',
-      priorityLabel: 'PRIORITAS TINGGI',
-      icon: LucideIcons.bus,
-      color: AppColors.infoBlue,
-      isRead: true,
-    ),
-    NotificationItem(
-      id: 'n5',
-      title: 'Siaran Kloter: Pengarahan Malam Mutawif',
-      subtitle: 'Bergabunglah dengan Ust. Ibrahim di Musholla Lantai 3 setelah sholat Maghrib untuk pengarahan jadwal Ziyarah Jabal Rahmah.',
-      time: 'Kemarin, 19:30',
-      dateGroup: 'Kemarin',
-      category: 'Siaran',
-      priorityLabel: 'RUTIN',
-      icon: LucideIcons.radio,
-      color: AppColors.primaryDark,
-      isRead: true,
-    ),
-    NotificationItem(
-      id: 'n6',
-      title: 'Pengingat Pertemuan: Kumpul Rombongan',
-      subtitle: 'Kumpul di pintu masuk Menara Jam Zamzam untuk foto bersama dan pembagian alat bantu dengar (receiver) ibadah.',
-      time: 'Kemarin, 16:00',
-      dateGroup: 'Kemarin',
-      category: 'Pertemuan',
-      priorityLabel: 'RUTIN',
-      icon: LucideIcons.users,
-      color: AppColors.secondaryDark,
-      isRead: true,
-    ),
-    NotificationItem(
-      id: 'n7',
-      title: 'Informasi Hotel: Pembaruan Kartu Kamar',
-      subtitle: 'Manajemen Swissôtel menginformasikan kunci elektronik lantai 14 telah diperbarui. Kartu kamar Anda tetap dapat digunakan secara normal.',
-      time: '2 hari lalu',
-      dateGroup: 'Minggu Ini',
-      category: 'Hotel',
-      priorityLabel: 'RUTIN',
-      icon: LucideIcons.building,
-      color: AppColors.primaryLight,
-      isRead: true,
-    ),
-    NotificationItem(
-      id: 'n8',
-      title: 'Pemeriksaan Kesehatan & Hidrasi Tubuh',
-      subtitle: 'Ingat untuk rutin mengonsumsi Vitamin C setiap hari dan minum setidaknya 2,5 liter air Zamzam selama menjalankan aktivitas fisik ibadah.',
-      time: '3 hari lalu',
-      dateGroup: 'Minggu Ini',
-      category: 'Kesehatan',
-      priorityLabel: 'PENTING',
-      icon: LucideIcons.heartPulse,
-      color: AppColors.successGreen,
-      isRead: true,
-    ),
-    NotificationItem(
-      id: 'n9',
-      title: 'Kabar Insiden: Koper Tertukar Telah Diselesaikan',
-      subtitle: 'Koper milik jamaah H. Sulaiman yang tertunda dari bandara Jeddah telah tiba dan diamankan di meja layanan Pembimbing kamar 1402.',
-      time: '3 hari lalu',
-      dateGroup: 'Minggu Ini',
-      category: 'Insiden',
-      priorityLabel: 'RUTIN',
-      icon: LucideIcons.checkCircle2,
-      color: AppColors.infoBlue,
-      isRead: true,
-    ),
-  ];
-
-  List<NotificationItem> get _activeNotifications {
+  List<NotificationModel> _getActiveNotifications(List<NotificationModel> allNotifications) {
     if (_isFamily) {
-      return _allNotifications.where((n) {
+      return allNotifications.where((n) {
         return n.category == 'Perjalanan' ||
             n.category == 'Aktivitas' ||
             n.category == 'Insiden' ||
             n.category == 'Darurat';
       }).toList();
     }
-    return _allNotifications;
+    return allNotifications;
   }
 
-  int get _unreadCount => _activeNotifications.where((n) => !n.isRead).length;
+  int _getUnreadCount(List<NotificationModel> activeNotifications) => activeNotifications.where((n) => !n.isRead).length;
 
-  List<NotificationItem> get _filteredNotifications {
+  List<NotificationModel> _getFilteredNotifications(List<NotificationModel> activeNotifications) {
     if (!_activeFilters.contains(_selectedFilter)) {
       _selectedFilter = 'Semua';
     }
-    return _activeNotifications.where((n) {
+    return activeNotifications.where((n) {
       bool matchesFilter = true;
       if (_selectedFilter == 'Belum Dibaca') {
         matchesFilter = !n.isRead;
@@ -246,19 +88,20 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     }).toList();
   }
 
-  void _toggleReadStatus(NotificationItem item) {
-    setState(() {
-      item.isRead = !item.isRead;
-    });
+  void _toggleReadStatus(NotificationModel item) {
+    ref.read(notificationProvider.notifier).toggleReadStatus(item.id);
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final filtered = _filteredNotifications;
+    final allNotifications = ref.watch(notificationProvider);
+    final activeNotifications = _getActiveNotifications(allNotifications);
+    final unreadCount = _getUnreadCount(activeNotifications);
+    final filtered = _getFilteredNotifications(activeNotifications);
 
     // Group items by dateGroup
-    final Map<String, List<NotificationItem>> grouped = {};
+    final Map<String, List<NotificationModel>> grouped = {};
     for (var item in filtered) {
       grouped.putIfAbsent(item.dateGroup, () => []).add(item);
     }
@@ -310,7 +153,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                                   letterSpacing: -0.5,
                                 ),
                               ),
-                              if (_unreadCount > 0) ...[
+                              if (unreadCount > 0) ...[
                                 const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -319,7 +162,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
-                                    '$_unreadCount baru',
+                                    '$unreadCount baru',
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w700,
@@ -510,7 +353,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     );
   }
 
-  Widget _buildNotificationCard(BuildContext context, NotificationItem item, bool isDark) {
+  Widget _buildNotificationCard(BuildContext context, NotificationModel item, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: InkWell(

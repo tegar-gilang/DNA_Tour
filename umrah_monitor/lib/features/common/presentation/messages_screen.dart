@@ -4,55 +4,8 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/design_system/app_colors.dart';
 
-class ConversationItem {
-  final String id;
-  final String name;
-  final String roleBadge; // 'TOUR LEADER', 'MUTAWIF', 'OPERASIONAL', 'INFORMASI', 'DARURAT'
-  final String avatarUrl;
-  final String lastMessage;
-  final String time;
-  final int unreadCount;
-  final bool isOnline;
-  final bool isBroadcastChannel;
-  final Color roleColor;
-
-  const ConversationItem({
-    required this.id,
-    required this.name,
-    required this.roleBadge,
-    required this.avatarUrl,
-    required this.lastMessage,
-    required this.time,
-    this.unreadCount = 0,
-    this.isOnline = false,
-    this.isBroadcastChannel = false,
-    required this.roleColor,
-  });
-}
-
-class ChatMessageItem {
-  final String id;
-  final String senderName;
-  final String text;
-  final String time;
-  final String dateGroup; // 'Kemarin', 'Hari Ini'
-  final bool isMe;
-  final bool isRead;
-  final String? attachmentType; // 'image', 'document', 'location'
-  final String? attachmentName;
-
-  const ChatMessageItem({
-    required this.id,
-    required this.senderName,
-    required this.text,
-    required this.time,
-    required this.dateGroup,
-    required this.isMe,
-    this.isRead = true,
-    this.attachmentType,
-    this.attachmentName,
-  });
-}
+import '../domain/chat_model.dart';
+import 'chat_provider.dart';
 
 class MessagesScreen extends ConsumerStatefulWidget {
   const MessagesScreen({super.key});
@@ -64,134 +17,27 @@ class MessagesScreen extends ConsumerStatefulWidget {
 class _MessagesScreenState extends ConsumerState<MessagesScreen> {
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
-
-  ConversationItem? _activeConversation;
   final TextEditingController _messageController = TextEditingController();
-  bool _isTyping = false;
 
-  final List<ConversationItem> _conversations = const [
-    ConversationItem(
-      id: 'g1',
-      name: 'Grup Kloter 4 VIP (TL, Mutawif & Jamaah)',
-      roleBadge: 'GRUP KLOTER',
-      avatarUrl: 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=200&q=80',
-      lastMessage: 'Ust. H. Muhammad Ridwan (TL): Alhamdulillah! Sampai jumpa di lobi utama pukul 12:00 WAS ya.',
-      time: '11:34 WAS',
-      unreadCount: 1,
-      isOnline: true,
-      isBroadcastChannel: false,
-      roleColor: AppColors.primary,
-    ),
-  ];
-
-  final List<ChatMessageItem> _activeMessages = [
-    ChatMessageItem(
-      id: 'm1',
-      senderName: 'Ust. H. Muhammad Ridwan (TL)',
-      text: 'Assalamu\'alaikum seluruh jamaah Kloter 4 VIP. Mohon pastikan ID Card digital selalu siap saat beraktivitas bersama di seputar Masjidil Haram.',
-      time: '10:15 WAS',
-      dateGroup: 'Kemarin',
-      isMe: false,
-    ),
-    ChatMessageItem(
-      id: 'm2',
-      senderName: 'Ust. Ibrahim Al-Madani (Mutawif)',
-      text: 'Alhamdulillah, panduan doa Tawaf dan Sa\'i serta jadwal kegiatan harian sudah siap. Kita akan kumpul di lobi siang ini.',
-      time: '10:18 WAS',
-      dateGroup: 'Kemarin',
-      isMe: false,
-      attachmentType: 'document',
-      attachmentName: 'Panduan_Doa_Tawaf_Sai.pdf',
-    ),
-    ChatMessageItem(
-      id: 'm3',
-      senderName: 'Anda (Jamaah)',
-      text: 'Wa\'alaikumussalam Ustadz. Alhamdulillah kami dari kamar 1408 bersiap menuju lobi untuk shalat Zuhur berjamaah.',
-      time: '11:30 WAS',
-      dateGroup: 'Hari Ini',
-      isMe: true,
-      isRead: true,
-    ),
-    ChatMessageItem(
-      id: 'm4',
-      senderName: 'H. Sulaiman (Jamaah)',
-      text: 'Alhamdulillah rombongan kamar 1402 juga siap menuju lobi utama.',
-      time: '11:31 WAS',
-      dateGroup: 'Hari Ini',
-      isMe: false,
-    ),
-    ChatMessageItem(
-      id: 'm5',
-      senderName: 'Ust. H. Muhammad Ridwan (TL)',
-      text: 'Alhamdulillah! Sampai jumpa di lobi utama pukul 12:00 WAS ya Bapak/Ibu sekalian.',
-      time: '11:34 WAS',
-      dateGroup: 'Hari Ini',
-      isMe: false,
-    ),
-  ];
-
-  List<ConversationItem> get _filteredConversations {
-    if (_searchQuery.isEmpty) return _conversations;
+  List<ConversationModel> _filterConversations(List<ConversationModel> conversations) {
+    if (_searchQuery.isEmpty) return conversations;
     final q = _searchQuery.toLowerCase();
-    return _conversations.where((c) {
+    return conversations.where((c) {
       return c.name.toLowerCase().contains(q) ||
           c.lastMessage.toLowerCase().contains(q) ||
           c.roleBadge.toLowerCase().contains(q);
     }).toList();
   }
 
-  void _sendMessage() {
+  void _sendMessage(String conversationId) {
     if (_messageController.text.trim().isEmpty) return;
     final text = _messageController.text.trim();
-    setState(() {
-      _activeMessages.add(ChatMessageItem(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        senderName: 'Anda',
-        text: text,
-        time: 'Baru saja',
-        dateGroup: 'Hari Ini',
-        isMe: true,
-        isRead: false,
-      ));
-    });
+    ref.read(chatProvider.notifier).sendMessage(conversationId, text);
     _messageController.clear();
-
-    setState(() {
-      _isTyping = true;
-    });
-    Future.delayed(const Duration(milliseconds: 1800), () {
-      if (mounted) {
-        setState(() {
-          _isTyping = false;
-          _activeMessages.add(ChatMessageItem(
-            id: DateTime.now().millisecondsSinceEpoch.toString(),
-            senderName: _activeConversation?.name ?? 'Ust. Muhammad Ridwan',
-            text: 'Baik, terima kasih! Semoga Allah memudahkan dan melancarkan ibadah Anda.',
-            time: 'Baru saja',
-            dateGroup: 'Hari Ini',
-            isMe: false,
-          ));
-        });
-      }
-    });
   }
 
-  void _sendAttachmentSimulation(String type, String name, IconData icon, Color color) {
-    final typeId = type == 'image'
-        ? 'foto'
-        : (type == 'document' ? 'dokumen' : 'lokasi');
-    setState(() {
-      _activeMessages.add(ChatMessageItem(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        senderName: 'Anda',
-        text: 'Melampirkan $typeId:',
-        time: 'Baru saja',
-        dateGroup: 'Hari Ini',
-        isMe: true,
-        attachmentType: type,
-        attachmentName: name,
-      ));
-    });
+  void _sendAttachmentSimulation(String conversationId, String type, String name, IconData icon, Color color) {
+    ref.read(chatProvider.notifier).sendAttachment(conversationId, type, name);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('$name berhasil dilampirkan.'), duration: const Duration(seconds: 1)),
     );
@@ -200,9 +46,16 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final chatState = ref.watch(chatProvider);
+    final activeConv = chatState.activeConversationId != null
+        ? chatState.conversations.firstWhere(
+            (c) => c.id == chatState.activeConversationId,
+            orElse: () => chatState.conversations.first,
+          )
+        : null;
 
-    if (_activeConversation != null) {
-      return _buildChatRoomView(context, isDark);
+    if (activeConv != null) {
+      return _buildChatRoomView(context, isDark, activeConv, chatState);
     }
 
     return Scaffold(
@@ -301,7 +154,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
 
             // Clean Conversation List
             Expanded(
-              child: _filteredConversations.isEmpty
+              child: _filterConversations(chatState.conversations).isEmpty
                   ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -329,9 +182,9 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                     )
                   : ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                      itemCount: _filteredConversations.length,
+                      itemCount: _filterConversations(chatState.conversations).length,
                       itemBuilder: (context, index) {
-                        final c = _filteredConversations[index];
+                        final c = _filterConversations(chatState.conversations)[index];
                         return _buildConversationRow(c, isDark);
                       },
                     ),
@@ -342,7 +195,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
     );
   }
 
-  Widget _buildConversationRow(ConversationItem c, bool isDark) {
+  Widget _buildConversationRow(ConversationModel c, bool isDark) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
@@ -364,9 +217,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            setState(() {
-              _activeConversation = c;
-            });
+            ref.read(chatProvider.notifier).selectConversation(c.id);
           },
           borderRadius: BorderRadius.circular(18),
           child: Padding(
@@ -531,9 +382,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
 );
 }
 
-  // Active Chat Room View (Ultra-Minimalist Clean White Apple Style)
-  Widget _buildChatRoomView(BuildContext context, bool isDark) {
-    final c = _activeConversation!;
+  Widget _buildChatRoomView(BuildContext context, bool isDark, ConversationModel c, ChatState chatState) {
+    final activeMessages = chatState.messages.where((m) => m.conversationId == c.id).toList();
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
@@ -556,9 +406,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                      setState(() {
-                        _activeConversation = null;
-                      });
+                      ref.read(chatProvider.notifier).selectConversation(null);
                     },
                     borderRadius: BorderRadius.circular(12),
                     child: Container(
@@ -651,11 +499,11 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                         ),
                         const SizedBox(height: 1),
                         Text(
-                          _isTyping ? 'mengetik pesan...' : (c.isOnline ? 'Online • Aktif' : 'Offline'),
+                          chatState.isTyping ? 'mengetik pesan...' : (c.isOnline ? 'Online • Aktif' : 'Offline'),
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: _isTyping || c.isOnline ? AppColors.primary : AppColors.textSecondaryLight,
+                            color: chatState.isTyping || c.isOnline ? AppColors.primary : AppColors.textSecondaryLight,
                           ),
                         ),
                       ],
@@ -712,10 +560,10 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              itemCount: _activeMessages.length,
+              itemCount: activeMessages.length,
               itemBuilder: (context, index) {
-                final m = _activeMessages[index];
-                final showDateGroup = index == 0 || _activeMessages[index - 1].dateGroup != m.dateGroup;
+                final m = activeMessages[index];
+                final showDateGroup = index == 0 || activeMessages[index - 1].dateGroup != m.dateGroup;
 
                 return Column(
                   children: [
@@ -749,7 +597,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
           ),
 
           // Typing Indicator Pill if active
-          if (_isTyping)
+          if (chatState.isTyping)
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20, bottom: 12),
               child: Align(
@@ -810,11 +658,11 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                     color: isDark ? AppColors.cardDark : Colors.white,
                     onSelected: (val) {
                       if (val == 'image') {
-                        _sendAttachmentSimulation('image', 'Foto_Bersama_Ihram.jpg', LucideIcons.image, AppColors.secondaryDark);
+                        _sendAttachmentSimulation(c.id, 'image', 'Foto_Bersama_Ihram.jpg', LucideIcons.image, AppColors.secondaryDark);
                       } else if (val == 'document') {
-                        _sendAttachmentSimulation('document', 'Voucher_Digital_Umrah.pdf', LucideIcons.fileText, AppColors.infoBlue);
+                        _sendAttachmentSimulation(c.id, 'document', 'Voucher_Digital_Umrah.pdf', LucideIcons.fileText, AppColors.infoBlue);
                       } else if (val == 'location') {
-                        _sendAttachmentSimulation('location', 'Koordinat GPS Langsung ±3m', LucideIcons.mapPin, AppColors.successGreen);
+                        _sendAttachmentSimulation(c.id, 'location', 'Koordinat GPS Langsung ±3m', LucideIcons.mapPin, AppColors.successGreen);
                       }
                     },
                     itemBuilder: (context) => [
@@ -862,7 +710,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                       ),
                       child: TextField(
                         controller: _messageController,
-                        onSubmitted: (_) => _sendMessage(),
+                        onSubmitted: (_) => _sendMessage(c.id),
                         style: TextStyle(
                           fontSize: 15,
                           color: isDark ? Colors.white : AppColors.textPrimaryLight,
@@ -883,7 +731,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
 
                   // Minimalist Primary Send Button
                   InkWell(
-                    onTap: _sendMessage,
+                    onTap: () => _sendMessage(c.id),
                     borderRadius: BorderRadius.circular(20),
                     child: Container(
                       width: 40,
@@ -904,7 +752,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
     );
   }
 
-  Widget _buildMessageBubble(ChatMessageItem m, bool isDark) {
+  Widget _buildMessageBubble(ChatMessageModel m, bool isDark) {
     final bubbleColor = m.isMe
         ? AppColors.primary
         : (isDark ? AppColors.cardDark : Colors.white);
