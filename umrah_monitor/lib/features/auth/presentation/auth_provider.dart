@@ -1,9 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:umrah_monitor/features/auth/data/auth_repository.dart';
+import 'package:umrah_monitor/features/auth/data/models/jamaah_model.dart';
 import 'package:umrah_monitor/features/auth/domain/user_model.dart';
+import 'package:umrah_monitor/core/network/api_client.dart';
+import 'package:umrah_monitor/core/storage/secure_storage.dart';
 
 class AuthState {
   final bool isAuthenticated;
   final UserModel? user;
+  final JamaahModel? jamaah;
   final UserRole? selectedRole;
   final bool isLoading;
   final bool isBiometricEnabled;
@@ -12,6 +17,7 @@ class AuthState {
   const AuthState({
     this.isAuthenticated = false,
     this.user,
+    this.jamaah,
     this.selectedRole,
     this.isLoading = false,
     this.isBiometricEnabled = true,
@@ -21,6 +27,7 @@ class AuthState {
   AuthState copyWith({
     bool? isAuthenticated,
     UserModel? user,
+    JamaahModel? jamaah,
     UserRole? selectedRole,
     bool? isLoading,
     bool? isBiometricEnabled,
@@ -29,6 +36,7 @@ class AuthState {
     return AuthState(
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       user: user ?? this.user,
+      jamaah: jamaah ?? this.jamaah,
       selectedRole: selectedRole ?? this.selectedRole,
       isLoading: isLoading ?? this.isLoading,
       isBiometricEnabled: isBiometricEnabled ?? this.isBiometricEnabled,
@@ -38,7 +46,9 @@ class AuthState {
 }
 
 class AuthNotifier extends StateNotifier<AuthState> {
-  AuthNotifier() : super(const AuthState());
+  final AuthRepository authRepository;
+
+  AuthNotifier({required this.authRepository}) : super(const AuthState());
 
   void selectRole(UserRole role) {
     state = state.copyWith(selectedRole: role, errorMessage: null);
@@ -46,79 +56,137 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> login({required String id}) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    await Future.delayed(const Duration(milliseconds: 600));
 
-    final role = state.selectedRole ?? UserRole.pilgrim;
-    UserModel loggedUser;
-    switch (role) {
-      case UserRole.pilgrim:
-        loggedUser = UserModel.demoPilgrim;
-        break;
-      case UserRole.family:
-        loggedUser = UserModel.demoFamily;
-        break;
-      case UserRole.tourLeader:
-        loggedUser = UserModel.demoTourLeader;
-        break;
+    try {
+      print('================ AUTH LOGIN ================');
+      print('Login ID: $id');
+
+      final role = state.selectedRole ?? UserRole.pilgrim;
+
+      print('Selected Role: $role');
+
+      // ==========================================
+      // JAMAAH LOGIN
+      // ==========================================
+      if (role == UserRole.pilgrim) {
+        print('Calling API: POST /jamaah/login');
+
+        final response = await authRepository.loginJamaah(id);
+
+        print('API LOGIN SUCCESS');
+        print('Jamaah ID: ${response.jamaah.loginId}');
+        print('Jamaah Name: ${response.jamaah.fullName}');
+
+        state = state.copyWith(
+          isAuthenticated: true,
+          jamaah: response.jamaah,
+          selectedRole: UserRole.pilgrim,
+          isLoading: false,
+          errorMessage: null,
+        );
+
+        print('AuthState jamaah berhasil diisi.');
+      }
+      // ==========================================
+      // FAMILY LOGIN
+      // ==========================================
+      else if (role == UserRole.family) {
+        print('Calling API: POST /family/login');
+
+        final response = await authRepository.loginFamily(id);
+
+        print('API LOGIN SUCCESS');
+        print('Jamaah ID: ${response.jamaah.loginId}');
+        print('Jamaah Name: ${response.jamaah.fullName}');
+
+        state = state.copyWith(
+          isAuthenticated: true,
+          jamaah: response.jamaah,
+          selectedRole: UserRole.family,
+          isLoading: false,
+          errorMessage: null,
+        );
+
+        print('AuthState jamaah berhasil diisi.');
+      }
+      // ==========================================
+      // TOUR LEADER
+      // ==========================================
+      else {
+        print('Tour Leader login belum tersedia.');
+
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: 'Login Tour Leader belum tersedia.',
+        );
+      }
+
+      print('============================================');
+    } catch (e) {
+      print('================ AUTH LOGIN ERROR ================');
+      print(e);
+      print('===================================================');
+
+      state = state.copyWith(
+        isAuthenticated: false,
+        isLoading: false,
+        errorMessage: _getErrorMessage(e),
+      );
     }
-
-    state = state.copyWith(
-      isAuthenticated: true,
-      user: loggedUser,
-      isLoading: false,
-    );
   }
 
   Future<void> loginWithBiometrics() async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
-    await Future.delayed(const Duration(milliseconds: 400));
-
-    final role = state.selectedRole ?? UserRole.pilgrim;
-    UserModel loggedUser;
-    switch (role) {
-      case UserRole.pilgrim:
-        loggedUser = UserModel.demoPilgrim;
-        break;
-      case UserRole.family:
-        loggedUser = UserModel.demoFamily;
-        break;
-      case UserRole.tourLeader:
-        loggedUser = UserModel.demoTourLeader;
-        break;
-    }
-
     state = state.copyWith(
-      isAuthenticated: true,
-      user: loggedUser,
       isLoading: false,
+      errorMessage: 'Login biometrik belum terhubung ke backend.',
     );
   }
 
   void switchRoleDirect(UserRole targetRole) {
-    UserModel targetUser;
-    switch (targetRole) {
-      case UserRole.pilgrim:
-        targetUser = UserModel.demoPilgrim;
-        break;
-      case UserRole.family:
-        targetUser = UserModel.demoFamily;
-        break;
-      case UserRole.tourLeader:
-        targetUser = UserModel.demoTourLeader;
-        break;
+    if (targetRole == UserRole.tourLeader) {
+      state = state.copyWith(
+        isAuthenticated: false,
+        selectedRole: targetRole,
+        errorMessage: 'Login Tour Leader belum tersedia.',
+      );
+
+      return;
     }
+
     state = state.copyWith(
-      isAuthenticated: true,
+      isAuthenticated: false,
       selectedRole: targetRole,
-      user: targetUser,
+      errorMessage: null,
     );
   }
 
-  void logout() {
+  Future<void> logout() async {
+    try {
+      await authRepository.logout();
+    } catch (_) {
+      // Token tetap akan dihapus oleh AuthRepository.
+    }
+
     state = const AuthState();
+  }
+
+  String _getErrorMessage(Object error) {
+    return 'Login gagal. Periksa JAMAAH ID dan koneksi ke server.';
   }
 }
 
+// ======================================================
+// AUTH REPOSITORY PROVIDER
+// ======================================================
+
+final authRepositoryProvider = Provider<AuthRepository>((ref) {
+  return AuthRepository(apiClient: ApiClient(), secureStorage: SecureStorage());
+});
+
+// ======================================================
+// AUTH PROVIDER
+// ======================================================
+
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier();
+  return AuthNotifier(authRepository: ref.read(authRepositoryProvider));
 });

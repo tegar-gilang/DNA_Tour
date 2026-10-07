@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -19,7 +19,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
   bool _locationPermissionEnabled = true;
   String _selectedLanguage = 'English (Bahasa Indonesia)';
 
-  void _showDigitalIdModal(BuildContext context, user) {
+  void _showDigitalIdModal(BuildContext context, jamaah) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -72,7 +72,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                 child: Column(
                   children: [
                     Text(
-                      user?.name ?? 'Jamaah Umrah',
+                      jamaah?.fullName ?? 'Jamaah Umrah',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
@@ -81,7 +81,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      user?.groupCode ?? 'Kloter 4 VIP',
+                      jamaah?.journey.kloter?.code ?? 'Kloter 4 VIP',
                       style: TextStyle(
                         fontSize: 13,
                         color: AppColors.textSecondaryLight,
@@ -97,7 +97,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                         border: Border.all(color: AppColors.borderLight),
                       ),
                       child: Image.network(
-                        'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SISKOPATUH-${user?.id ?? '123456'}',
+                        'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SISKOPATUH-${jamaah?.loginId ?? '123456'}',
                         width: 150,
                         height: 150,
                         errorBuilder: (context, error, stackTrace) => const Icon(
@@ -145,7 +145,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
-    final user = authState.user;
+    final jamaah = authState.jamaah;
     final currentThemeMode = ref.watch(themeModeProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -197,7 +197,7 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                       ),
                     ),
                     child: IconButton(
-                      onPressed: () => _showDigitalIdModal(context, user),
+                      onPressed: () => _showDigitalIdModal(context, jamaah),
                       icon: const Icon(LucideIcons.creditCard, size: 20, color: AppColors.successGreen),
                       tooltip: 'Digital ID Card',
                     ),
@@ -214,9 +214,9 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                   children: [
             // Brief Hero Profile Summary Card (Same as Home Page without Prayer Reminder)
             RoleProfileSummaryCard(
-              name: user?.name ?? 'H. Ahmad Zaki Al-Farizi',
-              roleSubtitle: user?.groupCode ?? 'Kloter 4 Al-Barakah',
-              avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+              name: jamaah?.fullName ?? 'Jamaah Umrah',
+              roleSubtitle: jamaah?.journey.kloter?.code ?? 'Kloter belum tersedia',
+              avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
               isVerified: false,
               statusChips: const [],
               currentLocation: 'Masjidil Haram, Makkah',
@@ -230,23 +230,23 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
               padding: const EdgeInsets.all(18),
               child: Column(
                 children: [
-                  _buildDetailRow(icon: LucideIcons.user, label: 'Nama Lengkap', value: user?.name ?? 'Jamaah Umrah'),
+                  _buildDetailRow(icon: LucideIcons.user, label: 'Nama Lengkap', value: jamaah?.fullName ?? 'Jamaah Umrah'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.creditCard, label: 'ID Jamaah', value: user?.id ?? 'PL-88210'),
+                  _buildDetailRow(icon: LucideIcons.creditCard, label: 'ID Jamaah', value: jamaah?.loginId ?? 'Belum tersedia'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.bookOpen, label: 'Nomor Paspor', value: 'X-99821014 (Berlaku)'),
+                  _buildDetailRow(icon: LucideIcons.bookOpen, label: 'Nomor Paspor', value: jamaah?.profile.passportNumber ?? 'Belum tersedia'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.fileCheck, label: 'Nomor Visa Umrah', value: 'VSA-2026-99210-SA'),
+                  _buildDetailRow(icon: LucideIcons.fileCheck, label: 'Nomor Visa Umrah', value: jamaah?.profile.visaNumber ?? 'Belum tersedia'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.flag, label: 'Kewarganegaraan', value: 'Indonesia'),
+                  _buildDetailRow(icon: LucideIcons.flag, label: 'Kewarganegaraan', value: jamaah?.profile.nationality ?? 'Belum tersedia'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.users, label: 'Jenis Kelamin', value: 'Pria (Male)'),
+                  _buildDetailRow(icon: LucideIcons.users, label: 'Jenis Kelamin', value: jamaah?.profile.gender == 'L' ? 'Pria (Male)' : (jamaah?.profile.gender ?? 'Belum tersedia')),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.calendar, label: 'Tanggal Lahir', value: '14 Mei 1978 (48 Thn)'),
+                  _buildDetailRow(icon: LucideIcons.calendar, label: 'Tanggal Lahir', value: jamaah?.profile.birthDate ?? 'Belum tersedia'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.phone, label: 'Nomor Telepon', value: user?.phone ?? '+62 812-3456-7890'),
+                  _buildDetailRow(icon: LucideIcons.phone, label: 'Nomor Telepon', value: jamaah?.phone ?? '+62 812-3456-7890'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.alertCircle, label: 'Kontak Darurat', value: 'Keluarga Jamaah (+62 811-9988-7766)'),
+                  _buildDetailRow(icon: LucideIcons.alertCircle, label: 'Kontak Darurat', value: 'Belum tersedia'),
                 ],
               ),
             ),
@@ -258,19 +258,19 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
               padding: const EdgeInsets.all(18),
               child: Column(
                 children: [
-                  _buildDetailRow(icon: LucideIcons.users, label: 'Kloter Saat Ini', value: user?.groupCode ?? 'Kloter 4 Al-Barakah VIP'),
+                  _buildDetailRow(icon: LucideIcons.users, label: 'Kloter Saat Ini', value: jamaah?.journey.kloter?.code ?? 'Kloter belum tersedia'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.userCheck, label: 'Pembimbing (Mutawif)', value: 'Ust. H. Muhammad Ridwan (TL)'),
+                  _buildDetailRow(icon: LucideIcons.userCheck, label: 'Pembimbing (Mutawif)', value: jamaah?.journey.tourLeader?.fullName ?? 'Belum tersedia'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.user, label: 'Mutawif Lokal', value: 'Ust. Ibrahim Al-Madani'),
+                  _buildDetailRow(icon: LucideIcons.user, label: 'Mutawif Lokal', value: jamaah?.journey.mutawif?.fullName ?? 'Belum tersedia'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.packageCheck, label: 'Paket Umrah', value: '12 Hari VIP Umrah Plus Ziyarah'),
+                  _buildDetailRow(icon: LucideIcons.packageCheck, label: 'Paket Umrah', value: jamaah?.journey.package?.name ?? 'Belum tersedia'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.building, label: 'Hotel Penginapan', value: user?.hotelName ?? 'Swissôtel Al Maqam Makkah'),
+                  _buildDetailRow(icon: LucideIcons.building, label: 'Hotel Penginapan', value: 'Data hotel belum tersedia'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.planeTakeoff, label: 'Tanggal Keberangkatan', value: '10 Juli 2026 (CGK - JED)'),
+                  _buildDetailRow(icon: LucideIcons.planeTakeoff, label: 'Tanggal Keberangkatan', value: jamaah?.journey.kloter?.departureDate ?? 'Belum tersedia'),
                   _buildDivider(),
-                  _buildDetailRow(icon: LucideIcons.planeLanding, label: 'Tanggal Kepulangan', value: '22 Juli 2026 (MED - CGK)'),
+                  _buildDetailRow(icon: LucideIcons.planeLanding, label: 'Tanggal Kepulangan', value: jamaah?.journey.kloter?.returnDate ?? 'Belum tersedia'),
                 ],
               ),
             ),
@@ -312,9 +312,9 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
                                 },
                               ),
                               ListTile(
-                                title: const Text('Bahasa Arab (العربية)'),
+                                title: const Text('Bahasa Arab (Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©)'),
                                 onTap: () {
-                                  setState(() => _selectedLanguage = 'Bahasa Arab (العربية)');
+                                  setState(() => _selectedLanguage = 'Bahasa Arab (Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©)');
                                   Navigator.pop(context);
                                 },
                               ),
@@ -448,3 +448,9 @@ class _PilgrimProfileScreenState extends ConsumerState<PilgrimProfileScreen> {
     );
   }
 }
+
+
+
+
+
+
