@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "103731374542",
+    "project_id": "dna-tour-and-travel",
+    "storage_bucket": "dna-tour-and-travel.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:103731374542:android:3e6918ac774f3080fa239f",
+        "android_client_info": {
+          "package_name": "com.umrahsys.monitor.umrah_monitor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALGjqFRKoKHFgWgRXy5ylc7qjB_nxNQ9U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

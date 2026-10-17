@@ -40,6 +40,28 @@ class AuthRepository {
     return loginResponse;
   }
 
+  Future<void> registerDeviceToken({
+    required String fcmToken,
+    required String platform,
+  }) async {
+    final token = await secureStorage.getToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Token autentikasi tidak ditemukan.');
+    }
+
+    await apiClient.dio.post(
+      '/device-tokens',
+      data: {'fcm_token': fcmToken, 'platform': platform},
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        },
+      ),
+    );
+  }
+
   Future<MeResponse> getJamaahMe() async {
     final token = await secureStorage.getToken();
 

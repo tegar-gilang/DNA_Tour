@@ -4,6 +4,7 @@ import 'package:umrah_monitor/features/auth/data/models/jamaah_model.dart';
 import 'package:umrah_monitor/features/auth/domain/user_model.dart';
 import 'package:umrah_monitor/core/network/api_client.dart';
 import 'package:umrah_monitor/core/storage/secure_storage.dart';
+import 'package:umrah_monitor/core/services/firebase_messaging_service.dart';
 
 class AuthState {
   final bool isAuthenticated;
@@ -54,6 +55,28 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(selectedRole: role, errorMessage: null);
   }
 
+  Future<void> _registerFcmTokenSafely() async {
+    try {
+      final messagingService = FirebaseMessagingService();
+      final fcmToken = await messagingService.getToken();
+
+      if (fcmToken == null || fcmToken.isEmpty) {
+        print('FCM token belum tersedia.');
+        return;
+      }
+
+      await authRepository.registerDeviceToken(
+        fcmToken: fcmToken,
+        platform: 'android',
+      );
+
+      print('Registrasi FCM token berhasil.');
+    } catch (e) {
+      // Kegagalan FCM tidak boleh menggagalkan login.
+      print('Registrasi FCM belum berhasil: $e');
+    }
+  }
+
   Future<void> login({required String id}) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
@@ -72,6 +95,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         print('Calling API: POST /jamaah/login');
 
         final response = await authRepository.loginJamaah(id);
+        await _registerFcmTokenSafely();
 
         print('API LOGIN SUCCESS');
         print('Jamaah ID: ${response.jamaah.loginId}');
@@ -94,6 +118,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         print('Calling API: POST /family/login');
 
         final response = await authRepository.loginFamily(id);
+        await _registerFcmTokenSafely();
 
         print('API LOGIN SUCCESS');
         print('Jamaah ID: ${response.jamaah.loginId}');
