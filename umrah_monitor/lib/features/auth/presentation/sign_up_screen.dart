@@ -66,6 +66,18 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     setState(() => _isLoading = false);
 
     if (mounted) {
+      final role = ref.read(authProvider).selectedRole ?? UserRole.pilgrim;
+      if (role == UserRole.tourLeader) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Akun Tour Leader dikelola oleh admin DNA Tour. Silakan masuk menggunakan ID resmi Anda.'),
+            backgroundColor: AppColors.infoBlue,
+          ),
+        );
+        context.go('/login');
+        return;
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Pendaftaran berhasil! Mengalihkan ke Dasbor...'),
@@ -73,13 +85,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         ),
       );
 
-      final role = ref.read(authProvider).selectedRole ?? UserRole.pilgrim;
       if (role == UserRole.pilgrim) {
         context.go('/pilgrim');
       } else if (role == UserRole.family) {
         context.go('/family');
       } else {
-        context.go('/tour_leader');
+        context.go('/login');
       }
     }
   }

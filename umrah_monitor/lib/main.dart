@@ -33,6 +33,7 @@ class UmrahMonitorApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
+    final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
       title: 'Umrah & Pilgrim Monitoring System (DNA Tour)',
@@ -41,7 +42,7 @@ class UmrahMonitorApp extends ConsumerWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
       themeAnimationDuration: Duration.zero,
-      routerConfig: appRouter,
+      routerConfig: router,
     );
   }
 }

@@ -38,11 +38,14 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final journeyState = ref.watch(journeyProvider);
-    final user = authState.user;
+    final user = authState.jamaah;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final now = DateTime.now();
     final nextPrayer = PrayerScheduleUtils.getNextPrayer(now);
-    final countdownText = PrayerScheduleUtils.formatCountdown(nextPrayer.targetTime, spaced: true);
+    final countdownText = PrayerScheduleUtils.formatCountdown(
+      nextPrayer.targetTime,
+      spaced: true,
+    );
 
     return Scaffold(
       body: SafeArea(
@@ -59,19 +62,23 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
               children: [
                 // Brief Profile Hero Summary Card combined with Prayer Reminder
                 RoleProfileSummaryCard(
-                  name: user?.name ?? 'H. Ahmad Zaki Al-Farizi',
-                  roleSubtitle: 'Kloter 4 Al-Barakah',
-                  avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+                  name: user?.fullName ?? 'Beleum Tersedia',
+                  roleSubtitle: user?.journey.kloter?.code ?? 'Belum tersedia',
+
                   isVerified: false,
                   statusChips: const [],
-                  currentLocation: journeyState.currentLocation.isNotEmpty ? journeyState.currentLocation : 'Masjidil Haram, Makkah',
+                  currentLocation: journeyState.currentLocation.isNotEmpty
+                      ? journeyState.currentLocation
+                      : 'Masjidil Haram, Makkah',
                   unreadCount: 3,
                   customContent: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.22)),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.22),
+                      ),
                     ),
                     child: Column(
                       children: [
@@ -84,10 +91,16 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                                   Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withValues(alpha: 0.15),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.15,
+                                      ),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    child: Icon(nextPrayer.icon, color: AppColors.secondaryLight, size: 20),
+                                    child: Icon(
+                                      nextPrayer.icon,
+                                      color: AppColors.secondaryLight,
+                                      size: 20,
+                                    ),
                                   ),
                                   const SizedBox(width: 10),
                                   Expanded(
@@ -107,9 +120,14 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                             ),
                             const SizedBox(width: 8),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
                               decoration: BoxDecoration(
-                                color: AppColors.secondaryLight.withValues(alpha: 0.25),
+                                color: AppColors.secondaryLight.withValues(
+                                  alpha: 0.25,
+                                ),
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               child: Text(
@@ -162,7 +180,10 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                               onTap: () => context.push('/prayer_time'),
                               borderRadius: BorderRadius.circular(14),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 10,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(14),
@@ -170,7 +191,11 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(LucideIcons.clock, size: 15, color: AppColors.primaryDark),
+                                    const Icon(
+                                      LucideIcons.clock,
+                                      size: 15,
+                                      color: AppColors.primaryDark,
+                                    ),
                                     const SizedBox(width: 6),
                                     Text(
                                       'Semua Jadwal',
@@ -201,10 +226,14 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                     color: isDark ? AppColors.cardDark : AppColors.cardLight,
                     borderRadius: BorderRadius.circular(24),
                     border: Border.all(
-                      color: isDark ? AppColors.borderDark : AppColors.borderLight,
+                      color: isDark
+                          ? AppColors.borderDark
+                          : AppColors.borderLight,
                       width: 1,
                     ),
-                    boxShadow: isDark ? AppColors.softShadowDark : AppColors.softShadowLight,
+                    boxShadow: isDark
+                        ? AppColors.softShadowDark
+                        : AppColors.softShadowLight,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,7 +249,9 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                               style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
-                                color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                color: isDark
+                                    ? Colors.white
+                                    : AppColors.textPrimaryLight,
                                 height: 1.2,
                               ),
                             ),
@@ -242,8 +273,12 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                         child: LinearProgressIndicator(
                           value: 2 / 36,
                           minHeight: 8,
-                          backgroundColor: AppColors.primary.withValues(alpha: 0.15),
-                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                          backgroundColor: AppColors.primary.withValues(
+                            alpha: 0.15,
+                          ),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            AppColors.primary,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 14),
@@ -252,7 +287,11 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                         children: [
                           const Padding(
                             padding: EdgeInsets.only(top: 2),
-                            child: Icon(LucideIcons.mapPin, size: 16, color: AppColors.textSecondaryLight),
+                            child: Icon(
+                              LucideIcons.mapPin,
+                              size: 16,
+                              color: AppColors.textSecondaryLight,
+                            ),
                           ),
                           const SizedBox(width: 6),
                           Expanded(
@@ -300,7 +339,9 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                       _buildInfoRow(
                         icon: LucideIcons.mapPin,
                         label: 'Tahapan Saat Ini',
-                        value: journeyState.progressPercentage < 0.6 ? 'Fase Makkah' : 'Fase Madinah',
+                        value: journeyState.progressPercentage < 0.6
+                            ? 'Fase Makkah'
+                            : 'Fase Madinah',
                         isDark: isDark,
                       ),
                       _buildInfoRow(
@@ -319,12 +360,21 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                             child: OutlinedButton(
                               onPressed: () => context.go('/pilgrim/schedule'),
                               style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                  horizontal: 4,
+                                ),
                                 side: BorderSide(
-                                  color: isDark ? AppColors.borderDark : AppColors.primary.withValues(alpha: 0.45),
+                                  color: isDark
+                                      ? AppColors.borderDark
+                                      : AppColors.primary.withValues(
+                                          alpha: 0.45,
+                                        ),
                                   width: 1.5,
                                 ),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
                               ),
                               child: Text(
                                 'Lihat Jadwal',
@@ -332,7 +382,9 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                  color: isDark
+                                      ? Colors.white
+                                      : AppColors.textPrimaryLight,
                                 ),
                               ),
                             ),
@@ -342,12 +394,21 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                             child: OutlinedButton(
                               onPressed: () => context.go('/pilgrim/map'),
                               style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                  horizontal: 4,
+                                ),
                                 side: BorderSide(
-                                  color: isDark ? AppColors.borderDark : AppColors.primary.withValues(alpha: 0.45),
+                                  color: isDark
+                                      ? AppColors.borderDark
+                                      : AppColors.primary.withValues(
+                                          alpha: 0.45,
+                                        ),
                                   width: 1.5,
                                 ),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
                               ),
                               child: Text(
                                 'Lihat Peta',
@@ -355,7 +416,9 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                  color: isDark
+                                      ? Colors.white
+                                      : AppColors.textPrimaryLight,
                                 ),
                               ),
                             ),
@@ -365,12 +428,21 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                             child: OutlinedButton(
                               onPressed: () => context.go('/pilgrim/profile'),
                               style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                  horizontal: 4,
+                                ),
                                 side: BorderSide(
-                                  color: isDark ? AppColors.borderDark : AppColors.primary.withValues(alpha: 0.45),
+                                  color: isDark
+                                      ? AppColors.borderDark
+                                      : AppColors.primary.withValues(
+                                          alpha: 0.45,
+                                        ),
                                   width: 1.5,
                                 ),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
                               ),
                               child: Text(
                                 'Detail Info',
@@ -378,7 +450,9 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                  color: isDark
+                                      ? Colors.white
+                                      : AppColors.textPrimaryLight,
                                 ),
                               ),
                             ),
@@ -409,12 +483,14 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                       color: AppColors.successGreen,
                       onTap: () {
                         final journeyState = ref.read(journeyProvider);
-                        final user = ref.read(authProvider).user;
-                        ref.read(pilgrimAttendanceProvider.notifier).recordCheckIn(
-                              pilgrimId: user?.id ?? 'PL-88210',
-                              pilgrimName: user?.name ?? 'H. Ahmad Zaki Al-Farizi',
+                        final jamaah = ref.read(authProvider).jamaah;
+                        ref
+                            .read(pilgrimAttendanceProvider.notifier)
+                            .recordCheckIn(
+                              pilgrimId: jamaah?.loginId ?? 'JAMAAH',
+                              pilgrimName: jamaah?.fullName ?? 'NAMA JAMAAH',
                               location: journeyState.currentLocation,
-                              battery: user?.batteryLevel ?? 86,
+                              battery: 86,
                             );
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -441,7 +517,9 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Memanggil Ketua Rombongan Ust. Muhammad Ridwan...'),
+                            content: Text(
+                              'Memanggil Ketua Rombongan Ust. Muhammad Ridwan...',
+                            ),
                             backgroundColor: AppColors.primary,
                           ),
                         );
@@ -482,7 +560,8 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
                 _buildWorshipCard(
                   context: context,
                   title: 'Panduan Manasik Umrah',
-                  subtitle: 'Tata cara ibadah lengkap dari Ihram hingga Tahallul',
+                  subtitle:
+                      'Tata cara ibadah lengkap dari Ihram hingga Tahallul',
                   icon: LucideIcons.compass,
                   color: AppColors.infoBlue,
                   onTap: () => context.push('/umrah_guide'),
@@ -570,11 +649,16 @@ class _PilgrimHomeScreenState extends ConsumerState<PilgrimHomeScreen> {
               width: 60,
               height: 60,
               decoration: BoxDecoration(
-                color: isDark ? AppColors.cardDark : color.withValues(alpha: 0.12),
+                color: isDark
+                    ? AppColors.cardDark
+                    : color.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: isDark ? AppColors.borderDark : color.withValues(alpha: 0.45),
-                  width: 1.8, // High contrast border for clear clickable boundary
+                  color: isDark
+                      ? AppColors.borderDark
+                      : color.withValues(alpha: 0.45),
+                  width:
+                      1.8, // High contrast border for clear clickable boundary
                 ),
                 boxShadow: [
                   BoxShadow(
