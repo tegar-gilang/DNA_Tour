@@ -15,7 +15,6 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _idController = TextEditingController();
-  bool _rememberMe = true;
 
   @override
   void initState() {
@@ -27,7 +26,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       } else if (role == UserRole.family) {
         _idController.text = UserModel.demoFamily.id;
       } else {
-        _idController.text = UserModel.demoTourLeader.id;
+        // Biarkan kosong agar pengguna memasukkan ID Tour Leader resmi yang valid dari backend
+        _idController.text = '';
       }
     });
   }
@@ -61,6 +61,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       context.go('/pilgrim');
     } else if (role == UserRole.family) {
       context.go('/family');
+    } else if (role == UserRole.tourLeader) {
+      context.go('/tour_leader');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Role ini belum tersedia untuk login.')),

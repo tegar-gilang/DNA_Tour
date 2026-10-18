@@ -21,6 +21,7 @@ class AuthRepository {
     );
 
     await secureStorage.saveToken(loginResponse.token);
+    await secureStorage.saveRole('pilgrim');
 
     return loginResponse;
   }
@@ -36,6 +37,7 @@ class AuthRepository {
     );
 
     await secureStorage.saveToken(loginResponse.token);
+    await secureStorage.saveRole('family');
 
     return loginResponse;
   }
@@ -69,6 +71,55 @@ class AuthRepository {
 
     return MeResponse.fromJson(response.data as Map<String, dynamic>);
   }
+
+  Future<TourLeaderLoginResponse> loginTourLeader(String loginId) async {
+    final response = await apiClient.dio.post(
+      '/tour-leader/login',
+      data: {'login_id': loginId},
+    );
+
+    final loginResponse = TourLeaderLoginResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    );
+
+    await secureStorage.saveToken(loginResponse.token);
+    await secureStorage.saveRole('tour_leader');
+
+    return loginResponse;
+  }
+
+  Future<TourLeaderMeResponse> getTourLeaderMe() async {
+    final token = await secureStorage.getToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Token tidak ditemukan.');
+    }
+
+    final response = await apiClient.dio.get(
+      '/tour-leader/me',
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
+
+    return TourLeaderMeResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<void> logoutTourLeader() async {
+    final token = await secureStorage.getToken();
+
+    if (token != null && token.isNotEmpty) {
+      try {
+        await apiClient.dio.post(
+          '/tour-leader/logout',
+          options: Options(headers: {'Authorization': 'Bearer $token'}),
+        );
+      } finally {
+        await secureStorage.deleteToken();
+      }
+    } else {
+      await secureStorage.deleteToken();
+    }
+  }
+
 
   Future<void> logout() async {
     final token = await secureStorage.getToken();

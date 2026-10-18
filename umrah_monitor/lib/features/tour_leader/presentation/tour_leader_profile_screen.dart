@@ -14,6 +14,11 @@ class TourLeaderProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
     final user = authState.user;
+    final tourLeader = authState.tourLeader;
+    final displayName = tourLeader?.fullName ?? user?.name ?? 'Ust. Muhammad Ridwan, Lc.';
+    final displaySubtitle = tourLeader != null
+        ? 'ID: ${tourLeader.loginId} • ${tourLeader.status.toUpperCase()}'
+        : 'Kloter 4 Al-Barakah';
     final currentThemeMode = ref.watch(themeModeProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -78,26 +83,34 @@ class TourLeaderProfileScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
 
-              // Brief Hero Profile Summary Card (Same as Home Page without Prayer Reminder)
+              // Brief Hero Profile Summary Card
               RoleProfileSummaryCard(
-                name: user?.name ?? 'Ust. Muhammad Ridwan, Lc.',
-                roleSubtitle: 'Kloter 4 Al-Barakah',
-                avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-                isVerified: false,
+                name: displayName,
+                roleSubtitle: displaySubtitle,
+                avatarUrl: user?.avatarUrl,
+                isVerified: tourLeader != null && tourLeader.status == 'active',
                 statusChips: const [],
                 currentLocation: 'Masjidil Haram, Makkah',
               ),
               const SizedBox(height: 24),
 
               // Assigned Groups & Logistics Section
-              SectionHeader(title: 'Alokasi Tugas & Logistik Kloter'),
+              SectionHeader(title: 'Alokasi Tugas & Detail Akun'),
               AppleCard(
                 padding: const EdgeInsets.all(18),
                 child: Column(
                   children: [
-                    _buildGroupRow('Kloter 4 Al-Barakah', '45 Jamaah Terdaftar • Fase Aktif Makkah', AppColors.primary),
+                    _buildGroupRow(
+                      tourLeader != null ? 'No. Sertifikasi: ${tourLeader.certificationNumber ?? "-"}' : 'Kloter 4 Al-Barakah',
+                      tourLeader != null ? 'Telepon: ${tourLeader.phone ?? "-"}' : '45 Jamaah Terdaftar • Fase Aktif Makkah',
+                      AppColors.primary,
+                    ),
                     const Divider(height: 24),
-                    _buildGroupRow('Hotel Swissôtel Al Maqam Makkah', '23 Kamar Dialokasikan • Lantai 14 Check-In', AppColors.secondaryDark),
+                    _buildGroupRow(
+                      'Hotel Swissôtel Al Maqam Makkah',
+                      '23 Kamar Dialokasikan • Lantai 14 Check-In',
+                      AppColors.secondaryDark,
+                    ),
                   ],
                 ),
               ),

@@ -27,14 +27,89 @@ import '../../features/prayer/presentation/prayer_collection_screen.dart';
 import '../../features/prayer/presentation/prayer_detail_screen.dart';
 import '../../features/tasbih/presentation/digital_tasbih_screen.dart';
 import '../../features/prayer_time/presentation/prayer_time_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/guide/presentation/umrah_guide_screen.dart';
+import '../../features/auth/domain/user_model.dart';
+import '../../features/auth/presentation/auth_provider.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+
+class RouterNotifier extends ChangeNotifier {
+  final Ref _ref;
+
+  RouterNotifier(this._ref) {
+    _ref.listen<AuthState>(
+      authProvider,
+      (_, __) => notifyListeners(),
+    );
+  }
+
+  String? redirect(BuildContext context, GoRouterState state) {
+    final matchedPath = state.matchedLocation;
+    final isTourLeaderRoute = matchedPath.startsWith('/tour_leader');
+
+    if (isTourLeaderRoute) {
+      final authState = _ref.read(authProvider);
+
+      final isValidTourLeader = authState.isAuthenticated &&
+          authState.selectedRole == UserRole.tourLeader &&
+          authState.tourLeader != null;
+
+      if (!isValidTourLeader) {
+        return '/login';
+      }
+    }
+
+    return null;
+  }
+}
+
+final routerNotifierProvider = Provider<RouterNotifier>((ref) {
+  return RouterNotifier(ref);
+});
+
+final routerProvider = Provider<GoRouter>((ref) {
+  final notifier = ref.watch(routerNotifierProvider);
+
+  return GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: '/',
+    refreshListenable: notifier,
+    redirect: notifier.redirect,
+    routes: _appRoutes,
+  );
+});
 
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/',
-  routes: [
+  redirect: (BuildContext context, GoRouterState state) {
+    final matchedPath = state.matchedLocation;
+    final isTourLeaderRoute = matchedPath.startsWith('/tour_leader');
+
+    if (isTourLeaderRoute) {
+      try {
+        final container = ProviderScope.containerOf(context, listen: false);
+        final authState = container.read(authProvider);
+
+        final isValidTourLeader = authState.isAuthenticated &&
+            authState.selectedRole == UserRole.tourLeader &&
+            authState.tourLeader != null;
+
+        if (!isValidTourLeader) {
+          return '/login';
+        }
+      } catch (_) {
+        return '/login';
+      }
+    }
+
+    return null;
+  },
+  routes: _appRoutes,
+);
+
+final List<RouteBase> _appRoutes = [
     GoRoute(
       path: '/',
       builder: (context, state) => const SplashScreen(),
@@ -253,5 +328,4 @@ final appRouter = GoRouter(
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => const UmrahGuideScreen(),
     ),
-  ],
-);
+  ];

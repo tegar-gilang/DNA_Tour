@@ -15,6 +15,11 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
     final user = authState.user;
+    final tourLeader = authState.tourLeader;
+    final displayName = tourLeader?.fullName ?? user?.name ?? 'Ust. Muhammad Ridwan, Lc.';
+    final displaySubtitle = tourLeader != null
+        ? 'ID: ${tourLeader.loginId} • ${tourLeader.status.toUpperCase()}'
+        : 'Kloter 4 Al-Barakah';
     final journeyState = ref.watch(journeyProvider);
     final allPilgrims = ref.watch(pilgrimAttendanceProvider);
     final presentCount = allPilgrims.where((p) => p.status == 'checked_in').length;
@@ -38,9 +43,9 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
               children: [
                 // Brief Profile Hero Summary Card
                 RoleProfileSummaryCard(
-                  name: user?.name ?? 'Ust. Muhammad Ridwan, Lc.',
-                  roleSubtitle: 'Kloter 4 Al-Barakah',
-                  avatarUrl: user?.avatarUrl ?? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+                  name: displayName,
+                  roleSubtitle: displaySubtitle,
+                  avatarUrl: user?.avatarUrl,
                   statusChips: const [],
                   currentLocation: 'Masjidil Haram, Makkah',
                 ),
