@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:umrah_monitor/features/auth/data/auth_repository.dart';
@@ -197,7 +198,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       await authRepository.registerDeviceToken(
         fcmToken: fcmToken,
-        platform: 'android',
+        platform: Platform.isIOS ? 'ios' : 'android',
       );
 
       print('Registrasi FCM token berhasil.');
