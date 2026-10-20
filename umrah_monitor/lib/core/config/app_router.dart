@@ -32,7 +32,8 @@ import '../../features/guide/presentation/umrah_guide_screen.dart';
 import '../../features/auth/domain/user_model.dart';
 import '../../features/auth/presentation/auth_provider.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+final GlobalKey<NavigatorState> _rootNavigatorKey = rootNavigatorKey;
 
 class RouterNotifier extends ChangeNotifier {
   final Ref _ref;

@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -438,10 +438,11 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
   }
 
   Widget _buildSentState(BuildContext context, jamaah) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             padding: const EdgeInsets.all(24),
@@ -460,18 +461,24 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
           Text(
             'Incident SOS berhasil dibuat di server. Status ini belum memastikan notifikasi telah diterima oleh Tour Leader.',
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.w800,
               color: AppColors.successGreen,
+              height: 1.3,
             ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
           Text(
             'Sinyal darurat Anda ($_selectedDistressType) telah diterima oleh Tour Leader Ust. Muhammad Ridwan dan Pusat Operasional Al-Barakah.',
-            style: TextStyle(fontSize: 15, height: 1.5),
+            style: TextStyle(
+              fontSize: 14,
+              height: 1.5,
+              color: AppColors.textSecondaryLight,
+            ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 24),
           AppleCard(
             padding: const EdgeInsets.all(18),
             child: Column(
@@ -494,7 +501,7 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 28),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
@@ -511,7 +518,10 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
               label: const Text('Hubungi Tour Leader Sekarang'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                padding: const EdgeInsets.symmetric(vertical: 18),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
             ),
           ),

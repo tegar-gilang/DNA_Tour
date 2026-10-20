@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'firebase_options.dart';
 import 'core/config/app_router.dart';
 import 'core/design_system/app_theme.dart';
 import 'core/theme/theme_provider.dart';
+import 'core/services/firebase_messaging_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +17,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   GoogleFonts.config.allowRuntimeFetching = true;
 
@@ -37,11 +41,24 @@ void main() async {
   );
 }
 
-class UmrahMonitorApp extends ConsumerWidget {
+class UmrahMonitorApp extends ConsumerStatefulWidget {
   const UmrahMonitorApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<UmrahMonitorApp> createState() => _UmrahMonitorAppState();
+}
+
+class _UmrahMonitorAppState extends ConsumerState<UmrahMonitorApp> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(firebaseMessagingServiceProvider).initializeForegroundAndBackgroundHandlers(ref);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final themeMode = ref.watch(themeModeProvider);
     final router = ref.watch(routerProvider);
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -88,14 +89,19 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     }).toList();
   }
 
-  void _toggleReadStatus(NotificationModel item) {
-    ref.read(notificationProvider.notifier).toggleReadStatus(item.id);
+  void _onNotificationTap(NotificationModel item) {
+    ref.read(notificationNotifierProvider.notifier).markAsRead(item.id);
+
+    if (item.incidentId != null && item.incidentId!.isNotEmpty) {
+      context.push('/tour_leader/incidents');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final allNotifications = ref.watch(notificationProvider);
+    final notifState = ref.watch(notificationNotifierProvider);
+    final allNotifications = notifState.notifications;
     final activeNotifications = _getActiveNotifications(allNotifications);
     final unreadCount = _getUnreadCount(activeNotifications);
     final filtered = _getFilteredNotifications(activeNotifications);
@@ -177,6 +183,17 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                       ),
                     ],
                   ),
+                  IconButton(
+                    tooltip: 'Muat ulang notifikasi',
+                    onPressed: () {
+                      ref.read(notificationNotifierProvider.notifier).fetchNotifications();
+                    },
+                    icon: Icon(
+                      LucideIcons.refreshCw,
+                      size: 18,
+                      color: isDark ? Colors.white70 : AppColors.textSecondaryLight,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -206,7 +223,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   ),
                   decoration: InputDecoration(
                     hintText: 'Cari peringatan, jadwal sholat, info bus...',
-                    hintStyle: TextStyle(
+                    hintStyle: const TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondaryLight,
                     ),
@@ -285,41 +302,91 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
             // Notification List
             Expanded(
-              child: filtered.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(18),
-                            decoration: BoxDecoration(
-                              color: isDark ? AppColors.cardDark : AppColors.cardLight,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: isDark ? AppColors.borderDark : AppColors.borderLight,
+              child: Builder(
+                builder: (context) {
+                  if (notifState.isLoading && allNotifications.isEmpty) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (notifState.errorMessage != null && allNotifications.isEmpty) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(LucideIcons.alertTriangle, size: 48, color: AppColors.emergencyRed),
+                            const SizedBox(height: 12),
+                            Text(
+                              notifState.errorMessage!,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 14, color: AppColors.textSecondaryLight),
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                ref.read(notificationNotifierProvider.notifier).fetchNotifications();
+                              },
+                              icon: const Icon(LucideIcons.refreshCw, size: 16),
+                              label: const Text('Coba Lagi'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
                               ),
                             ),
-                            child: const Icon(LucideIcons.bellOff, size: 36, color: AppColors.textSecondaryLight),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Tidak ada notifikasi ditemukan',
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
+                  if (filtered.isEmpty) {
+                    return RefreshIndicator(
+                      onRefresh: () => ref.read(notificationNotifierProvider.notifier).fetchNotifications(),
+                      child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.2),
+                          Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(18),
+                                  decoration: BoxDecoration(
+                                    color: isDark ? AppColors.cardDark : AppColors.cardLight,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: isDark ? AppColors.borderDark : AppColors.borderLight,
+                                    ),
+                                  ),
+                                  child: const Icon(LucideIcons.bellOff, size: 36, color: AppColors.textSecondaryLight),
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'Tidak ada notifikasi ditemukan',
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700,
+                                    color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                const Text(
+                                  'Coba sesuaikan kata kunci pencarian atau filter kategori Anda.',
+                                  style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
+                                ),
+                              ],
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Coba sesuaikan kata kunci pencarian atau filter kategori Anda.',
-                            style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
                           ),
                         ],
                       ),
-                    )
-                  : ListView.builder(
-                      physics: const BouncingScrollPhysics(),
+                    );
+                  }
+
+                  return RefreshIndicator(
+                    onRefresh: () => ref.read(notificationNotifierProvider.notifier).fetchNotifications(),
+                    child: ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                       itemCount: grouped.keys.length,
                       itemBuilder: (context, groupIndex) {
@@ -332,7 +399,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                               padding: const EdgeInsets.only(top: 10, bottom: 8, left: 4),
                               child: Text(
                                 dateKey.toUpperCase(),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w700,
                                   letterSpacing: 1.0,
@@ -346,6 +413,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         );
                       },
                     ),
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -357,7 +427,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: InkWell(
-        onTap: () => _toggleReadStatus(item),
+        onTap: () => _onNotificationTap(item),
         borderRadius: BorderRadius.circular(18),
         child: Container(
           padding: const EdgeInsets.all(16),
@@ -428,7 +498,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         ),
                         Text(
                           item.time,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                             color: AppColors.textSecondaryLight,

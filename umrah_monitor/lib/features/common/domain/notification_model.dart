@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons/lucide_icons.dart';
+import '../../../../core/design_system/app_colors.dart';
 
 class NotificationModel {
   final String id;
@@ -11,6 +13,7 @@ class NotificationModel {
   final IconData icon;
   final Color color;
   final bool isRead;
+  final String? incidentId;
 
   const NotificationModel({
     required this.id,
@@ -23,7 +26,70 @@ class NotificationModel {
     required this.icon,
     required this.color,
     this.isRead = false,
+    this.incidentId,
   });
+
+  factory NotificationModel.fromJson(Map<String, dynamic> json) {
+    final id = json['id']?.toString() ?? '';
+    final title = json['title']?.toString() ?? 'Pemberitahuan';
+    final subtitle = json['message']?.toString() ?? '';
+    final incidentId = json['sos_incident_id']?.toString();
+    final type = json['type']?.toString() ?? '';
+    final isRead = json['read_at'] != null;
+
+    String category = 'Umum';
+    String priorityLabel = 'RUTIN';
+    IconData icon = LucideIcons.bell;
+    Color color = AppColors.primary;
+
+    if (type.contains('sos') || incidentId != null) {
+      category = 'Darurat';
+      priorityLabel = 'URGEN';
+      icon = LucideIcons.alertTriangle;
+      color = AppColors.emergencyRed;
+    } else if (type.contains('activity') || type.contains('journey')) {
+      category = 'Aktivitas';
+      priorityLabel = 'PENTING';
+      icon = LucideIcons.compass;
+      color = AppColors.primary;
+    }
+
+    String timeFormatted = 'Baru Saja';
+    String dateGroup = 'Hari Ini';
+    final createdAtStr = json['created_at']?.toString();
+    if (createdAtStr != null) {
+      final dt = DateTime.tryParse(createdAtStr)?.toLocal();
+      if (dt != null) {
+        final now = DateTime.now();
+        final diff = now.difference(dt);
+        final hh = dt.hour.toString().padLeft(2, '0');
+        final mm = dt.minute.toString().padLeft(2, '0');
+        timeFormatted = '$hh:$mm';
+
+        if (diff.inDays == 0 && dt.day == now.day) {
+          dateGroup = 'Hari Ini';
+        } else if (diff.inDays <= 1) {
+          dateGroup = 'Kemarin';
+        } else {
+          dateGroup = 'Minggu Ini';
+        }
+      }
+    }
+
+    return NotificationModel(
+      id: id,
+      title: title,
+      subtitle: subtitle,
+      time: timeFormatted,
+      dateGroup: dateGroup,
+      category: category,
+      priorityLabel: priorityLabel,
+      icon: icon,
+      color: color,
+      isRead: isRead,
+      incidentId: incidentId,
+    );
+  }
 
   NotificationModel copyWith({
     String? id,
@@ -36,6 +102,7 @@ class NotificationModel {
     IconData? icon,
     Color? color,
     bool? isRead,
+    String? incidentId,
   }) {
     return NotificationModel(
       id: id ?? this.id,
@@ -48,6 +115,7 @@ class NotificationModel {
       icon: icon ?? this.icon,
       color: color ?? this.color,
       isRead: isRead ?? this.isRead,
+      incidentId: incidentId ?? this.incidentId,
     );
   }
 }
