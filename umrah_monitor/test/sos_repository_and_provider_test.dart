@@ -145,6 +145,97 @@ void main() {
       expect(updated.incidentStatus, SosIncidentStatus.falseAlarm);
     });
 
+    test('createIncident excludes mock locationName and sends null coordinates when absent', () async {
+      Map? sentData;
+
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            sentData = options.data as Map?;
+            return handler.resolve(
+              Response(
+                requestOptions: options,
+                statusCode: 201,
+                data: {
+                  'message': 'SOS berhasil dibuat.',
+                  'data': {
+                    'id': 'incident-uuid-without-coords',
+                    'type': 'critical',
+                    'latitude': null,
+                    'longitude': null,
+                    'location_name': null,
+                  },
+                },
+              ),
+            );
+          },
+        ),
+      );
+
+      final apiClient = ApiClient(customDio: dio);
+      final repo = SosRepository(apiClient: apiClient, secureStorage: storage);
+
+      final res = await repo.createIncident(
+        type: 'critical',
+        latitude: null,
+        longitude: null,
+        locationName: null,
+        description: 'Butuh Bantuan Umum',
+      );
+
+      expect(res['data']['id'], 'incident-uuid-without-coords');
+      expect(sentData?['type'], 'critical');
+      expect(sentData?['latitude'], isNull);
+      expect(sentData?['longitude'], isNull);
+      expect(sentData?['location_name'], isNull);
+      expect(sentData?['description'], 'Butuh Bantuan Umum');
+    });
+
+    test('createIncident sends exact GPS coordinates when available', () async {
+      Map? sentData;
+
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            sentData = options.data as Map?;
+            return handler.resolve(
+              Response(
+                requestOptions: options,
+                statusCode: 201,
+                data: {
+                  'message': 'SOS berhasil dibuat.',
+                  'data': {
+                    'id': 'incident-uuid-with-coords',
+                    'type': 'health',
+                    'latitude': -6.9444655,
+                    'longitude': 107.6713044,
+                  },
+                },
+              ),
+            );
+          },
+        ),
+      );
+
+      final apiClient = ApiClient(customDio: dio);
+      final repo = SosRepository(apiClient: apiClient, secureStorage: storage);
+
+      final res = await repo.createIncident(
+        type: 'health',
+        latitude: -6.9444655,
+        longitude: 107.6713044,
+        description: 'Darurat Medis / Kesehatan',
+      );
+
+      expect(res['data']['id'], 'incident-uuid-with-coords');
+      expect(sentData?['type'], 'health');
+      expect(sentData?['latitude'], -6.9444655);
+      expect(sentData?['longitude'], 107.6713044);
+      expect(sentData?['location_name'], isNull);
+    });
+
     test('fetchIncidents handles network error safely', () async {
       final dio = Dio();
       dio.interceptors.add(

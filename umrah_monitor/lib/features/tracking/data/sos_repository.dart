@@ -9,10 +9,18 @@ class SosRepository {
 
   SosRepository({required this.apiClient, required this.secureStorage});
 
+  /// Membuat laporan darurat SOS baru.
+  ///
+  /// [latitude] dan [longitude] bersifat opsional. Jika GPS tidak tersedia,
+  /// keduanya dikirim sebagai null (tidak disertakan dalam payload JSON).
+  /// Backend menerima insiden tanpa koordinat selama keduanya null bersama-sama.
+  ///
+  /// [locationName] tidak boleh berisi nama dari agenda perjalanan atau
+  /// teks hardcoded. Kirim null jika sumber nama lokasi tidak terverifikasi.
   Future<Map<String, dynamic>> createIncident({
     required String type,
-    required double latitude,
-    required double longitude,
+    double? latitude,
+    double? longitude,
     String? description,
     String? locationName,
   }) async {
@@ -28,10 +36,14 @@ class SosRepository {
       '/sos-incidents',
       data: {
         'type': type,
-        'latitude': latitude,
-        'longitude': longitude,
+        // Koordinat dikirim hanya jika keduanya tersedia sekaligus.
+        // Jangan mengirim salah satunya saja, dan jangan memakai 0 sebagai fallback.
+        if (latitude != null && longitude != null) 'latitude': latitude,
+        if (latitude != null && longitude != null) 'longitude': longitude,
         if (description != null && description.trim().isNotEmpty)
           'description': description.trim(),
+        // location_name hanya dikirim jika berasal dari sumber terverifikasi
+        // (misalnya reverse geocoding). Jangan kirim nama agenda perjalanan.
         if (locationName != null && locationName.trim().isNotEmpty)
           'location_name': locationName.trim(),
       },

@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +10,6 @@ import '../../../../core/storage/secure_storage.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../../../core/design_system/custom_widgets.dart';
 import '../../auth/presentation/auth_provider.dart';
-import '../../tracking/presentation/journey_provider.dart';
 import '../../tracking/data/sos_repository.dart';
 import '../../../../core/services/location_service.dart';
 
@@ -112,9 +111,64 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
       _sendError = null;
     });
 
-    try {
-      final position = await LocationService().getCurrentPosition();
+    final locationResult = await LocationService().tryGetCurrentPosition();
 
+    if (!mounted) return;
+
+    if (locationResult.hasPosition) {
+      await _executeCreateIncident(
+        latitude: locationResult.position!.latitude,
+        longitude: locationResult.position!.longitude,
+      );
+    } else {
+      setState(() {
+        _isSending = false;
+      });
+
+      final reason = locationResult.unavailableReason ?? 'Lokasi tidak dapat diperoleh.';
+      final proceedWithoutLocation = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => AlertDialog(
+          title: const Text('GPS Tidak Tersedia'),
+          content: Text(
+            'Layanan lokasi tidak dapat diakses ($reason).\n\nApakah Anda ingin tetap mengirim SOS darurat tanpa koordinat lokasi?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Batal'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.emergencyRed,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: const Text('Kirim Tanpa Lokasi'),
+            ),
+          ],
+        ),
+      );
+
+      if (proceedWithoutLocation == true) {
+        if (!mounted) return;
+        setState(() {
+          _isSending = true;
+        });
+        await _executeCreateIncident(
+          latitude: null,
+          longitude: null,
+        );
+      }
+    }
+  }
+
+  Future<void> _executeCreateIncident({
+    required double? latitude,
+    required double? longitude,
+  }) async {
+    try {
       final type = switch (_selectedDistressType) {
         'Darurat Medis / Kesehatan' => 'health',
         'Tersesat / Terpisah dari Rombongan' => 'lost',
@@ -130,9 +184,9 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
 
       final result = await repository.createIncident(
         type: type,
-        latitude: position.latitude,
-        longitude: position.longitude,
-        locationName: ref.read(journeyProvider).currentLocation,
+        latitude: latitude,
+        longitude: longitude,
+        locationName: null,
         description: _selectedDistressType,
       );
 
@@ -149,8 +203,8 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
       setState(() {
         _isSending = false;
         _isEmergencySent = true;
-        _sentLatitude = position.latitude;
-        _sentLongitude = position.longitude;
+        _sentLatitude = latitude;
+        _sentLongitude = longitude;
         _incidentId = data['id'].toString();
       });
     } on DioException catch (error) {
@@ -256,7 +310,7 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Pilih jenis kondisi darurat. Paket darurat otomatis berisi koordinat GPS akurat, baterai, waktu, serta identitas Anda akan langsung dikirim ke Tour Leader, Keluarga, dan Pusat Operasional.',
+            'Pilih jenis kondisi darurat. Paket darurat otomatis berisi koordinat GPS akurat, waktu, serta identitas Anda akan langsung dikirim ke Tour Leader dan Pusat Operasional.',
             style: TextStyle(
               fontSize: 14,
               height: 1.4,
@@ -438,6 +492,8 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
   }
 
   Widget _buildSentState(BuildContext context, jamaah) {
+    final hasCoordinates = _sentLatitude != null && _sentLongitude != null;
+
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -470,7 +526,7 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
           ),
           const SizedBox(height: 12),
           Text(
-            'Sinyal darurat Anda ($_selectedDistressType) telah diterima oleh Tour Leader Ust. Muhammad Ridwan dan Pusat Operasional Al-Barakah.',
+            'Sinyal darurat Anda ($_selectedDistressType) telah dikirimkan ke Tour Leader dan Pusat Operasional.',
             style: TextStyle(
               fontSize: 14,
               height: 1.5,
@@ -489,12 +545,12 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
                 const Divider(height: 20),
                 _buildPacketRow(
                   'Latitude',
-                  _sentLatitude?.toStringAsFixed(6) ?? '-',
+                  hasCoordinates ? _sentLatitude!.toStringAsFixed(6) : 'Tidak tersedia',
                 ),
                 const Divider(height: 20),
                 _buildPacketRow(
                   'Longitude',
-                  _sentLongitude?.toStringAsFixed(6) ?? '-',
+                  hasCoordinates ? _sentLongitude!.toStringAsFixed(6) : 'Tidak tersedia',
                 ),
                 const Divider(height: 20),
                 _buildPacketRow('Jenis Darurat', _selectedDistressType ?? '-'),

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../config/app_router.dart';
 import '../../features/tracking/presentation/incident_provider.dart';
 import '../../features/auth/presentation/auth_provider.dart';
+import '../../features/auth/domain/user_model.dart';
 import '../../features/common/presentation/notification_provider.dart';
 import '../../features/common/domain/notification_model.dart';
 
@@ -47,9 +48,15 @@ class FirebaseMessagingService {
     }
   }
 
-  void initializeForegroundAndBackgroundHandlers(WidgetRef ref) {
+    void initializeForegroundAndBackgroundHandlers(WidgetRef ref) {
     if (_isConfigured) return;
     _isConfigured = true;
+
+    // Listen to token refresh and update backend
+    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+      debugPrint('FCM token refreshed: $newToken');
+      _updateDeviceTokenOnBackend(newToken, ref);
+    });
 
     // 1. Foreground message handler
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -220,6 +227,22 @@ class FirebaseMessagingService {
     attempt(0);
   }
 
+  Future<void> _updateDeviceTokenOnBackend(String newToken, WidgetRef ref) async {
+    try {
+      final authState = ref.read(authProvider);
+      if (authState.isAuthenticated) {
+        final authRepo = ref.read(authRepositoryProvider);
+        await authRepo.registerDeviceToken(
+          fcmToken: newToken,
+          platform: Theme.of(rootNavigatorKey.currentContext!).platform == TargetPlatform.iOS ? 'ios' : 'android',
+        );
+        debugPrint('FCM refreshed token updated on backend.');
+      }
+    } catch (e) {
+      debugPrint('Failed to update refreshed FCM token: $e');
+    }
+  }
+
   void _handleNotificationNavigation(RemoteMessage message, WidgetRef ref) {
     final messageId = message.messageId;
     if (messageId != null && messageId == _lastHandledMessageId) {
@@ -239,7 +262,13 @@ class FirebaseMessagingService {
 
     if (incidentId != null && incidentId.isNotEmpty) {
       ref.read(incidentNotifierProvider.notifier).fetchIncidents();
-      router.push('/tour_leader/incidents');
+      
+      final isTourLeader = authState.selectedRole == UserRole.tourLeader || authState.tourLeader != null;
+      if (isTourLeader) {
+        router.push('/tour_leader/incidents');
+      } else {
+        router.push('/sos');
+      }
     } else {
       router.push('/notifications');
     }
