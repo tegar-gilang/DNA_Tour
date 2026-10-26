@@ -8,6 +8,7 @@ import '../../features/auth/presentation/auth_provider.dart';
 import '../../features/auth/domain/user_model.dart';
 import '../../features/common/presentation/notification_provider.dart';
 import '../../features/common/domain/notification_model.dart';
+import '../../features/pilgrim/presentation/timeline_provider.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -111,9 +112,15 @@ class FirebaseMessagingService {
     final body = notification?.body ??
         (data['body']?.toString() ?? 'Ada informasi terbaru.');
 
+    final scheduleId = data['schedule_id']?.toString();
+
     // 1. Refresh daftar insiden jika ada incident terkait
     if (incidentId != null && incidentId.isNotEmpty) {
       ref.read(incidentNotifierProvider.notifier).fetchIncidents();
+    }
+    // 1b. Refresh timeline jika notifikasi adalah schedule_reminder
+    if (scheduleId != null && scheduleId.isNotEmpty) {
+      ref.read(timelineProvider.notifier).refresh();
     }
 
     // 2. Tambahkan notifikasi ke state lokal terlebih dahulu (optimistic).
@@ -252,6 +259,7 @@ class FirebaseMessagingService {
 
     final data = message.data;
     final incidentId = data['incident_id']?.toString();
+    final rawScheduleId = data['schedule_id']?.toString();
     final router = ref.read(routerProvider);
     final authState = ref.read(authProvider);
 
@@ -269,6 +277,8 @@ class FirebaseMessagingService {
       } else {
         router.push('/sos');
       }
+    } else if (rawScheduleId != null && rawScheduleId.isNotEmpty && rawScheduleId != '0') {
+      router.push('/schedule_detail/$rawScheduleId');
     } else {
       router.push('/notifications');
     }

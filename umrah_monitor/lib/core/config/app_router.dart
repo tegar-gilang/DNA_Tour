@@ -27,6 +27,8 @@ import '../../features/prayer/presentation/prayer_collection_screen.dart';
 import '../../features/prayer/presentation/prayer_detail_screen.dart';
 import '../../features/tasbih/presentation/digital_tasbih_screen.dart';
 import '../../features/prayer_time/presentation/prayer_time_screen.dart';
+import '../../features/pilgrim/presentation/schedule_detail_screen.dart';
+import '../../features/tour_leader/domain/schedule_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/guide/presentation/umrah_guide_screen.dart';
 import '../../features/auth/domain/user_model.dart';
@@ -328,5 +330,14 @@ final List<RouteBase> _appRoutes = [
       path: '/umrah_guide',
       parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => const UmrahGuideScreen(),
+    ),
+    GoRoute(
+      path: '/schedule_detail/:id',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) {
+        final id = state.pathParameters['id'] ?? '';
+        final schedule = state.extra is ScheduleModel ? state.extra as ScheduleModel : null;
+        return ScheduleDetailScreen(scheduleId: id, initialSchedule: schedule);
+      },
     ),
   ];
