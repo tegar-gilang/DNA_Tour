@@ -152,6 +152,8 @@ class FirebaseMessagingService {
   }) {
     final data = message.data;
     final incidentId = data['incident_id']?.toString();
+    final broadcastId = data['broadcast_id']?.toString();
+    final type = data['type']?.toString().toLowerCase() ?? '';
 
     // Gunakan notification_id dari payload backend jika ada (stabil & idempotent).
     // Fallback ke messageId hanya jika notification_id tidak tersedia.
@@ -180,10 +182,24 @@ class FirebaseMessagingService {
       ref.read(timelineProvider.notifier).refresh();
     }
 
+    // Tentukan kategori, icon, dan warna sesuai tipe notifikasi
+    final isEmergency = incidentId != null && incidentId.isNotEmpty;
+    final isBroadcast = type == 'broadcast' || (broadcastId != null && broadcastId.isNotEmpty);
+
+    final String category = isEmergency
+        ? 'Darurat'
+        : (isBroadcast ? 'Siaran' : 'Umum');
+    final String priorityLabel = isEmergency
+        ? 'URGEN'
+        : (isBroadcast ? 'PENTING' : 'RUTIN');
+    final IconData icon = isEmergency
+        ? Icons.warning_amber_rounded
+        : (isBroadcast ? Icons.campaign_rounded : Icons.notifications_rounded);
+    final Color color = isEmergency
+        ? const Color(0xFFE53935)
+        : (isBroadcast ? const Color(0xFFC27803) : const Color(0xFF1E88E5));
+
     // 2. Tambahkan notifikasi ke state lokal terlebih dahulu (optimistic).
-    //    Ini memastikan notifikasi muncul di Pusat Notifikasi segera,
-    //    sebelum backend selesai menyimpan via ProcessSosNotificationJob.
-    //    Guard terhadap id kosong dilakukan di dalam addNotificationIfAbsent.
     ref
         .read(notificationNotifierProvider.notifier)
         .addNotificationIfAbsent(
@@ -193,20 +209,13 @@ class FirebaseMessagingService {
             subtitle: body,
             time: 'Baru Saja',
             dateGroup: 'Hari Ini',
-            category: incidentId != null && incidentId.isNotEmpty
-                ? 'Darurat'
-                : 'Umum',
-            priorityLabel: incidentId != null && incidentId.isNotEmpty
-                ? 'URGEN'
-                : 'RUTIN',
-            icon: incidentId != null && incidentId.isNotEmpty
-                ? Icons.warning_amber_rounded
-                : Icons.notifications_rounded,
-            color: incidentId != null && incidentId.isNotEmpty
-                ? const Color(0xFFE53935)
-                : const Color(0xFF1E88E5),
+            category: category,
+            priorityLabel: priorityLabel,
+            icon: icon,
+            color: color,
             isRead: false,
             incidentId: incidentId,
+            broadcastId: broadcastId,
           ),
         );
 

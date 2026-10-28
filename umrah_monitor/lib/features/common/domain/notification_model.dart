@@ -14,6 +14,7 @@ class NotificationModel {
   final Color color;
   final bool isRead;
   final String? incidentId;
+  final String? broadcastId;
 
   const NotificationModel({
     required this.id,
@@ -27,6 +28,7 @@ class NotificationModel {
     required this.color,
     this.isRead = false,
     this.incidentId,
+    this.broadcastId,
   });
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
@@ -34,7 +36,8 @@ class NotificationModel {
     final title = json['title']?.toString() ?? 'Pemberitahuan';
     final subtitle = json['message']?.toString() ?? '';
     final incidentId = json['sos_incident_id']?.toString();
-    final type = json['type']?.toString() ?? '';
+    final broadcastId = json['broadcast_id']?.toString();
+    final type = json['type']?.toString().toLowerCase() ?? '';
     final isRead = json['read_at'] != null;
 
     String category = 'Umum';
@@ -47,7 +50,12 @@ class NotificationModel {
       priorityLabel = 'URGEN';
       icon = LucideIcons.alertTriangle;
       color = AppColors.emergencyRed;
-    } else if (type.contains('activity') || type.contains('journey')) {
+    } else if (type == 'broadcast' || broadcastId != null) {
+      category = 'Siaran';
+      priorityLabel = 'PENTING';
+      icon = LucideIcons.radio;
+      color = const Color(0xFFC27803); // Warm amber gold tone for broadcast
+    } else if (type.contains('activity') || type.contains('journey') || type.contains('schedule')) {
       category = 'Aktivitas';
       priorityLabel = 'PENTING';
       icon = LucideIcons.compass;
@@ -88,6 +96,7 @@ class NotificationModel {
       color: color,
       isRead: isRead,
       incidentId: incidentId,
+      broadcastId: broadcastId,
     );
   }
 
@@ -103,6 +112,7 @@ class NotificationModel {
     Color? color,
     bool? isRead,
     String? incidentId,
+    String? broadcastId,
   }) {
     return NotificationModel(
       id: id ?? this.id,
@@ -116,6 +126,7 @@ class NotificationModel {
       color: color ?? this.color,
       isRead: isRead ?? this.isRead,
       incidentId: incidentId ?? this.incidentId,
+      broadcastId: broadcastId ?? this.broadcastId,
     );
   }
 }
