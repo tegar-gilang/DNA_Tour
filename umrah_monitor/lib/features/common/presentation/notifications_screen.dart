@@ -31,6 +31,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       return [
         'Semua',
         'Belum Dibaca',
+        'Siaran',
         'Perjalanan',
         'Aktivitas',
         'Insiden',
@@ -43,11 +44,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   final List<String> _allFilters = [
     'Semua',
     'Belum Dibaca',
+    'Siaran',
     'Darurat',
     'Perjalanan',
     'Aktivitas',
     'Sholat',
-    'Siaran',
     'Pertemuan',
     'Hotel',
     'Keberangkatan Bus',
@@ -58,7 +59,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   List<NotificationModel> _getActiveNotifications(List<NotificationModel> allNotifications) {
     if (_isFamily) {
       return allNotifications.where((n) {
-        return n.category == 'Perjalanan' ||
+        return n.category == 'Siaran' ||
+            n.category == 'Perjalanan' ||
             n.category == 'Aktivitas' ||
             n.category == 'Insiden' ||
             n.category == 'Darurat';

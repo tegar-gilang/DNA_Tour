@@ -7,6 +7,8 @@ import '../../../../core/design_system/custom_widgets.dart';
 import '../../auth/presentation/auth_provider.dart';
 import '../../tracking/presentation/journey_provider.dart';
 import '../../tracking/presentation/pilgrim_attendance_provider.dart';
+import '../data/broadcast_repository.dart';
+import 'broadcast_provider.dart';
 
 class TourLeaderDashboardScreen extends ConsumerWidget {
   const TourLeaderDashboardScreen({super.key});
@@ -268,7 +270,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                         label: 'Siarkan Broadcast',
                         icon: LucideIcons.radio,
                         color: AppColors.emergencyRed,
-                        onTap: () => _showBroadcastDialog(context),
+                        onTap: () => _showBroadcastDialog(context, ref),
                       ),
                     ),
                   ],
@@ -306,71 +308,318 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
     );
   }
 
-  void _showBroadcastDialog(BuildContext context) {
-    final controller = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
+  void _showBroadcastDialog(BuildContext context, WidgetRef ref) {
+    final authState = ref.read(authProvider);
+    final tourLeader = authState.tourLeader;
+    final kloters = tourLeader?.kloters ?? [];
+
+    if (kloters.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.emergencyRed.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(LucideIcons.radio, color: AppColors.emergencyRed, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Text('Siarkan Pengumuman Rombongan', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18)),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Pemberitahuan darurat ini akan berbunyi di 45 ponsel jamaah dan keluarga pemantau secara seketika.',
-                style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight, height: 1.4),
-              ),
-              const SizedBox(height: 28),
-              TextField(
-                controller: controller,
-                maxLines: 3,
-                style: TextStyle(fontSize: 14),
-                decoration: InputDecoration(
-                  hintText: 'Tulis pesan (misal: Segera berkumpul di lobi hotel dalam 15 menit)...',
-                  hintStyle: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
-                  contentPadding: const EdgeInsets.all(14),
-                ),
-              ),
-            ],
+          title: const Text('Akses Dibatasi'),
+          content: const Text(
+            'Anda belum memiliki penugasan kloter resmi yang terdaftar di sistem. '
+            'Tour Leader hanya dapat menyiarkan pengumuman ke kloter penugasannya.',
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Batal', style: TextStyle(color: AppColors.textSecondaryLight, fontWeight: FontWeight.w600)),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('🔔 Pengumuman disiarkan ke seluruh 45 jamaah dan monitor keluarga!'),
-                    backgroundColor: AppColors.emergencyRed,
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.emergencyRed,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              child: Text('Siarkan Sekarang', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Tutup'),
             ),
           ],
+        ),
+      );
+      return;
+    }
+
+    final titleController = TextEditingController();
+    final messageController = TextEditingController();
+    String selectedKloterId = kloters.first.id;
+    String selectedCategory = 'general';
+    String selectedPriority = 'normal';
+    bool sendToFamily = true;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogCtx) {
+        return Consumer(
+          builder: (context, refWatch, _) {
+            final formState = refWatch.watch(broadcastProvider);
+            final isSending = formState.isLoading;
+
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              title: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.emergencyRed.withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(LucideIcons.radio, color: AppColors.emergencyRed, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Text(
+                      'Siarkan Pengumuman',
+                      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+                    ),
+                  ),
+                ],
+              ),
+              content: SingleChildScrollView(
+                child: StatefulBuilder(
+                  builder: (ctx, setState) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Pemberitahuan akan dikirim ke jamaah kloter tujuan dan keluarga terhubung melalui push notification dan inbox.',
+                          style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight, height: 1.4),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Pilihan Kloter Penugasan
+                        const Text(
+                          'Target Kloter Penugasan',
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: selectedKloterId,
+                              isExpanded: true,
+                              items: kloters.map((k) {
+                                return DropdownMenuItem<String>(
+                                  value: k.id,
+                                  child: Text('${k.name} (${k.code})', style: const TextStyle(fontSize: 13)),
+                                );
+                              }).toList(),
+                              onChanged: isSending
+                                  ? null
+                                  : (val) {
+                                      if (val != null) setState(() => selectedKloterId = val);
+                                    },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+
+                        // Kategori & Prioritas
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text('Kategori', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 6),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey.shade300),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        value: selectedCategory,
+                                        isExpanded: true,
+                                        items: const [
+                                          DropdownMenuItem(value: 'general', child: Text('Umum', style: TextStyle(fontSize: 13))),
+                                          DropdownMenuItem(value: 'ibadah', child: Text('Ibadah', style: TextStyle(fontSize: 13))),
+                                          DropdownMenuItem(value: 'ziarah', child: Text('Ziarah', style: TextStyle(fontSize: 13))),
+                                          DropdownMenuItem(value: 'logistik', child: Text('Logistik', style: TextStyle(fontSize: 13))),
+                                        ],
+                                        onChanged: isSending
+                                            ? null
+                                            : (val) {
+                                                if (val != null) setState(() => selectedCategory = val);
+                                              },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text('Prioritas', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 6),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey.shade300),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        value: selectedPriority,
+                                        isExpanded: true,
+                                        items: const [
+                                          DropdownMenuItem(value: 'normal', child: Text('Normal', style: TextStyle(fontSize: 13))),
+                                          DropdownMenuItem(value: 'urgent', child: Text('Urgent', style: TextStyle(fontSize: 13))),
+                                        ],
+                                        onChanged: isSending
+                                            ? null
+                                            : (val) {
+                                                if (val != null) setState(() => selectedPriority = val);
+                                              },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+
+                        // Judul Pengumuman
+                        const Text('Judul Pengumuman (Maks. 150 karakter)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 6),
+                        TextField(
+                          controller: titleController,
+                          maxLength: 150,
+                          enabled: !isSending,
+                          style: const TextStyle(fontSize: 13),
+                          decoration: InputDecoration(
+                            hintText: 'Misal: Kumpul Lobi Hotel & Keberangkatan',
+                            hintStyle: const TextStyle(fontSize: 12, color: AppColors.textSecondaryLight),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                            counterText: '',
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+
+                        // Isi Pesan
+                        const Text('Isi Pesan (Maks. 2000 karakter)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 6),
+                        TextField(
+                          controller: messageController,
+                          maxLines: 4,
+                          maxLength: 2000,
+                          enabled: !isSending,
+                          style: const TextStyle(fontSize: 13),
+                          decoration: InputDecoration(
+                            hintText: 'Tuliskan instruksi atau pengumuman detail untuk jamaah...',
+                            hintStyle: const TextStyle(fontSize: 12, color: AppColors.textSecondaryLight),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                            contentPadding: const EdgeInsets.all(12),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+
+                        // Checkbox Kirim ke Keluarga
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: sendToFamily,
+                              activeColor: AppColors.primary,
+                              onChanged: isSending
+                                  ? null
+                                  : (val) {
+                                      setState(() => sendToFamily = val ?? true);
+                                    },
+                            ),
+                            const Expanded(
+                              child: Text(
+                                'Kirim juga ke aplikasi Keluarga pemantau',
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: isSending ? null : () => Navigator.pop(dialogCtx),
+                  child: const Text('Batal', style: TextStyle(color: AppColors.textSecondaryLight, fontWeight: FontWeight.w600)),
+                ),
+                ElevatedButton(
+                  onPressed: isSending
+                      ? null
+                      : () async {
+                          final title = titleController.text.trim();
+                          final message = messageController.text.trim();
+
+                          if (title.isEmpty || message.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Judul dan isi pesan siaran wajib diisi.'),
+                                backgroundColor: AppColors.emergencyRed,
+                              ),
+                            );
+                            return;
+                          }
+
+                          final payload = CreateBroadcastPayload(
+                            title: title,
+                            message: message,
+                            category: selectedCategory,
+                            priority: selectedPriority,
+                            targetType: 'kloter',
+                            kloterIds: [selectedKloterId],
+                            sendToFamily: sendToFamily,
+                          );
+
+                          final success = await ref
+                              .read(broadcastProvider.notifier)
+                              .sendBroadcast(payload);
+
+                          if (!context.mounted) return;
+
+                          if (success) {
+                            Navigator.pop(dialogCtx);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('🔔 Siaran pengumuman berhasil diterbitkan dan sedang dikirim.'),
+                                backgroundColor: AppColors.successGreen,
+                              ),
+                            );
+                          } else {
+                            final err = ref.read(broadcastProvider).errorMessage ?? 'Gagal mengirim siaran.';
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(err),
+                                backgroundColor: AppColors.emergencyRed,
+                              ),
+                            );
+                          }
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.emergencyRed,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: isSending
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        )
+                      : const Text('Siarkan Sekarang', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+                ),
+              ],
+            );
+          },
         );
       },
     );
