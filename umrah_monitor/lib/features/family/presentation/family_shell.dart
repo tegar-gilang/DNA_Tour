@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/design_system/custom_widgets.dart';
 
 class FamilyShell extends StatelessWidget {
@@ -15,14 +14,17 @@ class FamilyShell extends StatelessWidget {
       bottomNavigationBar: AppleGlassNavbar(
         currentIndex: navigationShell.currentIndex,
         onItemSelected: (index) {
-          navigationShell.goBranch(index, initialLocation: index == navigationShell.currentIndex);
+          navigationShell.goBranch(
+            index,
+            initialLocation: index == navigationShell.currentIndex,
+          );
         },
         items: const [
-          AppleNavbarItem(icon: LucideIcons.home, label: 'Beranda'),
-          AppleNavbarItem(icon: LucideIcons.mapPin, label: 'Lokasi'),
-          AppleNavbarItem(icon: LucideIcons.calendar, label: 'Jadwal'),
-          AppleNavbarItem(icon: LucideIcons.messageSquare, label: 'Pesan'),
-          AppleNavbarItem(icon: LucideIcons.userCheck, label: 'Profil'),
+          AppleNavbarItem(icon: Icons.home_rounded, label: 'Beranda'),
+          AppleNavbarItem(icon: Icons.map_rounded, label: 'Lokasi'),
+          AppleNavbarItem(icon: Icons.calendar_month_rounded, label: 'Jadwal'),
+          AppleNavbarItem(icon: Icons.campaign_rounded, label: 'Pesan'),
+          AppleNavbarItem(icon: Icons.person_rounded, label: 'Profil'),
         ],
       ),
     );

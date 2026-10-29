@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
@@ -11,7 +12,7 @@ class AppTheme {
     splashFactory: InkSparkle.splashFactory,
     primaryColor: AppColors.primary,
     scaffoldBackgroundColor: AppColors.backgroundLight,
-    pageTransitionsTheme: const PageTransitionsTheme(
+    pageTransitionsTheme: PageTransitionsTheme(
       builders: {
         TargetPlatform.android: CupertinoPageTransitionsBuilder(),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
@@ -128,7 +129,7 @@ class AppTheme {
     splashFactory: InkSparkle.splashFactory,
     primaryColor: AppColors.primary,
     scaffoldBackgroundColor: AppColors.backgroundDark,
-    pageTransitionsTheme: const PageTransitionsTheme(
+    pageTransitionsTheme: PageTransitionsTheme(
       builders: {
         TargetPlatform.android: CupertinoPageTransitionsBuilder(),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
