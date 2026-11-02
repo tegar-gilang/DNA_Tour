@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../domain/umrah_guide_model.dart';
 
 class UmrahGuideNotifier extends StateNotifier<List<UmrahGuideModel>> {

@@ -21,6 +21,7 @@ import '../../features/tour_leader/presentation/tour_leader_profile_screen.dart'
 import '../../features/tracking/presentation/interactive_map_screen.dart';
 import '../../features/tracking/presentation/sos_emergency_screen.dart';
 import '../../features/common/presentation/messages_screen.dart';
+import '../../features/common/presentation/broadcast_feed_screen.dart';
 import '../../features/common/presentation/notifications_screen.dart';
 import '../../features/prayer/domain/prayer_model.dart';
 import '../../features/prayer/presentation/prayer_collection_screen.dart';
@@ -167,8 +168,8 @@ final List<RouteBase> _appRoutes = [
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/pilgrim/messages',
-              builder: (context, state) => const MessagesScreen(),
+              path: '/pilgrim/broadcasts',
+              builder: (context, state) => const BroadcastFeedScreen(),
             ),
           ],
         ),
@@ -216,8 +217,8 @@ final List<RouteBase> _appRoutes = [
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/family/messages',
-              builder: (context, state) => const MessagesScreen(),
+              path: '/family/broadcasts',
+              builder: (context, state) => const BroadcastFeedScreen(),
             ),
           ],
         ),

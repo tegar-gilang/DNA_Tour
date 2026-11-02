@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../core/design_system/app_colors.dart';
 import '../../tracking/presentation/incident_provider.dart';
 import '../../tracking/presentation/pilgrim_attendance_provider.dart';
