@@ -34,7 +34,8 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            await Future.delayed(const Duration(milliseconds: 800));
+            await ref.read(authProvider.notifier).refreshTourLeaderProfile();
+            await Future.delayed(const Duration(milliseconds: 400));
           },
           color: AppColors.primary,
           child: SingleChildScrollView(
@@ -308,10 +309,18 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
     );
   }
 
-  void _showBroadcastDialog(BuildContext context, WidgetRef ref) {
+  Future<void> _showBroadcastDialog(BuildContext context, WidgetRef ref) async {
     final authState = ref.read(authProvider);
-    final tourLeader = authState.tourLeader;
-    final kloters = tourLeader?.kloters ?? [];
+    var tourLeader = authState.tourLeader;
+    var kloters = tourLeader?.kloters ?? [];
+
+    if (kloters.isEmpty && tourLeader != null) {
+      await ref.read(authProvider.notifier).refreshTourLeaderProfile();
+      tourLeader = ref.read(authProvider).tourLeader;
+      kloters = tourLeader?.kloters ?? [];
+    }
+
+    if (!context.mounted) return;
 
     if (kloters.isEmpty) {
       showDialog(

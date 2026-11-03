@@ -278,6 +278,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future<void> refreshTourLeaderProfile() async {
+    try {
+      final tlResponse = await authRepository.getTourLeaderMe();
+      state = state.copyWith(
+        tourLeader: tlResponse.tourLeader,
+      );
+    } catch (_) {
+      // Abaikan jika network error atau silent fail
+    }
+  }
+
   Future<void> loginWithBiometrics() async {
     state = state.copyWith(
       isLoading: false,

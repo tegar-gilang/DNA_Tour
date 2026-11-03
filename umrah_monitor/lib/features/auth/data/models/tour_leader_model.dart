@@ -52,12 +52,12 @@ class TourLeaderAuthModel {
     }
 
     return TourLeaderAuthModel(
-      id: json['id'] as String,
-      loginId: json['login_id'] as String,
-      fullName: json['full_name'] as String,
+      id: json['id']?.toString() ?? '',
+      loginId: json['login_id']?.toString() ?? '',
+      fullName: (json['full_name'] ?? json['name'])?.toString() ?? '',
       certificationNumber: json['certification_number'] as String?,
       phone: json['phone'] as String?,
-      status: json['status'] as String,
+      status: json['status']?.toString() ?? 'active',
       experience: json['experience'],
       performance: json['performance'],
       kloters: parsedKloters,

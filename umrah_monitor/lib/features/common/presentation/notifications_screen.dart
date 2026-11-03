@@ -94,8 +94,39 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   void _onNotificationTap(NotificationModel item) {
     ref.read(notificationNotifierProvider.notifier).markAsRead(item.id);
 
+    final isBroadcast = item.category.toLowerCase() == 'siaran' ||
+        (item.broadcastId != null && item.broadcastId!.isNotEmpty);
+
+    if (isBroadcast) {
+      final authState = ref.read(authProvider);
+      final isTourLeader =
+          authState.selectedRole == UserRole.tourLeader ||
+          authState.tourLeader != null;
+
+      if (isTourLeader) {
+        // Tour Leader tidak menggunakan shell navigasi broadcasts jamaah/family
+        return;
+      }
+
+      if (_isFamily) {
+        context.go('/family/broadcasts');
+      } else {
+        context.go('/pilgrim/broadcasts');
+      }
+      return;
+    }
+
     if (item.incidentId != null && item.incidentId!.isNotEmpty) {
-      context.push('/tour_leader/incidents');
+      final authState = ref.read(authProvider);
+      final isTourLeader =
+          authState.selectedRole == UserRole.tourLeader ||
+          authState.tourLeader != null;
+      if (isTourLeader) {
+        context.push('/tour_leader/incidents');
+      } else {
+        context.push('/sos');
+      }
+      return;
     }
   }
 

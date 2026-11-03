@@ -333,11 +333,36 @@ class FirebaseMessagingService {
   void _handleNavigationFromData(Map<String, dynamic> data, WidgetRef ref) {
     final incidentId = data['incident_id']?.toString();
     final rawScheduleId = data['schedule_id']?.toString();
+    final broadcastId = data['broadcast_id']?.toString();
+    final type = data['type']?.toString().toLowerCase() ?? '';
     final router = ref.read(routerProvider);
     final authState = ref.read(authProvider);
 
     if (!authState.isAuthenticated) {
       router.go('/login');
+      return;
+    }
+
+    final isBroadcast = type == 'broadcast' ||
+        (broadcastId != null && broadcastId.isNotEmpty);
+
+    if (isBroadcast) {
+      final isTourLeader =
+          authState.selectedRole == UserRole.tourLeader ||
+          authState.tourLeader != null;
+      if (isTourLeader) {
+        // Tour Leader diarahkan ke dashboard atau messages jika ada siaran
+        router.go('/tour_leader');
+        return;
+      }
+
+      final isFamily = authState.user?.role == UserRole.family ||
+          authState.selectedRole == UserRole.family;
+      if (isFamily) {
+        router.go('/family/broadcasts');
+      } else {
+        router.go('/pilgrim/broadcasts');
+      }
       return;
     }
 
