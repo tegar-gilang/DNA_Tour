@@ -293,62 +293,28 @@ class IncidentNotifier extends StateNotifier<IncidentState> {
     });
   }
 
-  /// Menyelesaikan insiden yang sudah berstatus [in_action] dengan mengirim
-  /// tepat satu PATCH ke backend menuju status [resolved].
+  /// Menyelesaikan insiden darurat SOS dengan mengirim perubahan status
+  /// langsung dari [triggered] menuju [resolved].
   ///
-  /// Hanya boleh dipanggil ketika status insiden adalah `in_action`.
-  /// Jika status bukan `in_action`, operasi dihentikan dan exception dilempar.
-  /// Tidak melakukan retry otomatis maupun transisi perantara.
-  Future<void> completeIncident(String id) async {
-    // Baca status terkini dari state lokal sebagai validasi awal.
-    // Backend tetap menjadi otoritas akhir atas transisi yang valid.
+  /// Hanya boleh dipanggil untuk insiden yang masih berstatus `triggered`.
+  /// Status historis `acknowledged` dan `in_action` tidak lagi memiliki aksi
+  /// penanganan baru.
+  Future<void> resolveIncident(String id) async {
     final incident = state.incidents.firstWhere(
       (i) => i.id == id,
       orElse: () => throw Exception('Insiden tidak ditemukan dalam daftar.'),
     );
     final current = SosIncidentStatus.fromString(incident.status);
 
-    if (current != SosIncidentStatus.inAction) {
+    if (current != SosIncidentStatus.triggered) {
       throw Exception(
-        'Insiden harus berstatus "Dalam Penanganan" sebelum dapat diselesaikan. '
+        'Hanya insiden baru (Menunggu Konfirmasi) yang dapat ditangani. '
         'Status saat ini: ${current.label}.',
       );
     }
 
-    // Satu PATCH menuju resolved — tidak ada transisi perantara.
+    // Satu aksi langsung mengirim perubahan status ke resolved.
     await updateIncidentStatus(id, 'resolved');
-  }
-
-  /// Mengubah status insiden ke [nextStatus] dengan mengirim tepat satu PATCH
-  /// ke backend.
-  ///
-  /// Hanya boleh dipanggil untuk satu langkah transisi.
-  /// Jika status lokal tidak sesuai, backend yang akan menolak (HTTP 422).
-  Future<void> startHandlingIncident(String id) async {
-    final incident = state.incidents.firstWhere(
-      (i) => i.id == id,
-      orElse: () => throw Exception('Insiden tidak ditemukan dalam daftar.'),
-    );
-    final current = SosIncidentStatus.fromString(incident.status);
-
-    final String targetStatus;
-    switch (current) {
-      case SosIncidentStatus.triggered:
-        // Transisi wajib: triggered → acknowledged
-        targetStatus = 'acknowledged';
-      case SosIncidentStatus.acknowledged:
-        // Transisi lanjutan: acknowledged → in_action
-        targetStatus = 'in_action';
-      case SosIncidentStatus.inAction:
-      case SosIncidentStatus.resolved:
-      case SosIncidentStatus.falseAlarm:
-        throw Exception(
-          'Tidak dapat memulai penanganan dari status: ${current.label}.',
-        );
-    }
-
-    // Satu PATCH per penekanan tombol.
-    await updateIncidentStatus(id, targetStatus);
   }
 
   /// Mengekstrak pesan error yang aman dari DioException untuk ditampilkan

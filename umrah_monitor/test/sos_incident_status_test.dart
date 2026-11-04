@@ -1,7 +1,18 @@
 import 'dart:io' show HttpDate;
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:umrah_monitor/core/network/api_client.dart';
+import 'package:umrah_monitor/core/storage/secure_storage.dart';
+import 'package:umrah_monitor/features/tour_leader/presentation/incident_management_screen.dart';
+import 'package:umrah_monitor/features/tracking/data/sos_repository.dart';
 import 'package:umrah_monitor/features/tracking/presentation/incident_provider.dart';
+
+class FakeSecureStorage extends SecureStorage {
+  @override
+  Future<String?> getToken() async => 'test_token_123';
+}
 
 void main() {
   group('SosIncidentStatus Enum & Mapping Tests', () {
@@ -101,7 +112,7 @@ void main() {
       expect(updated.incidentStatus, SosIncidentStatus.resolved);
     });
 
-    test('completeIncident from in_action succeeds (correct P0 behaviour)', () async {
+    test('resolveIncident from triggered succeeds and updates status directly to resolved', () async {
       final notifier = IncidentNotifier();
       notifier.addIncident(
         const IncidentModel(
@@ -112,19 +123,19 @@ void main() {
           priority: 'critical',
           time: '10:00',
           location: 'Makkah',
-          status: 'in_action',
+          status: 'triggered',
         ),
       );
 
       // Tanpa repository — fallback lokal digunakan untuk update status.
-      await notifier.completeIncident('SOS-300');
+      await notifier.resolveIncident('SOS-300');
 
       final result = notifier.state.incidents.firstWhere((i) => i.id == 'SOS-300');
       expect(result.status, 'resolved');
       expect(result.incidentStatus, SosIncidentStatus.resolved);
     });
 
-    test('completeIncident from in_action succeeds — skips multi-step (P0 guard)', () async {
+    test('resolveIncident from triggered succeeds — single step directly to resolved', () async {
       final notifier = IncidentNotifier();
       notifier.addIncident(
         const IncidentModel(
@@ -135,17 +146,17 @@ void main() {
           priority: 'high',
           time: '11:00',
           location: 'Madinah',
-          status: 'in_action',
+          status: 'triggered',
         ),
       );
 
-      await notifier.completeIncident('SOS-301');
+      await notifier.resolveIncident('SOS-301');
 
       final result = notifier.state.incidents.firstWhere((i) => i.id == 'SOS-301');
       expect(result.status, 'resolved');
     });
 
-    test('completeIncident throws exception if status is not in_action (guard test)', () async {
+    test('resolveIncident throws exception if status is not triggered (guard test)', () async {
       final notifier = IncidentNotifier();
       notifier.addIncident(
         const IncidentModel(
@@ -160,9 +171,9 @@ void main() {
         ),
       );
 
-      // Melempar exception karena status bukan in_action
+      // Melempar exception karena status bukan triggered
       expect(
-        () => notifier.completeIncident('SOS-302'),
+        () => notifier.resolveIncident('SOS-302'),
         throwsA(isA<Exception>()),
       );
     });
@@ -252,6 +263,316 @@ void main() {
 
       final msg = IncidentNotifier.extractSafeErrorMessage(error);
       expect(msg, contains('koneksi internet'));
+    });
+
+    test('historical acknowledged and in_action statuses are recognized without handling action', () {
+      const historicalAck = IncidentModel(
+        id: 'SOS-HIST-1',
+        title: 'Histori Ack',
+        pilgrimName: 'Budi',
+        type: 'lost',
+        priority: 'high',
+        time: '08:00',
+        location: 'Mina',
+        status: 'acknowledged',
+      );
+      expect(historicalAck.incidentStatus, SosIncidentStatus.acknowledged);
+      expect(historicalAck.incidentStatus.label, 'Diterima');
+
+      const historicalInAction = IncidentModel(
+        id: 'SOS-HIST-2',
+        title: 'Histori In Action',
+        pilgrimName: 'Ali',
+        type: 'accident',
+        priority: 'critical',
+        time: '08:30',
+        location: 'Arafah',
+        status: 'in_action',
+      );
+      expect(historicalInAction.incidentStatus, SosIncidentStatus.inAction);
+      expect(historicalInAction.incidentStatus.label, 'Dalam Penanganan');
+    });
+
+    test('resolveIncident when request fails does not change status to resolved', () async {
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            return handler.reject(
+              DioException(
+                requestOptions: options,
+                response: Response(
+                  requestOptions: options,
+                  statusCode: 500,
+                  data: {'message': 'Server error'},
+                ),
+              ),
+            );
+          },
+        ),
+      );
+
+      final apiClient = ApiClient(customDio: dio);
+      final repo = SosRepository(apiClient: apiClient, secureStorage: FakeSecureStorage());
+      final notifier = IncidentNotifier(repo);
+
+      notifier.addIncident(
+        const IncidentModel(
+          id: 'SOS-301-FAIL',
+          title: 'Test Gagal',
+          pilgrimName: 'Siti',
+          type: 'lost',
+          priority: 'high',
+          time: '11:00',
+          location: 'Madinah',
+          status: 'triggered',
+        ),
+      );
+
+      expect(() => notifier.resolveIncident('SOS-301-FAIL'), throwsA(isA<DioException>()));
+
+      final result = notifier.state.incidents.firstWhere((i) => i.id == 'SOS-301-FAIL');
+      expect(result.status, 'triggered');
+      expect(result.incidentStatus, SosIncidentStatus.triggered);
+    });
+  });
+
+  group('UI IncidentManagementScreen Widget Tests', () {
+    testWidgets('Status triggered menampilkan tombol Tangani, dan tidak menampilkan tombol lama', (tester) async {
+      final container = ProviderContainer(
+        overrides: [
+          incidentNotifierProvider.overrideWith((ref) {
+            final notifier = IncidentNotifier(null, false);
+            notifier.addIncident(
+              const IncidentModel(
+                id: 'INC-TRIG-1',
+                title: 'Darurat Medis',
+                pilgrimName: 'Ahmad Fauzi',
+                type: 'critical',
+                priority: 'critical',
+                time: '10:00',
+                location: 'Pelataran Tawaf',
+                status: 'triggered',
+              ),
+            );
+            return notifier;
+          }),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            home: IncidentManagementScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Tangani'), findsOneWidget);
+      expect(find.text('Mulai Penanganan'), findsNothing);
+      expect(find.text('Tandai Selesai'), findsNothing);
+      expect(find.text('Selesaikan Penanganan'), findsNothing);
+    });
+
+    testWidgets('Menekan tombol Tangani memanggil resolveIncident dan mengirim status resolved', (tester) async {
+      String? sentStatus;
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            if (options.method == 'GET') {
+              return handler.resolve(
+                Response(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: {
+                    'data': [
+                      {
+                        'id': 'INC-TRIG-2',
+                        'status': 'resolved',
+                        'type': 'critical',
+                        'description': 'Darurat Medis',
+                        'location_name': 'Pelataran Tawaf',
+                        'jamaah': {
+                          'full_name': 'Ahmad Fauzi',
+                        },
+                      }
+                    ],
+                  },
+                ),
+              );
+            }
+            final data = options.data as Map?;
+            sentStatus = data?['status']?.toString();
+            return handler.resolve(
+              Response(
+                requestOptions: options,
+                statusCode: 200,
+                data: {
+                  'message': 'Status berhasil diperbarui',
+                  'data': {
+                    'id': 'INC-TRIG-2',
+                    'status': 'resolved',
+                  },
+                },
+              ),
+            );
+          },
+        ),
+      );
+
+      final apiClient = ApiClient(customDio: dio);
+      final repo = SosRepository(apiClient: apiClient, secureStorage: FakeSecureStorage());
+      final notifier = IncidentNotifier(repo, false);
+      notifier.addIncident(
+        const IncidentModel(
+          id: 'INC-TRIG-2',
+          title: 'Darurat Medis',
+          pilgrimName: 'Ahmad Fauzi',
+          type: 'critical',
+          priority: 'critical',
+          time: '10:00',
+          location: 'Pelataran Tawaf',
+          status: 'triggered',
+        ),
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          sosRepositoryProvider.overrideWithValue(repo),
+          incidentNotifierProvider.overrideWith((ref) => notifier),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            home: IncidentManagementScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final tanganiButton = find.text('Tangani');
+      expect(tanganiButton, findsOneWidget);
+
+      await tester.tap(tanganiButton);
+      await tester.pumpAndSettle();
+
+      expect(sentStatus, 'resolved');
+      expect(sentStatus, isNot('acknowledged'));
+      expect(sentStatus, isNot('in_action'));
+      expect(find.text('SELESAI'), findsOneWidget);
+      expect(find.text('Tangani'), findsNothing);
+    });
+
+    testWidgets('Status historis acknowledged dan in_action tidak menampilkan tombol penanganan baru', (tester) async {
+      final container = ProviderContainer(
+        overrides: [
+          incidentNotifierProvider.overrideWith((ref) {
+            final notifier = IncidentNotifier(null, false);
+            notifier.addIncident(
+              const IncidentModel(
+                id: 'INC-HIST-ACK',
+                title: 'Insiden Ack',
+                pilgrimName: 'Jamaah A',
+                type: 'lost',
+                priority: 'high',
+                time: '09:00',
+                location: 'Hotel',
+                status: 'acknowledged',
+              ),
+            );
+            notifier.addIncident(
+              const IncidentModel(
+                id: 'INC-HIST-ACT',
+                title: 'Insiden In Action',
+                pilgrimName: 'Jamaah B',
+                type: 'medical',
+                priority: 'critical',
+                time: '09:30',
+                location: 'Mina',
+                status: 'in_action',
+              ),
+            );
+            return notifier;
+          }),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            home: IncidentManagementScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Memastikan kedua status historis dapat ditampilkan dengan baik
+      expect(find.text('DITERIMA'), findsOneWidget);
+      expect(find.text('DALAM PENANGANAN'), findsOneWidget);
+
+      // Tidak ada tombol penanganan baru
+      expect(find.text('Tangani'), findsNothing);
+      expect(find.text('Mulai Penanganan'), findsNothing);
+      expect(find.text('Tandai Selesai'), findsNothing);
+      expect(find.text('Selesaikan Penanganan'), findsNothing);
+    });
+
+    testWidgets('Status resolved dan false_alarm tidak menyediakan tombol penanganan', (tester) async {
+      final container = ProviderContainer(
+        overrides: [
+          incidentNotifierProvider.overrideWith((ref) {
+            final notifier = IncidentNotifier(null, false);
+            notifier.addIncident(
+              const IncidentModel(
+                id: 'INC-RES',
+                title: 'Insiden Selesai',
+                pilgrimName: 'Jamaah C',
+                type: 'health',
+                priority: 'high',
+                time: '07:00',
+                location: 'Masjidil Haram',
+                status: 'resolved',
+              ),
+            );
+            notifier.addIncident(
+              const IncidentModel(
+                id: 'INC-FA',
+                title: 'Insiden False Alarm',
+                pilgrimName: 'Jamaah D',
+                type: 'health',
+                priority: 'medium',
+                time: '06:00',
+                location: 'Hotel',
+                status: 'false_alarm',
+              ),
+            );
+            return notifier;
+          }),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            home: IncidentManagementScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('SELESAI'), findsOneWidget);
+      expect(find.text('ALARM PALSU'), findsOneWidget);
+      expect(find.text('Tangani'), findsNothing);
+      expect(find.text('Mulai Penanganan'), findsNothing);
+      expect(find.text('Tandai Selesai'), findsNothing);
     });
   });
 }

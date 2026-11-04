@@ -524,217 +524,109 @@ class _IncidentManagementScreenState
                                       ),
                                     ),
                                   ),
-                                  // Tombol Mulai Penanganan: hanya tampil pada status
-                                  // triggered dan acknowledged. Setiap penekanan
-                                  // menghasilkan tepat satu PATCH sesuai aturan
-                                  // transisi backend.
-                                  if (incidentStatus ==
-                                          SosIncidentStatus.triggered ||
-                                      incidentStatus ==
-                                          SosIncidentStatus.acknowledged)
-                                    Builder(
-                                      builder: (context) {
-                                        final isProcessing = _processingIds
-                                            .contains(inc.id);
-                                        return ElevatedButton.icon(
-                                          onPressed: isProcessing
-                                              ? null
-                                              : () async {
-                                                  setState(() {
-                                                    _processingIds.add(inc.id);
-                                                  });
-                                                  try {
-                                                    await ref
-                                                        .read(
-                                                          incidentNotifierProvider
-                                                              .notifier,
-                                                        )
-                                                        .startHandlingIncident(
-                                                          inc.id,
-                                                        );
-                                                    if (!context.mounted) { return; }
-                                                    final newStatus =
-                                                        SosIncidentStatus.fromString(
-                                                          incidentStatus ==
-                                                                  SosIncidentStatus
-                                                                      .triggered
-                                                              ? 'acknowledged'
-                                                              : 'in_action',
-                                                        );
-                                                    ScaffoldMessenger.of(
-                                                      context,
-                                                    ).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          'Status insiden diperbarui ke: ${newStatus.label}.',
-                                                        ),
-                                                        backgroundColor:
-                                                            AppColors
-                                                                .warningAmber,
-                                                      ),
-                                                    );
-                                                  } catch (e) {
-                                                    if (!context.mounted) { return; }
-                                                    final safeMsg =
-                                                        IncidentNotifier.extractSafeErrorMessage(
-                                                          e,
-                                                        );
-                                                    ScaffoldMessenger.of(
-                                                      context,
-                                                    ).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(safeMsg),
-                                                        backgroundColor:
-                                                            AppColors
-                                                                .emergencyRed,
-                                                      ),
-                                                    );
-                                                  } finally {
-                                                    if (mounted) {
-                                                      setState(() {
-                                                        _processingIds.remove(
-                                                          inc.id,
-                                                        );
-                                                      });
-                                                    }
-                                                  }
-                                                },
-                                          icon: isProcessing
-                                              ? const SizedBox(
-                                                  width: 14,
-                                                  height: 14,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                        strokeWidth: 2,
-                                                        color: Colors.white,
-                                                      ),
-                                                )
-                                              : const Icon(
-                                                  LucideIcons.play,
-                                                  size: 16,
-                                                  color: Colors.white,
-                                                ),
-                                          label: const Text(
-                                            'Mulai Penanganan',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: isProcessing
-                                                ? AppColors.warningAmber
-                                                      .withValues(alpha: 0.6)
-                                                : AppColors.warningAmber,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  // Tombol Tandai Selesai: HANYA tampil jika status
-                                  // in_action. Backend menolak transisi resolved dari
-                                  // status lain (HTTP 422).
-                                  if (incidentStatus ==
-                                      SosIncidentStatus.inAction)
-                                    Builder(
-                                      builder: (context) {
-                                        final isProcessing = _processingIds
-                                            .contains(inc.id);
-                                        return ElevatedButton.icon(
-                                          // Nonaktifkan tombol selama proses
-                                          // berjalan untuk mencegah double-tap
-                                          onPressed: isProcessing
-                                              ? null
-                                              : () async {
-                                                  setState(() {
-                                                    _processingIds.add(inc.id);
-                                                  });
-                                                  try {
-                                                    await ref
-                                                        .read(
-                                                          incidentNotifierProvider
-                                                              .notifier,
-                                                        )
-                                                        .completeIncident(
-                                                          inc.id,
-                                                        );
-                                                    if (!context.mounted) { return; }
-                                                    ScaffoldMessenger.of(
-                                                      context,
-                                                    ).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          'Insiden ${inc.id.length > 8 ? inc.id.substring(0, 8) : inc.id} berhasil diselesaikan!',
-                                                        ),
-                                                        backgroundColor:
-                                                            AppColors
-                                                                .successGreen,
-                                                      ),
-                                                    );
-                                                  } catch (e) {
-                                                    if (!context.mounted) { return; }
-                                                    final safeMsg =
-                                                        IncidentNotifier.extractSafeErrorMessage(
-                                                          e,
-                                                        );
-                                                    ScaffoldMessenger.of(
-                                                      context,
-                                                    ).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(safeMsg),
-                                                        backgroundColor:
-                                                            AppColors
-                                                                .emergencyRed,
-                                                      ),
-                                                    );
-                                                  } finally {
-                                                    if (mounted) {
-                                                      setState(() {
-                                                        _processingIds.remove(
-                                                          inc.id,
-                                                        );
-                                                      });
-                                                    }
-                                                  }
-                                                },
-                                          icon: isProcessing
-                                              ? const SizedBox(
-                                                  width: 14,
-                                                  height: 14,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                        strokeWidth: 2,
-                                                        color: Colors.white,
-                                                      ),
-                                                )
-                                              : const Icon(
-                                                  LucideIcons.checkCircle2,
-                                                  size: 16,
-                                                  color: Colors.white,
-                                                ),
-                                          label: const Text(
-                                            'Tandai Selesai',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: isProcessing
-                                                ? AppColors.successGreen
-                                                      .withValues(alpha: 0.6)
-                                                : AppColors.successGreen,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                   // Tombol Tangani: HANYA tampil pada status triggered.
+                                   // Status historis (acknowledged, in_action) serta
+                                   // status akhir (resolved, false_alarm) tidak menampilkan tombol penanganan baru.
+                                   if (incidentStatus ==
+                                       SosIncidentStatus.triggered)
+                                     Builder(
+                                       builder: (context) {
+                                         final isProcessing = _processingIds
+                                             .contains(inc.id);
+                                         return ElevatedButton.icon(
+                                           onPressed: isProcessing
+                                               ? null
+                                               : () async {
+                                                   setState(() {
+                                                     _processingIds.add(inc.id);
+                                                   });
+                                                   try {
+                                                     await ref
+                                                         .read(
+                                                           incidentNotifierProvider
+                                                               .notifier,
+                                                         )
+                                                         .resolveIncident(
+                                                           inc.id,
+                                                         );
+                                                     if (!context.mounted) {
+                                                       return;
+                                                     }
+                                                     ScaffoldMessenger.of(
+                                                       context,
+                                                     ).showSnackBar(
+                                                       SnackBar(
+                                                         content: Text(
+                                                           'Insiden ${inc.id.length > 8 ? inc.id.substring(0, 8) : inc.id} berhasil ditangani & diselesaikan!',
+                                                         ),
+                                                         backgroundColor:
+                                                             AppColors
+                                                                 .successGreen,
+                                                       ),
+                                                     );
+                                                   } catch (e) {
+                                                     if (!context.mounted) {
+                                                       return;
+                                                     }
+                                                     final safeMsg =
+                                                         IncidentNotifier.extractSafeErrorMessage(
+                                                           e,
+                                                         );
+                                                     ScaffoldMessenger.of(
+                                                       context,
+                                                     ).showSnackBar(
+                                                       SnackBar(
+                                                         content: Text(safeMsg),
+                                                         backgroundColor:
+                                                             AppColors
+                                                                 .emergencyRed,
+                                                       ),
+                                                     );
+                                                   } finally {
+                                                     if (mounted) {
+                                                       setState(() {
+                                                         _processingIds.remove(
+                                                           inc.id,
+                                                         );
+                                                       });
+                                                     }
+                                                   }
+                                                 },
+                                           icon: isProcessing
+                                               ? const SizedBox(
+                                                   width: 14,
+                                                   height: 14,
+                                                   child:
+                                                       CircularProgressIndicator(
+                                                         strokeWidth: 2,
+                                                         color: Colors.white,
+                                                       ),
+                                                 )
+                                               : const Icon(
+                                                   LucideIcons.checkCircle2,
+                                                   size: 16,
+                                                   color: Colors.white,
+                                                 ),
+                                           label: const Text(
+                                             'Tangani',
+                                             style: TextStyle(
+                                               fontWeight: FontWeight.w700,
+                                               color: Colors.white,
+                                             ),
+                                           ),
+                                           style: ElevatedButton.styleFrom(
+                                             backgroundColor: isProcessing
+                                                 ? AppColors.successGreen
+                                                       .withValues(alpha: 0.6)
+                                                 : AppColors.successGreen,
+                                             shape: RoundedRectangleBorder(
+                                               borderRadius:
+                                                   BorderRadius.circular(12),
+                                             ),
+                                           ),
+                                         );
+                                       },
+                                     ),
                                 ],
                               ),
                             ],
