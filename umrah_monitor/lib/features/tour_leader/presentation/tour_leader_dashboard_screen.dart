@@ -292,7 +292,7 @@ class TourLeaderDashboardScreen extends ConsumerWidget {
                     Expanded(
                       child: _buildActionBtn(
                         context,
-                        label: 'Room Chat',
+                        label: 'Pengumuman',
                         icon: LucideIcons.messageSquare,
                         color: AppColors.secondaryDark,
                         onTap: () => context.push('/tour_leader/messages'),

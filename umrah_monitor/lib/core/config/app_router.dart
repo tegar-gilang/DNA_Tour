@@ -169,7 +169,7 @@ final List<RouteBase> _appRoutes = [
           routes: [
             GoRoute(
               path: '/pilgrim/broadcasts',
-              builder: (context, state) => const BroadcastFeedScreen(),
+              builder: (context, state) => const BroadcastFeedScreen()
             ),
           ],
         ),
@@ -218,7 +218,7 @@ final List<RouteBase> _appRoutes = [
           routes: [
             GoRoute(
               path: '/family/broadcasts',
-              builder: (context, state) => const BroadcastFeedScreen(),
+              builder: (context, state) => const BroadcastFeedScreen()
             ),
           ],
         ),
@@ -285,7 +285,7 @@ final List<RouteBase> _appRoutes = [
     GoRoute(
       path: '/tour_leader/messages',
       parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => const MessagesScreen(),
+      builder: (context, state) => const BroadcastFeedScreen()
     ),
 
     // Standalone Modals / Fullscreen Tools

@@ -561,17 +561,9 @@ class _SosEmergencyScreenState extends ConsumerState<SosEmergencyScreen> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Membuka panggilan telepon darurat ke Tour Leader...',
-                    ),
-                  ),
-                );
-              },
-              icon: const Icon(LucideIcons.phoneCall),
-              label: const Text('Hubungi Tour Leader Sekarang'),
+              onPressed: () => context.go('/pilgrim/broadcasts'),
+              icon: const Icon(Icons.campaign_rounded),
+              label: const Text('Lihat Pengumuman'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 padding: const EdgeInsets.symmetric(vertical: 16),

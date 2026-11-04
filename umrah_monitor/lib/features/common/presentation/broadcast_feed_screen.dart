@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/design_system/app_colors.dart';
+import '../../auth/domain/user_model.dart';
+import '../../auth/presentation/auth_provider.dart';
 import '../domain/broadcast_model.dart';
 import 'broadcast_provider.dart';
 
@@ -61,7 +64,8 @@ class _BroadcastFeedScreenState extends ConsumerState<BroadcastFeedScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Auto-scroll ke bawah saat data pertama kali berhasil dimuat
-    if (broadcastState.status == BroadcastStatus.success && !_hasScrolledToBottom) {
+    if (broadcastState.status == BroadcastStatus.success &&
+        !_hasScrolledToBottom) {
       _hasScrolledToBottom = true;
       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     }
@@ -72,7 +76,9 @@ class _BroadcastFeedScreenState extends ConsumerState<BroadcastFeedScreen> {
     }
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF0D1117) : const Color(0xFFEEF0F3),
+      backgroundColor: isDark
+          ? const Color(0xFF0D1117)
+          : const Color(0xFFEEF0F3),
       appBar: _buildAppBar(broadcastState, isDark),
       body: _buildBody(broadcastState, isDark),
     );
@@ -81,7 +87,8 @@ class _BroadcastFeedScreenState extends ConsumerState<BroadcastFeedScreen> {
   // ── AppBar ─────────────────────────────────────────────────────────────────
 
   PreferredSizeWidget _buildAppBar(BroadcastState state, bool isDark) {
-    final canRefresh = state.status == BroadcastStatus.success ||
+    final canRefresh =
+        state.status == BroadcastStatus.success ||
         state.status == BroadcastStatus.error ||
         state.status == BroadcastStatus.empty;
 
@@ -104,6 +111,19 @@ class _BroadcastFeedScreenState extends ConsumerState<BroadcastFeedScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
             child: Row(
               children: [
+                // Tombol kembali (hanya tampil jika bisa pop)
+                if (Navigator.canPop(context)) ...[
+                  IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    tooltip: 'Kembali',
+                    onPressed: () => context.pop(),
+                  ),
+                ],
+
                 // Avatar channel
                 Container(
                   width: 44,
@@ -156,9 +176,13 @@ class _BroadcastFeedScreenState extends ConsumerState<BroadcastFeedScreen> {
                 if (canRefresh)
                   IconButton(
                     key: const Key('btn_refresh_broadcast'),
-                    icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+                    icon: const Icon(
+                      Icons.refresh_rounded,
+                      color: Colors.white,
+                    ),
                     tooltip: 'Muat ulang',
-                    onPressed: () => ref.read(broadcastProvider.notifier).refresh(),
+                    onPressed: () =>
+                        ref.read(broadcastProvider.notifier).refresh(),
                   ),
               ],
             ),
@@ -200,7 +224,9 @@ class _BroadcastFeedScreenState extends ConsumerState<BroadcastFeedScreen> {
             'Memuat pengumuman…',
             style: TextStyle(
               fontSize: 15,
-              color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+              color: isDark
+                  ? AppColors.textSecondaryDark
+                  : AppColors.textSecondaryLight,
             ),
           ),
         ],
@@ -236,7 +262,9 @@ class _BroadcastFeedScreenState extends ConsumerState<BroadcastFeedScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                color: isDark
+                    ? AppColors.textPrimaryDark
+                    : AppColors.textPrimaryLight,
               ),
             ),
             const SizedBox(height: 10),
@@ -245,7 +273,9 @@ class _BroadcastFeedScreenState extends ConsumerState<BroadcastFeedScreen> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
-                color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                color: isDark
+                    ? AppColors.textSecondaryDark
+                    : AppColors.textSecondaryLight,
                 height: 1.5,
               ),
             ),
@@ -291,7 +321,9 @@ class _BroadcastFeedScreenState extends ConsumerState<BroadcastFeedScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                color: isDark
+                    ? AppColors.textPrimaryDark
+                    : AppColors.textPrimaryLight,
               ),
             ),
             const SizedBox(height: 10),
@@ -300,7 +332,9 @@ class _BroadcastFeedScreenState extends ConsumerState<BroadcastFeedScreen> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
-                color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                color: isDark
+                    ? AppColors.textSecondaryDark
+                    : AppColors.textSecondaryLight,
                 height: 1.55,
               ),
             ),
@@ -352,10 +386,7 @@ class _BroadcastFeedScreenState extends ConsumerState<BroadcastFeedScreen> {
           if (item.isDateSeparator) {
             return _DateSeparator(label: item.dateLabel!, isDark: isDark);
           }
-          return _BubbleChatMessage(
-            broadcast: item.broadcast!,
-            isDark: isDark,
-          );
+          return _BubbleChatMessage(broadcast: item.broadcast!, isDark: isDark);
         },
       ),
     );
@@ -426,7 +457,9 @@ class _DateSeparator extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: isDark ? AppColors.textTertiaryDark : AppColors.textTertiaryLight,
+                color: isDark
+                    ? AppColors.textTertiaryDark
+                    : AppColors.textTertiaryLight,
                 letterSpacing: 0.3,
               ),
             ),
@@ -454,10 +487,7 @@ class _BubbleChatMessage extends StatelessWidget {
   final Broadcast broadcast;
   final bool isDark;
 
-  const _BubbleChatMessage({
-    required this.broadcast,
-    required this.isDark,
-  });
+  const _BubbleChatMessage({required this.broadcast, required this.isDark});
 
   /// Menentukan warna avatar & aksen berdasarkan priority/category broadcast.
   Color get _accentColor {
@@ -499,9 +529,7 @@ class _BubbleChatMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accent = _accentColor;
-    final bubbleBg = isDark
-        ? AppColors.cardDark
-        : Colors.white;
+    final bubbleBg = isDark ? AppColors.cardDark : Colors.white;
     final bubbleBorder = isDark ? AppColors.borderDark : AppColors.borderLight;
 
     return Padding(
@@ -547,7 +575,9 @@ class _BubbleChatMessage extends StatelessWidget {
                     border: Border.all(color: bubbleBorder, width: 1),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.06),
+                        color: Colors.black.withValues(
+                          alpha: isDark ? 0.25 : 0.06,
+                        ),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
